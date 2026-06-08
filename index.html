@@ -2,74 +2,201 @@
 <html lang="no">
 <head>
 <meta charset="utf-8">
-<title>VM 2026 — tippeleaderboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VM 2026 — Ledertavle</title>
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1rem; color: #222; }
-  h1 { margin-bottom: 0.25rem; }
-  .sub { color: #777; margin-top: 0; margin-bottom: 2rem; font-size: 0.9rem; }
-  table.board { width: 100%; border-collapse: collapse; }
-  table.board th, table.board td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid #eee; }
-  table.board th { font-weight: 600; color: #666; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
-  table.board td.rank { width: 3rem; color: #999; }
-  table.board td.points { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
-  tr.row { cursor: pointer; transition: background 0.1s; }
-  tr.row:hover { background: #f8f8f8; }
-  tr.row.open { background: #f4f4f4; }
+  :root {
+    --bg: #0a0e1a;
+    --surface: #11172a;
+    --surface-hover: #1a2240;
+    --text: #e8edf7;
+    --muted: #7a85a8;
+    --accent: #34d399;
+    --accent-soft: #34d39922;
+    --accent-dim: #34d39988;
+    --gold: #f5c25a;
+    --silver: #cdd6e4;
+    --bronze: #d4956b;
+    --divider: #1f2740;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at top, #1a2240, var(--bg));
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-feature-settings: "tnum";
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  header { margin-bottom: 2.5rem; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.3rem 0.7rem;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  .badge .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  h1 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  h1 .accent { color: var(--accent); }
+  .sub { color: var(--muted); margin: 0; font-size: 0.9rem; }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left;
+    color: var(--muted);
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0 1rem 0.75rem;
+    border-bottom: 1px solid var(--divider);
+  }
+  thead th.right { text-align: right; }
+  tbody td { padding: 1rem; border-bottom: 1px solid var(--divider); }
+  tr.row { cursor: pointer; transition: background 0.15s; }
+  tr.row:hover { background: var(--surface-hover); }
+  tr.row.open { background: var(--surface); }
+
+  .rank { width: 2.5rem; font-weight: 900; font-size: 1.2rem; color: var(--muted); text-align: center; }
+  tr.row.gold .rank { color: var(--gold); }
+  tr.row.silver .rank { color: var(--silver); }
+  tr.row.bronze .rank { color: var(--bronze); }
+  .navn { font-weight: 600; font-size: 1.05rem; }
+  .points {
+    text-align: right; font-weight: 800;
+    font-size: 1.35rem; font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+
   tr.detail { display: none; }
   tr.detail.open { display: table-row; }
-  tr.detail td { padding: 0; background: #fafafa; border-bottom: 1px solid #eee; }
-  .detail-inner { padding: 1rem 1.5rem 1.5rem; }
-  .empty { color: #999; font-style: italic; padding: 0.5rem 0; }
-  table.matches { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  table.matches th, table.matches td { padding: 0.4rem 0.5rem; text-align: left; border-bottom: 1px solid #eaeaea; }
-  table.matches th { font-weight: 500; color: #888; font-size: 0.75rem; text-transform: uppercase; }
-  table.matches td.score { font-variant-numeric: tabular-nums; }
-  table.matches td.pts { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
-  .pts-breakdown { color: #888; font-weight: 400; font-size: 0.85em; margin-right: 0.4em; }
-  .sum-row td { border-bottom: none; border-top: 2px solid #ddd; font-weight: 600; padding-top: 0.6rem; }
+  tr.detail > td { padding: 0; background: var(--surface); }
+  .detail-inner { padding: 0.5rem 1.25rem 1.25rem; }
+  .empty { color: var(--muted); font-style: italic; padding: 1rem 0; }
+
+  .day-group { margin-top: 1rem; }
+  .day-header {
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent-dim);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--divider);
+    margin-bottom: 0.25rem;
+  }
+  .day-group.older { display: none; }
+  .day-group.older.shown { display: block; }
+
+  .match {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.55rem 0.25rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--divider);
+  }
+  .match:last-child { border-bottom: none; }
+  .match .teams { color: var(--text); }
+  .match .tipping { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 2.5rem; text-align: right; }
+  .match .fasit { color: var(--accent); font-variant-numeric: tabular-nums; min-width: 2.5rem; text-align: right; }
+  .match .pts {
+    font-variant-numeric: tabular-nums; font-weight: 700;
+    min-width: 3.5rem; text-align: right; white-space: nowrap;
+  }
+  .match .pts.zero { color: var(--muted); font-weight: 500; }
+  .pts-breakdown { color: var(--muted); font-weight: 400; font-size: 0.85em; margin-right: 0.3em; }
+
+  .toggle-older {
+    margin: 1rem 0 0.5rem;
+    background: transparent;
+    border: 1px solid var(--divider);
+    color: var(--muted);
+    padding: 0.5rem 0.9rem;
+    border-radius: 4px;
+    font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .toggle-older:hover { color: var(--text); border-color: var(--accent); }
+
+  .sum {
+    display: flex; justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 1.05rem;
+  }
+  .sum .sum-val { font-variant-numeric: tabular-nums; }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 0.75rem;
+    padding: 0.25rem 0.25rem;
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .col-headers > div { text-align: right; min-width: 2.5rem; }
+  .col-headers > .teams-h { text-align: left; }
+  .col-headers > .pts-h { min-width: 3.5rem; }
+
+  @media (max-width: 480px) {
+    tbody td { padding: 0.75rem 0.5rem; }
+    .points { font-size: 1.1rem; }
+    .match { font-size: 0.85rem; gap: 0.5rem; }
+  }
 </style>
 </head>
 <body>
-  <h1>VM 2026 — tippeleaderboard</h1>
-  <p class="sub">Sist oppdatert: 2026-06-08 20:17 · trykk på en rad for å se utregning</p>
-
-  <table class="board">
+<div class="wrap">
+  <header>
+    <span class="badge"><span class="dot"></span>Starter 11. juni</span>
+    <h1>VM <span class="accent">2026</span> — Ledertavle</h1>
+    <p class="sub">Sist oppdatert: 2026-06-08 20:53 · trykk på en rad for å se utregning</p>
+  </header>
+  <table>
     <thead>
-      <tr><th></th><th>Navn</th><th style="text-align:right">Poeng</th></tr>
+      <tr><th class="rank">#</th><th>Navn</th><th class="right">Poeng</th></tr>
     </thead>
     <tbody>
-      <tr class="row" onclick="toggle(this)">
-        <td class="rank">1</td>
-        <td>Aasmund</td>
-        <td class="points">0</td>
-      </tr>
-      <tr class="detail">
-        <td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td>
-      </tr>
-      <tr class="row" onclick="toggle(this)">
-        <td class="rank">2</td>
-        <td>HeNos</td>
-        <td class="points">0</td>
-      </tr>
-      <tr class="detail">
-        <td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td>
-      </tr>
-      <tr class="row" onclick="toggle(this)">
-        <td class="rank">3</td>
-        <td>Magnus Luciani Gabrielsen</td>
-        <td class="points">0</td>
-      </tr>
-      <tr class="detail">
-        <td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td>
-      </tr>
+      <tr class="row" onclick="toggle(this)"><td class="rank">1</td><td class="navn">Aasmund</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">2</td><td class="navn">HeNos</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">3</td><td class="navn">Magnus Luciani Gabrielsen</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr>
     </tbody>
   </table>
-
+</div>
 <script>
   function toggle(row) {
     const detail = row.nextElementSibling;
     const open = detail.classList.toggle('open');
     row.classList.toggle('open', open);
+  }
+  function toggleOlder(btn) {
+    const inner = btn.closest('.detail-inner');
+    const older = inner.querySelectorAll('.day-group.older');
+    const shown = older[0].classList.contains('shown');
+    older.forEach(g => g.classList.toggle('shown', !shown));
+    const n = older.length;
+    btn.textContent = shown
+      ? (n === 1 ? 'Vis 1 eldre dag' : `Vis ${n} eldre dager`)
+      : 'Skjul eldre dager';
   }
 </script>
 </body>
