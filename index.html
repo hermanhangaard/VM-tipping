@@ -4,134 +4,63 @@
 <meta charset="utf-8">
 <title>VM 2026 — tippeleaderboard</title>
 <style>
-  body {
-    font-family: system-ui, sans-serif;
-    max-width: 720px;
-    margin: 3rem auto;
-    padding: 0 1rem;
-    color: #222;
-  }
+  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1rem; color: #222; }
   h1 { margin-bottom: 0.25rem; }
   .sub { color: #777; margin-top: 0; margin-bottom: 2rem; font-size: 0.9rem; }
-
-  table.board {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 0;
-  }
-  table.board th, table.board td {
-    text-align: left;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-  }
-  table.board th {
-    font-weight: 600;
-    color: #666;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
+  table.board { width: 100%; border-collapse: collapse; }
+  table.board th, table.board td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid #eee; }
+  table.board th { font-weight: 600; color: #666; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
   table.board td.rank { width: 3rem; color: #999; }
   table.board td.points { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
-
   tr.row { cursor: pointer; transition: background 0.1s; }
   tr.row:hover { background: #f8f8f8; }
   tr.row.open { background: #f4f4f4; }
-
   tr.detail { display: none; }
   tr.detail.open { display: table-row; }
   tr.detail td { padding: 0; background: #fafafa; border-bottom: 1px solid #eee; }
-
   .detail-inner { padding: 1rem 1.5rem 1.5rem; }
-  table.matches {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-  }
-  table.matches th, table.matches td {
-    padding: 0.4rem 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid #eaeaea;
-  }
-  table.matches th {
-    font-weight: 500;
-    color: #888;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-  }
+  .empty { color: #999; font-style: italic; padding: 0.5rem 0; }
+  table.matches { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  table.matches th, table.matches td { padding: 0.4rem 0.5rem; text-align: left; border-bottom: 1px solid #eaeaea; }
+  table.matches th { font-weight: 500; color: #888; font-size: 0.75rem; text-transform: uppercase; }
   table.matches td.score { font-variant-numeric: tabular-nums; }
-  table.matches td.pts {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    white-space: nowrap;
-  }
+  table.matches td.pts { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
   .pts-breakdown { color: #888; font-weight: 400; font-size: 0.85em; margin-right: 0.4em; }
-  .sum-row td {
-    border-bottom: none;
-    border-top: 2px solid #ddd;
-    font-weight: 600;
-    padding-top: 0.6rem;
-  }
+  .sum-row td { border-bottom: none; border-top: 2px solid #ddd; font-weight: 600; padding-top: 0.6rem; }
 </style>
 </head>
 <body>
   <h1>VM 2026 — tippeleaderboard</h1>
-  <p class="sub">Sist oppdatert: prototype · trykk på en rad for å se utregning</p>
+  <p class="sub">Sist oppdatert: 2026-06-08 19:51 · trykk på en rad for å se utregning</p>
 
   <table class="board">
     <thead>
-      <tr>
-        <th></th>
-        <th>Navn</th>
-        <th style="text-align:right">Poeng</th>
-      </tr>
+      <tr><th></th><th>Navn</th><th style="text-align:right">Poeng</th></tr>
     </thead>
     <tbody>
       <tr class="row" onclick="toggle(this)">
         <td class="rank">1</td>
-        <td>Lasse</td>
-        <td class="points">11</td>
+        <td>Aasmund</td>
+        <td class="points">0</td>
       </tr>
       <tr class="detail">
-        <td colspan="3">
-          <div class="detail-inner">
-            <table class="matches">
-              <thead>
-                <tr>
-                  <th>Kamp</th>
-                  <th>Tipping</th>
-                  <th>Fasit</th>
-                  <th style="text-align:right">Poeng</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Mexico–Sør-Afrika</td>
-                  <td class="score">2–1</td>
-                  <td class="score">2–1</td>
-                  <td class="pts"><span class="pts-breakdown">3 + 2</span>5</td>
-                </tr>
-                <tr>
-                  <td>Canada–Bosnia-Hercegovina</td>
-                  <td class="score">2–0</td>
-                  <td class="score">1–0</td>
-                  <td class="pts"><span class="pts-breakdown">3</span>3</td>
-                </tr>
-                <tr>
-                  <td>USA–Paraguay</td>
-                  <td class="score">1–0</td>
-                  <td class="score">3–1</td>
-                  <td class="pts"><span class="pts-breakdown">3</span>3</td>
-                </tr>
-                <tr class="sum-row">
-                  <td colspan="3">Sum</td>
-                  <td class="pts">11</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
+        <td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td>
+      </tr>
+      <tr class="row" onclick="toggle(this)">
+        <td class="rank">2</td>
+        <td>HeNos</td>
+        <td class="points">0</td>
+      </tr>
+      <tr class="detail">
+        <td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td>
+      </tr>
+      <tr class="row" onclick="toggle(this)">
+        <td class="rank">3</td>
+        <td>Magnus Luciani Gabrielsen</td>
+        <td class="points">0</td>
+      </tr>
+      <tr class="detail">
+        <td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td>
       </tr>
     </tbody>
   </table>
