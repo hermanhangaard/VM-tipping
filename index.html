@@ -29,8 +29,8 @@
     font-family: system-ui, -apple-system, sans-serif;
     font-feature-settings: "tnum";
   }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
-  header { margin-bottom: 2.5rem; }
+  .wrap { max-width: 1340px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+  header { margin-bottom: 1.75rem; }
   .badge {
     display: inline-flex; align-items: center; gap: 0.5rem;
     padding: 0.3rem 0.7rem;
@@ -57,37 +57,84 @@
   h1 .accent { color: var(--accent); }
   .sub { color: var(--muted); margin: 0; font-size: 0.9rem; }
 
-  table { width: 100%; border-collapse: collapse; }
-  thead th {
-    text-align: left;
-    color: var(--muted);
-    font-size: 0.9rem; font-weight: 700;
+  /* --- to-kolonne ledertavle --- */
+  .board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .col {
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .col-head {
+    display: grid;
+    grid-template-columns: 3.2rem 1fr auto;
+    gap: 0.7rem;
+    padding: 0.85rem 1.4rem;
+    font-size: 0.68rem; font-weight: 700;
     letter-spacing: 0.12em; text-transform: uppercase;
-    padding: 0 1.25rem 0.85rem;
+    color: var(--muted);
     border-bottom: 1px solid var(--divider);
   }
-  thead th.right { text-align: right; }
-  tbody td { padding: 1.2rem 1.25rem; border-bottom: 1px solid var(--divider); }
-  tr.row { cursor: pointer; transition: background 0.15s; }
-  tr.row:hover { background: var(--surface-hover); }
-  tr.row.open { background: var(--surface); }
+  .col-head .h-rank { text-align: center; }
+  .col-head .h-pts { text-align: right; }
 
-  .rank { width: 3.2rem; font-weight: 900; font-size: 1.9rem; color: var(--muted); text-align: center; }
-  tr.row.gold .rank { color: var(--gold); }
-  tr.row.silver .rank { color: var(--silver); }
-  tr.row.bronze .rank { color: var(--bronze); }
-  .navn { font-weight: 600; font-size: 1.6rem; }
-  .points {
-    text-align: right; font-weight: 800;
-    font-size: 2.1rem; font-variant-numeric: tabular-nums;
-    color: var(--accent);
+  .lb-row {
+    display: grid;
+    grid-template-columns: 3.2rem 1fr auto;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1.05rem 1.4rem;
+    border-bottom: 1px solid var(--divider);
+    cursor: pointer;
+    transition: background 0.15s;
   }
+  .lb-row:nth-last-child(2) { border-bottom: none; }   /* siste rad: detaljpanelet er alltid siste barn */
+  .lb-row:hover { background: var(--surface-hover); }
+  .lb-rank {
+    font-weight: 900; font-size: 1.8rem;
+    color: var(--muted); text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .lb-navn {
+    font-weight: 600; font-size: 1.5rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .lb-points {
+    font-weight: 800; font-size: 2rem;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .lb-row.gold   { box-shadow: inset 3px 0 0 var(--gold); }
+  .lb-row.silver { box-shadow: inset 3px 0 0 var(--silver); }
+  .lb-row.bronze { box-shadow: inset 3px 0 0 var(--bronze); }
+  .lb-row.gold   .lb-rank { color: var(--gold); }
+  .lb-row.silver .lb-rank { color: var(--silver); }
+  .lb-row.bronze .lb-rank { color: var(--bronze); }
 
-  tr.detail { display: none; }
-  tr.detail.open { display: table-row; }
-  tr.detail > td { padding: 0; background: var(--surface); }
-  .detail-inner { padding: 0.5rem 1.25rem 1.25rem; }
+  /* --- inline utvidelse av en rad --- */
+  .lb-row.open { background: var(--surface-hover); }
+  .lb-detail { display: none; background: rgba(0,0,0,0.18); }
+  .lb-detail.open { display: block; border-bottom: 1px solid var(--divider); }
+  .detail-inner { padding: 0.25rem 1.4rem 1rem; }
   .empty { color: var(--muted); font-style: italic; padding: 1rem 0; }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 0.75rem;
+    padding: 0.25rem 0.25rem;
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .col-headers > div { text-align: right; min-width: 2.5rem; }
+  .col-headers > .teams-h { text-align: left; }
+  .col-headers > .pts-h { min-width: 3.5rem; }
 
   .day-group { margin-top: 1rem; }
   .day-header {
@@ -147,26 +194,12 @@
   }
   .sum .sum-val { font-variant-numeric: tabular-nums; }
 
-  .col-headers {
-    display: grid;
-    grid-template-columns: 1fr auto auto auto;
-    gap: 0.75rem;
-    padding: 0.25rem 0.25rem;
-    font-size: 0.65rem; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted);
-  }
-  .col-headers > div { text-align: right; min-width: 2.5rem; }
-  .col-headers > .teams-h { text-align: left; }
-  .col-headers > .pts-h { min-width: 3.5rem; }
-
-  @media (max-width: 480px) {
-    tbody td { padding: 0.75rem 0.5rem; }
-    thead th { font-size: 0.7rem; padding: 0 0.5rem 0.75rem; }
-    .rank { width: 2.5rem; font-size: 1.2rem; }
-    .navn { font-size: 1.05rem; }
-    .points { font-size: 1.35rem; }
-    .match { font-size: 0.85rem; gap: 0.5rem; }
+  /* --- mobil: én kolonne, leser fortsatt 1 -> N --- */
+  @media (max-width: 760px) {
+    .board { grid-template-columns: 1fr; gap: 1rem; }
+    .lb-navn { font-size: 1.2rem; }
+    .lb-points { font-size: 1.6rem; }
+    .lb-rank { font-size: 1.4rem; }
   }
 </style>
 </head>
@@ -175,16 +208,9 @@
   <header>
     <span class="badge"><span class="dot"></span>Starter 11. juni</span>
     <h1>VM <span class="accent">2026</span> - Ledertavle</h1>
-    <p class="sub">Sist oppdatert: 2026-06-10 13:44 · trykk på en rad for å se utregning</p>
+    <p class="sub">Sist oppdatert: 2026-06-10 15:01 · trykk på en rad for å se utregning</p>
   </header>
-  <table>
-    <thead>
-      <tr><th class="rank">#</th><th>Navn</th><th class="right">Poeng</th></tr>
-    </thead>
-    <tbody>
-      <tr class="row" onclick="toggle(this)"><td class="rank">1</td><td class="navn">Aasmund</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">2</td><td class="navn">Hans Magnus</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">3</td><td class="navn">Harald</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">4</td><td class="navn">Henrik</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">5</td><td class="navn">Jarle</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">6</td><td class="navn">Lasse</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">7</td><td class="navn">Magnus</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">8</td><td class="navn">Marius BA</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">9</td><td class="navn">Martin</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr><tr class="row" onclick="toggle(this)"><td class="rank">10</td><td class="navn">Olav</td><td class="points">0</td></tr><tr class="detail"><td colspan="3"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></td></tr>
-    </tbody>
-  </table>
+  <div class="board"><div class="col"><div class="col-head"><div class="h-rank">#</div><div>Navn</div><div class="h-pts">Poeng</div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">1</div><div class="lb-navn">Aasmund</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">2</div><div class="lb-navn">Are</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">3</div><div class="lb-navn">Didrik</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">4</div><div class="lb-navn">Hans Magnus</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">5</div><div class="lb-navn">Harald</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">6</div><div class="lb-navn">Henrik</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">7</div><div class="lb-navn">Jarle</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div></div><div class="col"><div class="col-head"><div class="h-rank">#</div><div>Navn</div><div class="h-pts">Poeng</div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">8</div><div class="lb-navn">Lasse</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">9</div><div class="lb-navn">Magnus</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">10</div><div class="lb-navn">Marius BA</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">11</div><div class="lb-navn">Marius H</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">12</div><div class="lb-navn">Martin</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">13</div><div class="lb-navn">Olav</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">14</div><div class="lb-navn">Pawel</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div></div></div>
 </div>
 <script>
   function toggle(row) {
