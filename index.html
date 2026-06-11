@@ -3,59 +3,118 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="300">
 <title>VM 2026 — Ledertavle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Barlow:wght@400;600&family=Spline+Sans+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0e1a;
-    --surface: #11172a;
-    --surface-hover: #1a2240;
-    --text: #e8edf7;
-    --muted: #7a85a8;
-    --accent: #34d399;
-    --accent-soft: #34d39922;
-    --accent-dim: #34d39988;
-    --gold: #f5c25a;
-    --silver: #cdd6e4;
-    --bronze: #d4956b;
-    --divider: #1f2740;
+    --bg-deep: #06231a;
+    --bg-mid: #0a3326;
+    --surface: #0c3a2b;
+    --surface-hover: #125239;
+    --chalk: #eef4ec;
+    --muted: #93b3a2;
+    --line: rgba(238, 244, 236, 0.15);
+    --divider: rgba(238, 244, 236, 0.09);
+    --score: #ffd24d;
+    --score-dim: rgba(255, 210, 77, 0.55);
+    --score-soft: rgba(255, 210, 77, 0.10);
+    --gold: #f6c453;
+    --silver: #ccd6d0;
+    --bronze: #d99a6c;
+    --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --body: "Barlow", system-ui, sans-serif;
+    --digits: "Spline Sans Mono", ui-monospace, monospace;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     min-height: 100vh;
-    background: radial-gradient(ellipse at top, #1a2240, var(--bg));
-    color: var(--text);
-    font-family: system-ui, -apple-system, sans-serif;
-    font-feature-settings: "tnum";
+    color: var(--chalk);
+    font-family: var(--body);
+    background:
+      radial-gradient(1200px 700px at 50% -220px, rgba(74, 178, 126, 0.30), transparent 65%),
+      linear-gradient(180deg, var(--bg-mid), var(--bg-deep) 70%);
+    background-attachment: fixed;
   }
-  .wrap { max-width: 1340px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
-  header { margin-bottom: 1.75rem; }
-  .badge {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.3rem 0.7rem;
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+
+  /* --- banedekor: midtsirkel + midtpunkt bak headeren --- */
+  .pitch { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .pitch::before {
+    content: ""; position: absolute;
+    left: 50%; top: -620px; transform: translateX(-50%);
+    width: 760px; height: 760px;
+    border: 2px solid var(--line); border-radius: 50%;
   }
-  .badge .dot {
+  .pitch::after {
+    content: ""; position: absolute;
+    left: 50%; top: 132px; transform: translateX(-50%);
+    width: 8px; height: 8px;
+    background: var(--line); border-radius: 50%;
+  }
+
+  .wrap { position: relative; max-width: 1340px; margin: 0 auto; padding: 2.75rem 1.25rem 4rem; }
+  header { margin-bottom: 2rem; }
+
+  .eyebrow {
+    display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+    font-family: var(--display); font-weight: 600;
+    font-size: 1rem; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--score);
+    margin-bottom: 0.4rem;
+  }
+  .status {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    color: var(--muted); letter-spacing: 0.22em;
+  }
+  .status .dot {
     width: 7px; height: 7px; border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2s ease-in-out infinite;
+    background: var(--score);
+    animation: pulse 2.4s ease-in-out infinite;
   }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
   h1 {
-    margin: 0 0 0.5rem;
-    font-size: clamp(2.4rem, 7vw, 3.6rem);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    line-height: 1;
+    margin: 0 0 0.65rem;
+    font-family: var(--display); font-weight: 800;
+    font-size: clamp(3.4rem, 11vw, 6.2rem);
+    line-height: 0.92; letter-spacing: 0.015em;
+    text-transform: uppercase;
   }
-  h1 .accent { color: var(--accent); }
-  .sub { color: var(--muted); margin: 0; font-size: 0.9rem; }
+  .sub { color: var(--muted); margin: 0 0 1rem; font-size: 0.95rem; }
+  .sub b { color: var(--chalk); font-weight: 600; }
+
+  .progress {
+    max-width: 420px; height: 3px;
+    background: var(--divider); border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress > span {
+    display: block; height: 100%;
+    background: linear-gradient(90deg, var(--score-dim), var(--score));
+  }
+
+  /* --- resultatstripe: siste spilledag --- */
+  .nightly {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 0.5rem 0.6rem;
+    margin-top: 1.4rem;
+  }
+  .nightly-label {
+    font-family: var(--display); font-weight: 600;
+    font-size: 0.9rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--score-dim);
+    margin-right: 0.4rem;
+  }
+  .chip {
+    display: inline-flex; align-items: baseline; gap: 0.45rem;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: 999px;
+    padding: 0.4rem 0.95rem;
+    font-size: 0.92rem; color: var(--muted);
+    white-space: nowrap;
+  }
+  .chip .res { font-family: var(--digits); font-weight: 700; color: var(--chalk); }
 
   /* --- to-kolonne ledertavle --- */
   .board {
@@ -69,16 +128,17 @@
     border: 1px solid var(--divider);
     border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.8);
   }
   .col-head {
     display: grid;
     grid-template-columns: 3.2rem 1fr auto;
     gap: 0.7rem;
-    padding: 0.85rem 1.4rem;
-    font-size: 0.68rem; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.8rem 1.4rem;
+    font-family: var(--display); font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 0.22em; text-transform: uppercase;
     color: var(--muted);
-    border-bottom: 1px solid var(--divider);
+    border-bottom: 1px solid var(--line);
   }
   .col-head .h-rank { text-align: center; }
   .col-head .h-pts { text-align: right; }
@@ -88,26 +148,38 @@
     grid-template-columns: 3.2rem 1fr auto;
     align-items: center;
     gap: 0.7rem;
-    padding: 1.05rem 1.4rem;
+    padding: 1rem 1.4rem;
     border-bottom: 1px solid var(--divider);
     cursor: pointer;
     transition: background 0.15s;
   }
   .lb-row:nth-last-child(2) { border-bottom: none; }   /* siste rad: detaljpanelet er alltid siste barn */
   .lb-row:hover { background: var(--surface-hover); }
+  .lb-row:focus-visible {
+    outline: 2px solid var(--score);
+    outline-offset: -2px;
+  }
   .lb-rank {
-    font-weight: 900; font-size: 1.8rem;
+    font-family: var(--display); font-weight: 800; font-size: 1.9rem;
     color: var(--muted); text-align: center;
-    font-variant-numeric: tabular-nums;
   }
   .lb-navn {
-    font-weight: 600; font-size: 1.5rem;
+    font-weight: 600; font-size: 1.4rem;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .lb-points {
-    font-weight: 800; font-size: 2rem;
-    color: var(--accent); font-variant-numeric: tabular-nums;
-    text-align: right;
+    display: flex; justify-content: flex-end; align-items: baseline; gap: 0.55rem;
+    font-family: var(--digits); font-weight: 700; font-size: 1.8rem;
+    color: var(--score);
+    text-shadow: 0 0 18px var(--score-soft);
+  }
+  .delta {
+    font-size: 0.85rem; font-weight: 700;
+    color: var(--score); background: var(--score-soft);
+    border: 1px solid rgba(255, 210, 77, 0.25);
+    border-radius: 999px;
+    padding: 0.12rem 0.55rem;
+    text-shadow: none;
   }
   .lb-row.gold   { box-shadow: inset 3px 0 0 var(--gold); }
   .lb-row.silver { box-shadow: inset 3px 0 0 var(--silver); }
@@ -118,7 +190,7 @@
 
   /* --- inline utvidelse av en rad --- */
   .lb-row.open { background: var(--surface-hover); }
-  .lb-detail { display: none; background: rgba(0,0,0,0.18); }
+  .lb-detail { display: none; background: rgba(0, 0, 0, 0.22); }
   .lb-detail.open { display: block; border-bottom: 1px solid var(--divider); }
   .detail-inner { padding: 0.25rem 1.4rem 1rem; }
   .empty { color: var(--muted); font-style: italic; padding: 1rem 0; }
@@ -127,9 +199,9 @@
     display: grid;
     grid-template-columns: 1fr auto auto auto;
     gap: 0.75rem;
-    padding: 0.25rem 0.25rem;
-    font-size: 0.65rem; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.4rem 0.25rem 0.15rem;
+    font-family: var(--display); font-weight: 600;
+    font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
     color: var(--muted);
   }
   .col-headers > div { text-align: right; min-width: 2.5rem; }
@@ -138,11 +210,11 @@
 
   .day-group { margin-top: 1rem; }
   .day-header {
-    font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--accent-dim);
+    font-family: var(--display); font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--score-dim);
     padding: 0.5rem 0;
-    border-bottom: 1px solid var(--divider);
+    border-bottom: 1px solid var(--line);
     margin-bottom: 0.25rem;
   }
   .day-group.older { display: none; }
@@ -154,69 +226,98 @@
     gap: 0.75rem;
     align-items: center;
     padding: 0.55rem 0.25rem;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     border-bottom: 1px solid var(--divider);
   }
   .match:last-child { border-bottom: none; }
-  .match .teams { color: var(--text); }
-  .match .tipping { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 2.5rem; text-align: right; }
-  .match .fasit { color: var(--accent); font-variant-numeric: tabular-nums; min-width: 2.5rem; text-align: right; }
-  .match .pts {
-    font-variant-numeric: tabular-nums; font-weight: 700;
-    min-width: 3.5rem; text-align: right; white-space: nowrap;
+  .match .teams { color: var(--chalk); }
+  .match .tipping, .match .fasit, .match .pts {
+    font-family: var(--digits); font-size: 0.88rem;
+    min-width: 2.5rem; text-align: right;
   }
+  .match .tipping { color: var(--muted); }
+  .match .fasit { color: var(--chalk); font-weight: 500; }
+  .match .pts { color: var(--score); font-weight: 700; min-width: 3.5rem; white-space: nowrap; }
   .match .pts.zero { color: var(--muted); font-weight: 500; }
   .pts-breakdown { color: var(--muted); font-weight: 400; font-size: 0.85em; margin-right: 0.3em; }
 
   .toggle-older {
     margin: 1rem 0 0.5rem;
     background: transparent;
-    border: 1px solid var(--divider);
+    border: 1px solid var(--line);
     color: var(--muted);
     padding: 0.5rem 0.9rem;
     border-radius: 4px;
-    font-size: 0.8rem; font-weight: 600;
-    letter-spacing: 0.05em;
+    font-family: var(--body);
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
     cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
+    transition: color 0.15s, border-color 0.15s;
   }
-  .toggle-older:hover { color: var(--text); border-color: var(--accent); }
+  .toggle-older:hover { color: var(--chalk); border-color: var(--score); }
+  .toggle-older:focus-visible { outline: 2px solid var(--score); outline-offset: 2px; }
 
   .sum {
     display: flex; justify-content: space-between;
     margin-top: 1rem;
     padding-top: 0.75rem;
-    border-top: 2px solid var(--accent);
-    color: var(--accent);
+    border-top: 2px solid var(--score);
+    color: var(--score);
     font-weight: 800;
     font-size: 1.05rem;
   }
-  .sum .sum-val { font-variant-numeric: tabular-nums; }
+  .sum .sum-val { font-family: var(--digits); }
 
   /* --- mobil: én kolonne, leser fortsatt 1 -> N --- */
   @media (max-width: 760px) {
     .board { grid-template-columns: 1fr; gap: 1rem; }
-    .lb-navn { font-size: 1.2rem; }
-    .lb-points { font-size: 1.6rem; }
-    .lb-rank { font-size: 1.4rem; }
+    .lb-navn { font-size: 1.15rem; }
+    .lb-points { font-size: 1.5rem; }
+    .lb-rank { font-size: 1.5rem; }
+    .eyebrow { font-size: 0.85rem; letter-spacing: 0.22em; }
+  }
+
+  /* --- TV/storskjerm: skaler opp for lesing på avstand --- */
+  @media (min-width: 1700px) {
+    .wrap { max-width: 1580px; }
+    .lb-navn { font-size: 1.75rem; }
+    .lb-points { font-size: 2.3rem; }
+    .lb-rank { font-size: 2.3rem; }
+    .delta { font-size: 1rem; }
+    .chip { font-size: 1.05rem; }
+    .sub { font-size: 1.1rem; }
+    .match { font-size: 1.05rem; }
+    .match .tipping, .match .fasit, .match .pts { font-size: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .status .dot { animation: none; }
+    .lb-row, .toggle-older { transition: none; }
   }
 </style>
 </head>
 <body>
+<div class="pitch" aria-hidden="true"></div>
 <div class="wrap">
   <header>
-    <span class="badge"><span class="dot"></span>Pågår</span>
-    <h1>VM <span class="accent">2026</span> - Ledertavle</h1>
-    <p class="sub">Sist oppdatert: 2026-06-11 04:00 · trykk på en rad for å se utregning</p>
+    <div class="eyebrow">VM 2026 · Gruppespill
+      <span class="status"><span class="dot"></span>Starter 11. juni</span>
+    </div>
+    <h1>Ledertavle</h1>
+    <p class="sub">Sist oppdatert <b>11. juni 04:05</b> · 0 av 72 kamper spilt · trykk på en rad for å se utregning</p>
+    <div class="progress" aria-hidden="true"><span style="width:0%"></span></div>
+    
   </header>
-  <div class="board"><div class="col"><div class="col-head"><div class="h-rank">#</div><div>Navn</div><div class="h-pts">Poeng</div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">1</div><div class="lb-navn">Aasmund</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">2</div><div class="lb-navn">Are</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">3</div><div class="lb-navn">Didrik</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">4</div><div class="lb-navn">Hans Magnus</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">5</div><div class="lb-navn">Harald</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">6</div><div class="lb-navn">Henrik</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">7</div><div class="lb-navn">Jarle</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">8</div><div class="lb-navn">Lasse</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div></div><div class="col"><div class="col-head"><div class="h-rank">#</div><div>Navn</div><div class="h-pts">Poeng</div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">9</div><div class="lb-navn">Magnus</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">10</div><div class="lb-navn">Marius BA</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">11</div><div class="lb-navn">Marius H</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">12</div><div class="lb-navn">Martin</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">13</div><div class="lb-navn">Olav</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">14</div><div class="lb-navn">Ole-Martin</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" onclick="toggle(this)"><div class="lb-rank">15</div><div class="lb-navn">Pawel</div><div class="lb-points">0</div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div></div></div>
+  <div class="board"><div class="col"><div class="col-head"><div class="h-rank">#</div><div>Navn</div><div class="h-pts">Poeng</div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Aasmund</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Are</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Didrik</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Hans Magnus</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Harald</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Henrik</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Jarle</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Lasse</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div></div><div class="col"><div class="col-head"><div class="h-rank">#</div><div>Navn</div><div class="h-pts">Poeng</div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Magnus</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Marius BA</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Marius H</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Martin</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Olav</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Ole-Martin</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Pawel</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div></div></div>
 </div>
 <script>
   function toggle(row) {
     const detail = row.nextElementSibling;
     const open = detail.classList.toggle('open');
     row.classList.toggle('open', open);
+    row.setAttribute('aria-expanded', open);
+  }
+  function keyToggle(e, row) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(row); }
   }
   function toggleOlder(btn) {
     const inner = btn.closest('.detail-inner');
@@ -228,6 +329,23 @@
       ? (n === 1 ? 'Vis 1 eldre dag' : `Vis ${n} eldre dager`)
       : 'Skjul eldre dager';
   }
+
+  /* Auto-oppdatering: poll ETag/Last-Modified, reload kun når ny versjon er deployet.
+     Da mister ingen åpne paneler/scroll uten grunn, og TV-en plukker opp deploy raskt. */
+  (function () {
+    let versjon = null;
+    async function sjekk() {
+      try {
+        const r = await fetch(location.href, { method: 'HEAD', cache: 'no-store' });
+        const v = r.headers.get('ETag') || r.headers.get('Last-Modified');
+        if (versjon === null) { versjon = v; return; }
+        if (v && v !== versjon) location.reload();
+      } catch (e) { /* offline o.l. — prøver igjen neste runde */ }
+    }
+    sjekk();
+    setInterval(sjekk, 5 * 60 * 1000);
+    setTimeout(() => location.reload(), 24 * 60 * 60 * 1000);  // døgnlig hard reload (TV-hygiene)
+  })();
 </script>
 </body>
 </html>
