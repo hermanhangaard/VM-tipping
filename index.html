@@ -25,6 +25,11 @@
     --body: "Barlow", system-ui, sans-serif;
     --digits: "Spline Sans Mono", ui-monospace, monospace;
   }
+  /* Fluid skalering styrt av HØYDE: header + 10 rader per kolonne er ~48rem
+     vertikalt, og 1.9vh gir dermed ~90 % fyllgrad uansett oppløsning
+     (1080p -> ~20.5px, 1440p -> ~27px, 4K -> 38px cap). vw-leddet er kun en
+     sikring mot at brettet blir bredere enn skjermen på smale/stående skjermer. */
+  html { font-size: clamp(16px, min(1.9vh, 1.45vw), 38px); }
   * { box-sizing: border-box; }
   body {
     margin: 0;
@@ -32,7 +37,7 @@
     color: var(--chalk);
     font-family: var(--body);
     background:
-      radial-gradient(1200px 700px at 50% -220px, rgba(74, 178, 126, 0.30), transparent 65%),
+      radial-gradient(75rem 44rem at 50% -14rem, rgba(74, 178, 126, 0.30), transparent 65%),
       linear-gradient(180deg, var(--bg-mid), var(--bg-deep) 70%);
     background-attachment: fixed;
   }
@@ -41,19 +46,19 @@
   .pitch { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
   .pitch::before {
     content: ""; position: absolute;
-    left: 50%; top: -620px; transform: translateX(-50%);
-    width: 760px; height: 760px;
+    left: 50%; top: -38.75rem; transform: translateX(-50%);
+    width: 47.5rem; height: 47.5rem;
     border: 2px solid var(--line); border-radius: 50%;
   }
   .pitch::after {
     content: ""; position: absolute;
-    left: 50%; top: 132px; transform: translateX(-50%);
-    width: 8px; height: 8px;
+    left: 50%; top: 8.25rem; transform: translateX(-50%);
+    width: 0.5rem; height: 0.5rem;
     background: var(--line); border-radius: 50%;
   }
 
-  .wrap { position: relative; max-width: 1340px; margin: 0 auto; padding: 2.75rem 1.25rem 4rem; }
-  header { margin-bottom: 2rem; }
+  .wrap { position: relative; max-width: 84rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+  header { margin-bottom: 1.5rem; }
 
   .eyebrow {
     display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
@@ -76,7 +81,7 @@
   h1 {
     margin: 0 0 0.65rem;
     font-family: var(--display); font-weight: 800;
-    font-size: clamp(3.4rem, 11vw, 6.2rem);
+    font-size: clamp(3rem, 8vw, 5rem);
     line-height: 0.92; letter-spacing: 0.015em;
     text-transform: uppercase;
   }
@@ -97,7 +102,7 @@
   .nightly {
     display: flex; align-items: center; flex-wrap: wrap;
     gap: 0.5rem 0.6rem;
-    margin-top: 1.4rem;
+    margin-top: 1rem;
   }
   .nightly-label {
     font-family: var(--display); font-weight: 600;
@@ -148,7 +153,7 @@
     grid-template-columns: 3.2rem 1fr auto;
     align-items: center;
     gap: 0.7rem;
-    padding: 1rem 1.4rem;
+    padding: 0.8rem 1.4rem;
     border-bottom: 1px solid var(--divider);
     cursor: pointer;
     transition: background 0.15s;
@@ -160,16 +165,16 @@
     outline-offset: -2px;
   }
   .lb-rank {
-    font-family: var(--display); font-weight: 800; font-size: 1.9rem;
+    font-family: var(--display); font-weight: 800; font-size: 1.7rem;
     color: var(--muted); text-align: center;
   }
   .lb-navn {
-    font-weight: 600; font-size: 1.4rem;
+    font-weight: 600; font-size: 1.3rem;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .lb-points {
     display: flex; justify-content: flex-end; align-items: baseline; gap: 0.55rem;
-    font-family: var(--digits); font-weight: 700; font-size: 1.8rem;
+    font-family: var(--digits); font-weight: 700; font-size: 1.65rem;
     color: var(--score);
     text-shadow: 0 0 18px var(--score-soft);
   }
@@ -276,19 +281,6 @@
     .eyebrow { font-size: 0.85rem; letter-spacing: 0.22em; }
   }
 
-  /* --- TV/storskjerm: skaler opp for lesing på avstand --- */
-  @media (min-width: 1700px) {
-    .wrap { max-width: 1580px; }
-    .lb-navn { font-size: 1.75rem; }
-    .lb-points { font-size: 2.3rem; }
-    .lb-rank { font-size: 2.3rem; }
-    .delta { font-size: 1rem; }
-    .chip { font-size: 1.05rem; }
-    .sub { font-size: 1.1rem; }
-    .match { font-size: 1.05rem; }
-    .match .tipping, .match .fasit, .match .pts { font-size: 1rem; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .status .dot { animation: none; }
     .lb-row, .toggle-older { transition: none; }
@@ -303,7 +295,7 @@
       <span class="status"><span class="dot"></span>Starter 11. juni</span>
     </div>
     <h1>Ledertavle</h1>
-    <p class="sub">Sist oppdatert <b>11. juni 04:05</b> · 0 av 72 kamper spilt · trykk på en rad for å se utregning</p>
+    <p class="sub">Sist oppdatert <b>11. juni 04:35</b> · 0 av 72 kamper spilt · trykk på en rad for å se utregning</p>
     <div class="progress" aria-hidden="true"><span style="width:0%"></span></div>
     
   </header>
