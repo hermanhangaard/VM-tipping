@@ -6,29 +6,30 @@
 <title>VM 2026 — Ledertavle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Barlow:wght@400;600&family=Spline+Sans+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
+  /* Palett: flagget som flytende bakgrunn. Dyp roed grunn med boelgeformer,
+     blaatt baand med hvite kanter nederst (SVG), kort i moerk burgunder. */
   :root {
-    --bg-deep: #06231a;
-    --bg-mid: #0a3326;
-    --surface: #0c3a2b;
-    --surface-hover: #125239;
-    --chalk: #eef4ec;
-    --muted: #93b3a2;
-    --line: rgba(238, 244, 236, 0.15);
-    --divider: rgba(238, 244, 236, 0.09);
-    --score: #ffd24d;
-    --score-dim: rgba(255, 210, 77, 0.55);
-    --score-soft: rgba(255, 210, 77, 0.10);
+    --surface: rgba(43, 6, 18, 0.93);
+    --surface-solid: #330716;
+    --surface-hover: #471024;
+    --chalk: #fdf4f5;
+    --muted: #d8a8b2;
+    --line: rgba(255, 235, 238, 0.18);
+    --divider: rgba(255, 235, 238, 0.10);
+    --blaa: #4f74e3;
+    --blaa-lys: #9db4ff;
+    --blaa-dim: rgba(125, 151, 240, 0.8);
+    --blaa-soft: rgba(79, 116, 227, 0.18);
     --gold: #f6c453;
-    --silver: #ccd6d0;
-    --bronze: #d99a6c;
+    --silver: #e3d9dc;
+    --bronze: #e0a070;
     --display: "Barlow Condensed", "Arial Narrow", sans-serif;
     --body: "Barlow", system-ui, sans-serif;
     --digits: "Spline Sans Mono", ui-monospace, monospace;
   }
-  /* Fluid skalering styrt av HØYDE: header + 10 rader per kolonne er ~48rem
-     vertikalt, og 1.9vh gir dermed ~90 % fyllgrad uansett oppløsning
-     (1080p -> ~20.5px, 1440p -> ~27px, 4K -> 38px cap). vw-leddet er kun en
-     sikring mot at brettet blir bredere enn skjermen på smale/stående skjermer. */
+  /* Fluid skalering styrt av HOEYDE: header + 10 rader per kolonne er ~48rem
+     vertikalt, og 2vh gir dermed ~95 % fyllgrad uansett opploesning.
+     vw-leddet er kun en sikring paa smale/staaende skjermer. */
   html { font-size: clamp(16px, min(2vh, 1.45vw), 38px); }
   * { box-sizing: border-box; }
   body {
@@ -37,34 +38,46 @@
     color: var(--chalk);
     font-family: var(--body);
     background:
-      radial-gradient(75rem 44rem at 50% -14rem, rgba(74, 178, 126, 0.30), transparent 65%),
-      linear-gradient(180deg, var(--bg-mid), var(--bg-deep) 70%);
+      radial-gradient(60rem 40rem at 85% -10%, #8c1326 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 0% 25%, #5a0c1d 0%, transparent 55%),
+      linear-gradient(180deg, #4a0a18, #2b0511 75%);
     background-attachment: fixed;
   }
 
-  /* --- banedekor: midtsirkel + midtpunkt bak headeren --- */
-  .pitch { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
-  .pitch::before {
-    content: ""; position: absolute;
-    left: 50%; top: -38.75rem; transform: translateX(-50%);
-    width: 47.5rem; height: 47.5rem;
-    border: 2px solid var(--line); border-radius: 50%;
+  /* --- flaggkorset: boelgende nordisk kors midt paa skjermen, bak innholdet --- */
+  .flaggkors { position: fixed; inset: 0; pointer-events: none; }
+  .flaggkors svg { width: 100%; height: 100%; display: block; }
+
+  /* --- valgfri art-banner bak headeren (design/toppbanner.png|jpg|webp) --- */
+  /* Horisontal fade paa containeren + vertikal fade paa bildet:
+     nestede masker multipliseres, saa alle kanter blir myke uten mask-composite
+     (som enkelte chromium-bygg ignorerer). Venstre fade er lang (tittel-sonen),
+     hoeyre er kortere. object-position: 42% = panorert ned saa spillerne sitter hoeyere (mer drakt/emblem). */
+  .toppbanner {
+    position: absolute; top: 0; left: 0; right: 0; height: 13rem;
+    overflow: hidden; pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24rem, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 24rem, #000 88%, transparent 100%);
   }
-  .pitch::after {
-    content: ""; position: absolute;
-    left: 50%; top: 8.25rem; transform: translateX(-50%);
-    width: 0.5rem; height: 0.5rem;
-    background: var(--line); border-radius: 50%;
+  .toppbanner img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center 42%;
+    display: block; opacity: 0.9;
+    -webkit-mask-image: linear-gradient(180deg, #000 20%, transparent 97%);
+    mask-image: linear-gradient(180deg, #000 20%, transparent 97%);
   }
 
   .wrap { position: relative; max-width: 84rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
-  header { margin-bottom: 1.5rem; }
+  header { margin-bottom: 1.5rem; position: relative; z-index: 1; }
+  .head-grid {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 1.5rem; flex-wrap: wrap;
+  }
 
   .eyebrow {
     display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
     font-family: var(--display); font-weight: 600;
     font-size: 1rem; letter-spacing: 0.32em; text-transform: uppercase;
-    color: var(--score);
+    color: var(--blaa-lys);
     margin-bottom: 0.4rem;
   }
   .status {
@@ -73,7 +86,7 @@
   }
   .status .dot {
     width: 7px; height: 7px; border-radius: 50%;
-    background: var(--score);
+    background: var(--blaa-lys);
     animation: pulse 2.4s ease-in-out infinite;
   }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
@@ -84,6 +97,7 @@
     font-size: clamp(3rem, 8vw, 5rem);
     line-height: 0.92; letter-spacing: 0.015em;
     text-transform: uppercase;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
   }
   .sub { color: var(--muted); margin: 0 0 1rem; font-size: 0.95rem; }
   .sub b { color: var(--chalk); font-weight: 600; }
@@ -95,7 +109,41 @@
   }
   .progress > span {
     display: block; height: 100%;
-    background: linear-gradient(90deg, var(--score-dim), var(--score));
+    background: linear-gradient(90deg, var(--blaa), var(--blaa-lys));
+  }
+
+  /* --- nedtelling til neste Norge-kamp: blaatt kort mot roed bakgrunn --- */
+  .norge-card {
+    background: linear-gradient(140deg, #1d3f9e, #102457 70%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    padding: 1rem 1.4rem 1.1rem;
+    min-width: 19rem;
+    box-shadow: 0 18px 40px -22px rgba(16, 36, 87, 0.9);
+  }
+  .norge-label {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-family: var(--display); font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.78);
+    margin-bottom: 0.55rem;
+  }
+  .flagg {
+    width: 1.5rem; height: 1.1rem; border-radius: 2px; flex: none;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+    background:
+      linear-gradient(#00205b, #00205b) no-repeat 0.45rem 0 / 0.28rem 100%,
+      linear-gradient(#00205b, #00205b) no-repeat 0 center / 100% 0.28rem,
+      linear-gradient(#fff, #fff) no-repeat 0.36rem 0 / 0.46rem 100%,
+      linear-gradient(#fff, #fff) no-repeat 0 center / 100% 0.46rem,
+      #ba0c2f;
+  }
+  .norge-matchup { font-weight: 600; font-size: 1.25rem; color: #fff; }
+  .norge-meta { color: rgba(255, 255, 255, 0.72); font-size: 0.88rem; margin-top: 0.15rem; }
+  .norge-klokke {
+    font-family: var(--digits); font-weight: 700; font-size: 1.7rem;
+    color: #fff; text-shadow: 0 0 18px rgba(157, 180, 255, 0.45);
+    margin-top: 0.5rem; font-variant-numeric: tabular-nums;
   }
 
   /* --- resultatstripe: siste spilledag --- */
@@ -107,7 +155,7 @@
   .nightly-label {
     font-family: var(--display); font-weight: 600;
     font-size: 0.9rem; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--score-dim);
+    color: var(--blaa-dim);
     margin-right: 0.4rem;
   }
   .chip {
@@ -120,6 +168,7 @@
     white-space: nowrap;
   }
   .chip .res { font-family: var(--digits); font-weight: 700; color: var(--chalk); }
+  .chip.norge { border-color: var(--blaa); color: var(--chalk); }
 
   /* --- to-kolonne ledertavle --- */
   .board {
@@ -133,7 +182,7 @@
     border: 1px solid var(--divider);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.85);
   }
   .col-head {
     display: grid;
@@ -161,7 +210,7 @@
   .lb-row:nth-last-child(2) { border-bottom: none; }   /* siste rad: detaljpanelet er alltid siste barn */
   .lb-row:hover { background: var(--surface-hover); }
   .lb-row:focus-visible {
-    outline: 2px solid var(--score);
+    outline: 2px solid var(--blaa-lys);
     outline-offset: -2px;
   }
   .lb-rank {
@@ -175,13 +224,13 @@
   .lb-points {
     display: flex; justify-content: flex-end; align-items: baseline; gap: 0.55rem;
     font-family: var(--digits); font-weight: 700; font-size: 1.65rem;
-    color: var(--score);
-    text-shadow: 0 0 18px var(--score-soft);
+    color: var(--chalk);
+    text-shadow: 0 0 18px rgba(253, 244, 245, 0.2);
   }
   .delta {
     font-size: 0.85rem; font-weight: 700;
-    color: var(--score); background: var(--score-soft);
-    border: 1px solid rgba(255, 210, 77, 0.25);
+    color: var(--blaa-lys); background: var(--blaa-soft);
+    border: 1px solid rgba(125, 151, 240, 0.4);
     border-radius: 999px;
     padding: 0.12rem 0.55rem;
     text-shadow: none;
@@ -195,7 +244,7 @@
 
   /* --- inline utvidelse av en rad --- */
   .lb-row.open { background: var(--surface-hover); }
-  .lb-detail { display: none; background: rgba(0, 0, 0, 0.22); }
+  .lb-detail { display: none; background: rgba(0, 0, 0, 0.3); }
   .lb-detail.open { display: block; border-bottom: 1px solid var(--divider); }
   .detail-inner { padding: 0.25rem 1.4rem 1rem; }
   .empty { color: var(--muted); font-style: italic; padding: 1rem 0; }
@@ -217,7 +266,7 @@
   .day-header {
     font-family: var(--display); font-weight: 600;
     font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--score-dim);
+    color: var(--blaa-dim);
     padding: 0.5rem 0;
     border-bottom: 1px solid var(--line);
     margin-bottom: 0.25rem;
@@ -235,6 +284,8 @@
     border-bottom: 1px solid var(--divider);
   }
   .match:last-child { border-bottom: none; }
+  .match.norge { box-shadow: inset 2px 0 0 var(--blaa); }
+  .match.norge .teams { padding-left: 0.55rem; font-weight: 600; }
   .match .teams { color: var(--chalk); }
   .match .tipping, .match .fasit, .match .pts {
     font-family: var(--digits); font-size: 0.88rem;
@@ -242,7 +293,7 @@
   }
   .match .tipping { color: var(--muted); }
   .match .fasit { color: var(--chalk); font-weight: 500; }
-  .match .pts { color: var(--score); font-weight: 700; min-width: 3.5rem; white-space: nowrap; }
+  .match .pts { color: var(--blaa-lys); font-weight: 700; min-width: 3.5rem; white-space: nowrap; }
   .match .pts.zero { color: var(--muted); font-weight: 500; }
   .pts-breakdown { color: var(--muted); font-weight: 400; font-size: 0.85em; margin-right: 0.3em; }
 
@@ -258,15 +309,15 @@
     cursor: pointer;
     transition: color 0.15s, border-color 0.15s;
   }
-  .toggle-older:hover { color: var(--chalk); border-color: var(--score); }
-  .toggle-older:focus-visible { outline: 2px solid var(--score); outline-offset: 2px; }
+  .toggle-older:hover { color: var(--chalk); border-color: var(--blaa); }
+  .toggle-older:focus-visible { outline: 2px solid var(--blaa-lys); outline-offset: 2px; }
 
   .sum {
     display: flex; justify-content: space-between;
     margin-top: 1rem;
     padding-top: 0.75rem;
-    border-top: 2px solid var(--score);
-    color: var(--score);
+    border-top: 2px solid var(--blaa);
+    color: var(--blaa-lys);
     font-weight: 800;
     font-size: 1.05rem;
   }
@@ -279,6 +330,7 @@
     .lb-points { font-size: 1.5rem; }
     .lb-rank { font-size: 1.5rem; }
     .eyebrow { font-size: 0.85rem; letter-spacing: 0.22em; }
+    .toppbanner { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -288,15 +340,43 @@
 </style>
 </head>
 <body>
-<div class="pitch" aria-hidden="true"></div>
+
+<div class="flaggkors" aria-hidden="true"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="blaaH" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#2c55c4"/><stop offset="1" stop-color="#16307c"/>
+</linearGradient>
+<linearGradient id="blaaV" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0" stop-color="#2c55c4"/><stop offset="1" stop-color="#16307c"/>
+</linearGradient>
+</defs>
+<g fill="none">
+  <!-- skygge for dybde -->
+  <path d="M-40,438 C240,378 480,488 740,438 C1000,388 1240,498 1480,438" stroke="#3f0712" stroke-width="180" opacity="0.45" transform="translate(10,22)"/>
+  <path d="M518,-40 C468,160 568,380 513,560 C473,720 548,820 523,940" stroke="#3f0712" stroke-width="180" opacity="0.45" transform="translate(16,10)"/>
+  <!-- hvitt kors -->
+  <path d="M-40,420 C240,360 480,470 740,420 C1000,370 1240,480 1480,420" stroke="#f4ece9" stroke-width="138"/>
+  <path d="M510,-40 C460,160 560,380 505,560 C465,720 540,820 515,940" stroke="#f4ece9" stroke-width="138"/>
+  <!-- blått kors -->
+  <path d="M-40,420 C240,360 480,470 740,420 C1000,370 1240,480 1480,420" stroke="url(#blaaH)" stroke-width="80"/>
+  <path d="M510,-40 C460,160 560,380 505,560 C465,720 540,820 515,940" stroke="url(#blaaV)" stroke-width="80"/>
+</g>
+</svg></div>
+
 <div class="wrap">
+  
   <header>
-    <div class="eyebrow">VM 2026 · Gruppespill
-      <span class="status"><span class="dot"></span>Starter 11. juni</span>
+    <div class="head-grid">
+      <div>
+        <div class="eyebrow">VM 2026 · Gruppespill
+          <span class="status"><span class="dot"></span>Starter 11. juni</span>
+        </div>
+        <h1>Ledertavle</h1>
+        <p class="sub">Sist oppdatert <b>11. juni 13:11</b> · 0 av 72 kamper spilt · trykk på en rad for å se utregning</p>
+        <div class="progress" aria-hidden="true"><span style="width:0%"></span></div>
+      </div>
+      <div class="norge-card"><div class="norge-label"><span class="flagg" aria-hidden="true"></span>Neste Norge-kamp</div><div class="norge-matchup">Irak – Norge</div><div class="norge-meta">17. juni · kl. 00:00 · Gruppespill</div><div class="norge-klokke" id="norge-klokke" data-kickoff="2026-06-16T22:00:00Z"></div></div>
     </div>
-    <h1>Ledertavle</h1>
-    <p class="sub">Sist oppdatert <b>11. juni 13:00</b> · 0 av 72 kamper spilt · trykk på en rad for å se utregning</p>
-    <div class="progress" aria-hidden="true"><span style="width:0%"></span></div>
     
   </header>
   <div class="board"><div class="col"><div class="col-head"><div class="h-rank">#</div><div>Navn</div><div class="h-pts">Poeng</div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Aasmund</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Are</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Didrik</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Hans Magnus</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Harald</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Henrik</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Jarle</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Lasse</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div></div><div class="col"><div class="col-head"><div class="h-rank">#</div><div>Navn</div><div class="h-pts">Poeng</div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Magnus</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Marius BA</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Marius H</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Martin</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Olav</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Ole Kristian</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Ole-Martin</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div><div class="lb-row" tabindex="0" role="button" aria-expanded="false" onclick="toggle(this)" onkeydown="keyToggle(event,this)"><div class="lb-rank">1</div><div class="lb-navn">Pawel</div><div class="lb-points"><span>0</span></div></div><div class="lb-detail"><div class="detail-inner"><div class="empty">Ingen ferdigspilte kamper enda.</div></div></div></div></div>
@@ -321,6 +401,29 @@
       ? (n === 1 ? 'Vis 1 eldre dag' : `Vis ${n} eldre dager`)
       : 'Skjul eldre dager';
   }
+
+  /* Nedtelling til neste Norge-kamp (kickoff embeddes server-side) */
+  (function () {
+    const el = document.getElementById('norge-klokke');
+    if (!el) return;
+    const kickoff = new Date(el.dataset.kickoff).getTime();
+    const slutt = kickoff + 110 * 60 * 1000;
+    const pad = n => String(n).padStart(2, '0');
+    function tick() {
+      const now = Date.now();
+      if (now >= kickoff) {
+        if (now <= slutt) { el.textContent = 'Spilles nå!'; }
+        else { el.closest('.norge-card').style.display = 'none'; clearInterval(timer); }
+        return;
+      }
+      let s = Math.floor((kickoff - now) / 1000);
+      const d = Math.floor(s / 86400); s %= 86400;
+      const t = Math.floor(s / 3600); s %= 3600;
+      el.textContent = (d > 0 ? d + 'd ' : '') + pad(t) + 't ' + pad(Math.floor(s / 60)) + 'm ' + pad(s % 60) + 's';
+    }
+    tick();
+    const timer = setInterval(tick, 1000);
+  })();
 
   /* Auto-oppdatering: poll ETag/Last-Modified, reload kun når ny versjon er deployet.
      Da mister ingen åpne paneler/scroll uten grunn, og TV-en plukker opp deploy raskt. */
