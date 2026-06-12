@@ -30,7 +30,7 @@
   /* Fluid skalering styrt av HOEYDE: header + 10 rader per kolonne er ~48rem
      vertikalt, og 2vh gir dermed ~95 % fyllgrad uansett opploesning.
      vw-leddet er kun en sikring paa smale/staaende skjermer. */
-  html { font-size: clamp(16px, min(1.65vh, 1.45vw), 38px); }
+  html { font-size: clamp(16px, min(2vh, 1.45vw), 38px); }
   * { box-sizing: border-box; }
   body {
     margin: 0;
@@ -326,6 +326,13 @@
   }
   .sum .sum-val { font-family: var(--digits); }
 
+
+  /* Leselighet over flaggkorset: mørk glorie rundt tekst som ligger rett på duken.
+     Usynlig på rød/blå bakgrunn, gjenoppretter kontrast på det hvite båndet. */
+  .eyebrow, .status, h1, .sub, .sub b, .fotnote, .nightly-label {
+    text-shadow: 0 1px 3px rgba(20, 3, 8, 0.95), 0 0 10px rgba(20, 3, 8, 0.75), 0 0 22px rgba(20, 3, 8, 0.5);
+  }
+
   /* --- mobil: én kolonne, leser fortsatt 1 -> N --- */
   @media (max-width: 760px) {
     .board { grid-template-columns: 1fr; gap: 1rem; }
@@ -375,7 +382,7 @@
           <span class="status"><span class="dot"></span>Pågår</span>
         </div>
         <h1>Ledertavle</h1>
-        <p class="sub">Sist oppdatert <b>12. juni 19:00</b> · 2 av 72 kamper spilt · trykk på en rad for å se utregning</p>
+        <p class="sub">Sist oppdatert <b>12. juni 20:48</b> · 2 av 72 kamper spilt · trykk på en rad for å se utregning</p>
         <div class="progress" aria-hidden="true"><span style="width:3%"></span></div>
       </div>
       <div class="norge-card"><div class="norge-label"><span class="flagg" aria-hidden="true"></span>Neste Norge-kamp</div><div class="norge-matchup">Irak – Norge</div><div class="norge-meta">17. juni · kl. 00:00 · Gruppespill</div><div class="norge-klokke" id="norge-klokke" data-kickoff="2026-06-16T22:00:00Z"></div></div>
