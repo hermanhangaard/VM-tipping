@@ -30,7 +30,11 @@
   /* Fluid skalering styrt av HOEYDE: header + 10 rader per kolonne er ~48rem
      vertikalt, og 2vh gir dermed ~95 % fyllgrad uansett opploesning.
      vw-leddet er kun en sikring paa smale/staaende skjermer. */
-  html { font-size: clamp(16px, min(1.5vh, 1.45vw), 38px); }
+  /* Rot-skala: normalt 1.65vh (matcher gruppe-arkivet på vm.hangaard.no).
+     Når Norge-feiringen er aktiv spiser banneret vertikal plass, så vi krymper
+     til 1.5vh slik at alt fortsatt får plass på TV-en. */
+  html { font-size: clamp(16px, min(1.65vh, 1.45vw), 38px); }
+  html.feiring { font-size: clamp(16px, min(1.5vh, 1.45vw), 38px); }
   * { box-sizing: border-box; }
   body {
     margin: 0;
@@ -471,7 +475,7 @@
           <span class="status"><span class="dot"></span>16-delsfinaler</span>
         </div>
         <h1>Ledertavle</h1>
-        <p class="sub">Sist oppdatert <b>28. juni 13:21</b> · 0 av 32 sluttspillkamper spilt · trykk på en rad for å se utregning</p>
+        <p class="sub">Sist oppdatert <b>28. juni 13:24</b> · 0 av 32 sluttspillkamper spilt · trykk på en rad for å se utregning</p>
         <div class="progress" aria-hidden="true"><span style="width:0%"></span></div>
       </div>
       <div class="norge-card"><div class="norge-label"><span class="flagg" aria-hidden="true"></span>Neste Norge-kamp</div><div class="norge-matchup">Elfenbenskysten – Norge</div><div class="norge-meta">30. juni · kl. 19:00 · 16-delsfinale</div><div class="norge-klokke" id="norge-klokke" data-kickoff="2026-06-30T17:00:00Z"></div></div>
