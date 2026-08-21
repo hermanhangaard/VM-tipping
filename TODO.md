@@ -44,25 +44,15 @@ Ikke tilgjengelig: `my-team/{id}/` (403, krever innlogging). CORS er stengt — 
 
 Workflow = YAML-fil i `.github/workflows/`. Kjører på en fersk Ubuntu-VM (runner) som slettes etterpå — ingenting persisteres uten commit eller artifact-opplasting. Kjøringer vises under Actions-fanen.
 
-- [ ] Installer `gh`: `sudo apt install gh` (2.45 i repo), så `gh auth login`
-- [ ] Opprett public repo `hermanhangaard/fpl`
-- [ ] Fjern custom domain fra `VM-tipping` (Settings → Pages) FØR den settes på det nye repoet
-- [ ] Settings → Pages → Source: **GitHub Actions** (ikke «Deploy from a branch») — slipper å committe HTML 2000 ganger i året
-- [ ] Sett custom domain `hangaard.no`. DNS er allerede riktig, ingen endring hos Domeneshop
-- [ ] Legg `CNAME` med innholdet `hangaard.no` i mappa som publiseres
-- [ ] Hello-world-workflow først, før noe annet bygges:
-
-```yaml
-name: test
-on: workflow_dispatch
-jobs:
-  hei:
-    runs-on: ubuntu-latest
-    steps:
-      - run: curl -s "https://fantasy.premierleague.com/api/leagues-classic/562901/standings/" | head -c 500
-```
-
-  Actions-fanen → «test» → Run workflow. Ser du liganavnet i loggen, funker alt. Slett fila etterpå.
+- [x] Installer `gh` (2.45) + `gh auth login`. Scopes: `gist, read:org, repo, workflow`
+- [x] Gjenbruk eksisterende repo framfor å lage nytt: `gh repo rename fpl` på `VM-tipping`. Custom domain og HTTPS-sertifikat fulgte med — `hangaard.no` var aldri nede
+- [x] `git gc --prune=now` → 5,0 GB løse objekter ned til 80 MB. GitHub rapporterte uansett bare 29 MB
+- [x] Lokal mappe `personal/vm-prosjekt` → `personal/fpl`. Remote oppdatert til `git@github.com:hermanhangaard/fpl.git`
+- [x] Pages `build_type: legacy` → `workflow` via `gh api -X PUT repos/hermanhangaard/fpl/pages -f build_type=workflow`
+- [x] Hello-world-workflow kjørt (`.github/workflows/test.yml`, run 32516030033, 11s, success) — leste ut alle 9 deltakerne fra API-et
+- [ ] Slett `test.yml` når `board.yml` er på plass. Beholdt inntil videre som manuell røyktest
+- [ ] `CNAME` med innholdet `hangaard.no` må inn i `dist/` — Pages serverer nå kun det artifacten inneholder, ikke repo-rota
+- [ ] Slett `index.html` fra rota (VM-tavla, 3,2 MB). Ligger i historikken hvis den trengs
 
 ## Fase 2 — pipeline (lokalt)
 
