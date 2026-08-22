@@ -27,8 +27,35 @@ CHIP_NAVN = {
     "bboost": "Bench Boost",
     "freehit": "Free Hit",
     "wildcard": "Wildcard",
-    "manager": "Assistant Manager",
 }
+CHIP_KORT = {"3xc": "TC", "bboost": "BB", "freehit": "FH", "wildcard": "WC"}
+
+
+def halvdel_start(gw):
+    """FPL gir alle chips paa nytt fra GW20. En chip brukt foer det er derfor
+    ikke «brent» lenger naar andre halvdel starter."""
+    return 1 if gw < 20 else 20
+
+
+def hent_historikk(entry_id, gw):
+    """Poeng per ferdigspilt GW + hvilke chips som er brukt.
+
+    NB: history/current henger etter for inneværende runde - den viser
+    delvise tall til FPL har avregnet. Poeng for gjeldende GW maa derfor
+    hentes fra ligatabellen, ikke herfra.
+    """
+    try:
+        h = fpl_api._get(f"entry/{entry_id}/history/")
+    except RuntimeError:
+        return {}
+    return {
+        "gw_poeng_historikk": {r["event"]: r["points"] for r in h.get("current", []) if r["event"] != gw},
+        "brukte_chips": [
+            CHIP_KORT[c["name"]]
+            for c in h.get("chips", [])
+            if c["name"] in CHIP_KORT and halvdel_start(gw) <= c["event"] < gw
+        ],
+    }
 
 
 def les_json(sti, standard):
@@ -150,7 +177,16 @@ def bygg():
             "badge": r.get("club_badge_src"),
         }
         d.update(hent_lag(eid, gw_id, spillere, live_poeng))
+        d.update(hent_historikk(eid, gw_id))
+        # Beste enkeltrunde: ferdige GW-er fra history, inneværende fra
+        # ligatabellen siden history henger etter.
+        d["beste_gw"] = max([*d.get("gw_poeng_historikk", {}).values(), d["gw_poeng"]])
         deltakere.append(d)
+
+    # Premie gaar til beste enkeltrunde i hele ligaen. Flere kan dele den.
+    toppen = max((d["beste_gw"] for d in deltakere), default=0)
+    for d in deltakere:
+        d["har_beste_gw"] = bool(toppen) and d["beste_gw"] == toppen
 
     # Historikk akkumuleres underveis - FPL gir oss ikke ligarangeringen tilbake i tid,
     # saa mister vi denne fila mister vi grunnlaget for grafene.

@@ -190,7 +190,7 @@ CSS = """
     display: grid;
     /* Foerste kolonne er bevegelsespila, helt ute til venstre og adskilt fra
        plasseringstallet. */
-    grid-template-columns: 2.4rem 2.6rem 2.2rem 1fr auto 4.2rem 5.4rem 1.4rem;
+    grid-template-columns: 2.4rem 2.6rem 2.2rem 1fr auto auto 4.2rem 5.4rem 1.4rem;
     align-items: center;
     gap: 0.7rem;
     padding: 0.75rem 1.3rem 0.75rem 0.9rem;
@@ -239,12 +239,14 @@ CSS = """
   .lb-badge { width: 2.2rem; height: 2.2rem; object-fit: contain; }
   .lb-badge.tom { opacity: 0.12; border-radius: 50%; background: var(--chalk); }
 
+  /* Lagnavnet er det folk kjenner hverandre paa - det staar stort,
+     fornavnet under i det smaa. */
   .lb-navn { min-width: 0; }
-  .lb-fornavn {
+  .lb-lagnavn {
     font-weight: 700; font-size: 1.45rem; line-height: 1.15;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .lb-lagnavn {
+  .lb-fornavn {
     font-size: 1rem; color: var(--muted);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
@@ -279,10 +281,30 @@ CSS = """
 
   .lb-row.gold   { box-shadow: inset 4px 0 0 var(--gold); }
   .lb-row.silver { box-shadow: inset 4px 0 0 var(--silver); }
-  .lb-row.bronze { box-shadow: inset 4px 0 0 var(--bronze); }
   .lb-row.gold   .lb-rank { color: var(--gold); }
   .lb-row.silver .lb-rank { color: var(--silver); }
-  .lb-row.bronze .lb-rank { color: var(--bronze); }
+
+  /* Beste enkeltrunde - tredje premie. Kan falle sammen med 1. eller 2. plass,
+     derfor et merke og ikke en kantfarge (den er opptatt av medaljen). */
+  .beste-gw {
+    display: inline-flex; align-items: baseline; gap: 0.35rem;
+    background: rgba(4, 245, 255, 0.14);
+    border: 1px solid rgba(4, 245, 255, 0.45);
+    border-radius: 999px; padding: 0.14rem 0.6rem;
+    font-size: 0.86rem; font-weight: 700; color: var(--cyan);
+    white-space: nowrap;
+  }
+  .beste-gw b { font-family: var(--digits); color: var(--chalk); }
+
+  /* Oppbrukte chips: forkortelse i roed boks, tett inntil navnet.
+     Aktiv chip staar lenger ute med fullt navn i gult. */
+  .brukt-chips { display: flex; gap: 0.3rem; }
+  .brukt-chip {
+    font-family: var(--digits); font-weight: 700; font-size: 0.78rem;
+    color: var(--ned); background: rgba(255, 77, 77, 0.13);
+    border: 1px solid rgba(255, 77, 77, 0.42);
+    border-radius: 4px; padding: 0.12rem 0.35rem;
+  }
 
   /* --- utfelt detalj: bytter + banevisning --- */
   .detalj { padding: 0.4rem 1.3rem 1.3rem; background: rgba(0, 0, 0, 0.28); }
@@ -382,8 +404,8 @@ CSS = """
     html { font-size: 15px; }
     .board.to-kolonner { grid-template-columns: 1fr; }
     .col-head, .lb-row {
-      grid-template-columns: 3.4rem 1.8rem 1fr 3.2rem 4rem 1.2rem;
-      gap: 0.5rem; padding: 0.6rem 0.7rem;
+      grid-template-columns: 2rem 1.8rem 1.6rem 1fr auto 3.2rem 4rem 1.2rem;
+      gap: 0.4rem; padding: 0.6rem 0.7rem;
     }
     /* Kaptein/chip-pillene tar for mye bredde paa telefon - de staar
        uansett i detaljvisningen som er hovedpoenget der. */
@@ -399,7 +421,8 @@ CSS = """
   }
 """
 
-MEDALJE = {1: "gold", 2: "silver", 3: "bronze"}
+# Premie gaar kun til 1., 2. og beste enkeltrunde - derfor ingen bronse.
+MEDALJE = {1: "gold", 2: "silver"}
 
 
 def _pil(rank, forrige):
@@ -495,7 +518,12 @@ def _rad(d):
         else '<span class="lb-badge tom"></span>'
     )
 
+    # Oppbrukte chips tett paa navnet, aktiv chip ute i meta-kolonnen.
+    brukt = "".join(f'<span class="brukt-chip">{c}</span>' for c in d.get("brukte_chips") or [])
+
     meta = []
+    if d.get("har_beste_gw"):
+        meta.append(f'<span class="beste-gw">Beste GW <b>{d["beste_gw"]}</b></span>')
     if d.get("chip"):
         meta.append(f'<span class="chip-badge">{escape(d["chip"])}</span>')
     if d.get("kaptein"):
@@ -507,9 +535,10 @@ def _rad(d):
           <div class="lb-rank">{d["rank"]}</div>
           {badge}
           <div class="lb-navn">
-            <div class="lb-fornavn">{escape(d["fornavn"])}</div>
             <div class="lb-lagnavn">{escape(d["lagnavn"])}</div>
+            <div class="lb-fornavn">{escape(d["fornavn"])}</div>
           </div>
+          <div class="brukt-chips">{brukt}</div>
           <div class="meta">{"".join(meta)}</div>
           <div class="lb-gw">{d["gw_poeng"]}</div>
           <div class="lb-tot">{d["total"]}</div>
@@ -527,7 +556,8 @@ def _kolonne(deltakere):
     return f"""    <div class="col">
       <div class="col-head">
         <div></div><div class="h-rank">#</div><div></div><div>Deltaker</div>
-        <div class="h-meta"></div><div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
+        <div></div><div class="h-meta"></div>
+        <div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
       </div>
 {rader}
     </div>"""
