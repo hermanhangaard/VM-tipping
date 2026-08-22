@@ -65,15 +65,15 @@ CSS = """
      skarp paa 1080p uansett hva vi gjoer. Ingen blur her, saa den i det minste
      ikke blir slørete i tillegg. scale/translate skyver den innbakte
      «PREMIER LEAGUE»-teksten i bunnen delvis ut av bildet. */
+  /* Bakgrunnsfoto, 1908x1188. Ramma er satt med background-size/-position
+     framfor transform fordi det er langt lettere aa regne paa:
+       130% bredde  -> 2496x1554 px, altsaa bare 1,31x oppskalering
+       posisjon 28% -> viser kildens rader 8,5%-78%, slik at den innbakte
+                       «PREMIER LEAGUE»-teksten nederst faller utenfor.
+     Ingen blur - kilden er skarp nok til aa taale full oppløsning. */
   body::before {
     content: ""; position: fixed; inset: 0; z-index: -2;
-    background: url("bakgrunn.jpg") center center / cover no-repeat;
-    /* Positiv translateY skyver bildet NED, saa den innbakte
-       «PREMIER LEAGUE»-teksten i bunnen havner utenfor rammen. Skalaen maa
-       vaere stor nok til at det ikke blir tomme kanter. Ingen blur - kilden
-       er 596x335 og blir uskarp nok av oppskaleringen alene. */
-    transform: scale(1.42) translateY(11%);
-    opacity: 1;
+    background: url("bakgrunn.jpg") center 28% / 130% auto no-repeat;
   }
   /* Moerkleggingslag. Sterkest nederst der tavla ligger. */
   body::after {
