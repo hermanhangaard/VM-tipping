@@ -3,3 +3,6 @@ __pycache__/
 
 # Generert av build.py, lastes opp som Pages-artifact - committes aldri
 dist/
+
+# Lokale forhaandsvisninger fra headless-render
+preview*.png

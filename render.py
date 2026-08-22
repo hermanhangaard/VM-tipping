@@ -27,8 +27,8 @@ CSS = """
     --gronn: #00ff87;
     --cyan: #04f5ff;
     --rosa: #e90052;
-    /* Nedpil: PL-rosa er for moerk mot lilla paa avstand, saa vi lysner den. */
-    --ned: #ff6b8a;
+    /* Nedpil: roed, men lysnet - ren #f00 vibrerer mot den lilla bakgrunnen. */
+    --ned: #ff4d4d;
     --gold: #f6c453;
     --silver: #dcd6e2;
     --bronze: #e0a070;
