@@ -76,41 +76,20 @@ Kjør lokalt: `python3 build.py`, åpne `dist/index.html`.
 
 ## Fase 3 — workflow
 
-`.github/workflows/board.yml`:
+Ligger i `.github/workflows/board.yml`. Kjører hvert 10. minutt (UTC) + `workflow_dispatch`.
 
-```yaml
-name: FPL board
-on:
-  schedule:
-    - cron: '*/10 * * * *'      # NB: UTC, ikke norsk tid
-  workflow_dispatch:
+- [x] Early exit i `build.py` → `bor_bygge()`. Bygger når (a) en kamp har `started && !finished`, (b) GW mangler i historikken, (c) GW ferdigspilt men `data_checked` ikke satt ennå (bonuspoeng låses først da), eller (d) >6 t siden sist. Ellers avslutt. Begge grener testet
+- [x] `build.py` skriver `bygget=true/false` til `GITHUB_OUTPUT`; commit, artifact-opplasting og deploy er gated på den. Uten dette ville `upload-pages-artifact` feilet på bomturene fordi `dist/` ikke finnes
+- [x] `data/` committes tilbake av `github-actions[bot]`. Dobbelt formål: bevarer historikken, og holder repoet aktivt mot 60-dagersregelen
+- [x] Action-versjoner verifisert mot GitHub: `checkout@v7`, `setup-python@v7`, `upload-pages-artifact@v5`, `deploy-pages@v5`. **Alle var nyere enn det som sto her fra hukommelsen (v4/v5)** — sjekk på nytt ved neste større endring
+- [x] `pip install requests` fjernet — `urllib` holder
+- [x] Første kjøring verifisert: run 32587275979, 25 s, bygde + committet + deployet. hangaard.no svarer 200 med den nye tavla
+- [x] `_get()` memoiseres per prosess — `bor_bygge()` og `bygg()` ba begge om bootstrap (1,5 MB)
 
-permissions:
-  contents: write               # for å committe historikk.json
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.12' }
-      - run: pip install requests
-      - run: python build.py
-      - uses: actions/upload-pages-artifact@v3
-        with: { path: dist }
-      - uses: actions/deploy-pages@v4
-```
-
-- [ ] Early exit i `build.py`: full pipeline kun hvis (a) en kamp har `started: true, finished: false`, (b) siste kjøring >6t siden, eller (c) manuelt trigget. Bomturene er gratis, men loggen skal være lesbar
-- [ ] Commit `historikk.json` tilbake i samme jobb
-- [ ] Verifiser action-versjonene mot GitHub sine repos — v4/v5 er skrevet fra hukommelsen, de bumpes jevnlig
+**Gjenstår:**
+- [ ] Slett `.github/workflows/test.yml` — røyktesten har gjort jobben sin
+- [ ] Verifiser at den *planlagte* cronen faktisk fyrer (til nå kun manuelt trigget). Sjekk `gh run list --workflow=board.yml` om en time
+- [ ] Se at early exit oppfører seg riktig i Actions midt i uka, når det ikke er kamper
 
 ## Fase 4 — TV-visning
 
