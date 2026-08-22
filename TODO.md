@@ -104,8 +104,15 @@ Stort sett gjort som del av Fase 2, siden `render.py` ble skrevet mot TV-kravet 
 - [x] `noindex` lagt inn
 
 **Gjenstår:**
-- [x] Bevegelsespiler opp/ned, drevet av `last_rank`. Grønn ▲, lysrosa ▼ (`--ned` #ff6b8a — PL-rosa var for mørk mot lilla på avstand), svak – ved uendret, ingenting når `last_rank` er 0. **Aktiveres først GW2 (28.08), så den er testet med syntetiske tall** — alle fire tilfeller verifisert i markup og på skjermbilde. Første størrelse (0.78rem) var for liten for TV, økt til 1.05rem
+- [x] Bevegelsespiler opp/ned, drevet av `last_rank`. Grønn ▲, rød ▼ (`--ned` #ff4d4d — ren rød vibrerer mot lilla), svak – ved uendret, ingenting når `last_rank` er 0. **Aktiveres først GW2 (28.08), så den er testet med syntetiske tall** — alle fire tilfeller verifisert i markup og på skjermbilde. Første størrelse (0.78rem) var for liten for TV, økt til 1.05rem
+- [x] Bakgrunnsfoto `design/bakgrunn.jpg`, slørt 4px og mørklagt med gradient (svakest øverst, sterkest nederst der tavla ligger). Kilden er **686x386**, altså skalert ~2,8x opp — sløringen skjuler mye, men et høyoppløst bilde ville vært et reelt løft. Komposisjonen funker fordi motivene ligger i ytterkantene og tavla i den mørke midten
+- [x] Utfellbar lagvisning per deltaker via `<details>`/`<summary>` — null JavaScript. Viser byttestripe, GW-poeng, bane med startellever gruppert K/F/M/A, benk, drakter fra PL sin CDN (`shirt_{team_code}[_1]-110.png`), kaptein/vise-merke og live-poeng per spiller. Validert mot Aasmund: 35 fra startellever + 17 fra benk (Bench Boost) = 52, nøyaktig GW-scoren
+
+**Gjenstår:**
 - [ ] Se tavla på den faktiske TV-en før GW2. Alt er verifisert på 1920x1080 headless — Lasses skjerm kan ha annen oppløsning eller overscan
+- [ ] **Byttestripa står tom med vilje.** `entry/{id}/transfers/` svarer 200 med en liste, men den er tom for alle fordi ingen har byttet ennå i sesongen. Feltnavnene (`element_in`, `element_out`, `event`, kostnad) er fra hukommelsen og **ikke observert**. Verifiser mot ekte data ved GW2-deadline fredag 28.08 19:30, og sjekk samtidig om bytter i det hele tatt er synlige før deadline
+- [ ] Vurder høyoppløst erstatning for bakgrunnen hvis den skal bli permanent
+- [ ] Drop-downen er usynlig på TV-en — den kan ikke klikkes. Funksjonen er for telefon/PC
 
 ## Fase 5 — drift
 
