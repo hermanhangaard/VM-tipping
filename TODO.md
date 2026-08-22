@@ -122,6 +122,18 @@ Stort sett gjort som del av Fase 2, siden `render.py` ble skrevet mot TV-kravet 
 
 ---
 
+## Observert, ikke fikset
+
+Ting som dukket opp under designrundene 22.08. Ingen av dem er ødelagt — de er valg som bør tas.
+
+- [ ] **`backdrop-filter` på `.col` kan ikke verifiseres lokalt.** Firefox headless rendrer den ikke, så alle skjermbilder viser tavla *uten* glasseffekten. Brave på TV-en er Chromium og støtter den, så der blir bakgrunnen sannsynligvis dempet bak radene og lesbarheten bedre enn skjermbildene antyder. Sjekk på ekte skjerm før du justerer `--surface` videre
+- [ ] **Klubblogo-kolonnen er fortsatt 6 av 9 tom** (samme som HUSK-punktet over). Med gjennomsiktig tavle er de tomme sirklene mer synlige enn før
+- [ ] **Pilkolonnen står tom gjennom hele GW1** og spiser 2,4rem bredde til ingen nytte. Løser seg selv 28.08, men hvis den ser rar ut i mellomtiden kan den skjules når ingen har `last_rank`
+- [ ] **Kapteinsmerket er nesten alltid «Haaland»** — 7 av 9 i GW1. Kolonnen skiller dermed knapt deltakerne fra hverandre. Vurder å bytte den ut med noe mer differensierende, f.eks. benkepoeng eller beste spiller
+- [ ] **GW- og Tot-kolonnen er identiske i GW1.** Løser seg selv fra GW2, ingen handling
+- [ ] **Det travleste partiet av bakgrunnen (pokalen) ligger rett bak midten av tavla.** Fungerer nå, men er verdt å vite hvis tavla skal bli bredere eller mer gjennomsiktig
+- [ ] **Sidevekt:** 56 KB HTML + 451 KB bakgrunn + 135 draktbilder fra PL sin CDN (lazy-loadet). Uproblematisk på TV-en som cacher, verdt å huske på mobil
+
 ## Utenfor dette prosjektet
 
 **Graf-greiene hører IKKE hjemme her.** `graf/`-koden i `../vm-prosjekt-dev/` er knyttet til et annet domene og et annet GitHub-repo. Ikke bland den inn i `fpl/`, og ikke kopier kode derfra uten å avklare først. Eventuell historikk-visualisering for FPL er et eget prosjekt vi kan ta senere — `data/historikk.json` samler grunnlaget i mellomtiden, men det er alt.
