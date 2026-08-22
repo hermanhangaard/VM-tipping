@@ -72,7 +72,7 @@ Kjør lokalt: `python3 build.py`, åpne `dist/index.html`.
 - [x] `Torbjorn` → `Torbjørn` rettet manuelt i `data/navn.json`. `build.py` henter kun ukjente ider, så rettelsen overlever. Samme grep for framtidige navn med æøå
 - [x] ~~Egen live-poengberegning~~ — **ikke nødvendig.** Målt 22.08 med 6 kamper live: ligatabellens `event_total` matcher en fra bunnen av utregning (`event/{gw}/live/` × multiplier − transferkost) med **0 avvik for alle 9**. Endepunktet er allerede live. Reell forsinkelse mot tlf-appen er 5-min meta-refresh + ~10 min Pages-CDN, altså leveranse og ikke data
 - [ ] **HUSK: spør Lasse om klubblogoene.** Bare 3 av 9 har `club_badge_src` satt — resten får tom sirkel. Enten får folk sette favorittklubb i FPL-profilen sin, eller så dropper vi kolonnen
-- [ ] Sjekk om `Aasmund` og `Jarle Andre` skal ha `Åsmund` / `André`. Ikke endret på eget initiativ — «Aasmund» er en gyldig skrivemåte, og feil retting er verre enn ingen retting
+- [x] `Aasmund` og `Jarle Andre` skal stå som de er — bekreftet 22.08
 
 ## Fase 3 — workflow
 
@@ -93,12 +93,18 @@ Ligger i `.github/workflows/board.yml`. Kjører hvert 10. minutt (UTC) + `workfl
 
 ## Fase 4 — TV-visning
 
-- [ ] `<meta http-equiv="refresh" content="300">` (beholdes fra VM-oppsettet)
-- [ ] Store fonter, høy kontrast — samme smertepunkter som sist
-- [ ] Fornavn + lagnavn, aldri etternavn
-- [ ] Klubblogo per deltaker via `club_badge_src` (ligger ferdig i standings-svaret)
-- [ ] Ny bakgrunn
-- [ ] Vurder `noindex` — dataene ligger allerede åpent i API-et, men er ikke søkbare på Google i dag
+Stort sett gjort som del av Fase 2, siden `render.py` ble skrevet mot TV-kravet fra start.
+
+- [x] `<meta http-equiv="refresh" content="300">`
+- [x] Store fonter, høy kontrast. Skalering `clamp(15px, min(1.62vh, 1.45vw), 38px)` — målt mot 1920x1080 med 9 rader, header og footer. **Første forsøk (1.9vh) kuttet rad 9**, så dette er verifisert med headless-render, ikke antatt
+- [x] Fornavn + lagnavn, aldri etternavn
+- [x] Klubblogo via `club_badge_src` — implementert, men 6 av 9 mangler (se HUSK-punktet over)
+- [x] Ny bakgrunn: PL-lilla gradient i stedet for VM-rødt
+- [x] `noindex` lagt inn
+
+**Gjenstår:**
+- [ ] Bevegelsespiler opp/ned. `last_rank` ligger allerede i standings-svaret og hentes inn som `forrige_rank`, men rendres ikke. Meningsløst i GW1 (alle har `last_rank: 0`), virker fra GW2 den 28.08
+- [ ] Se tavla på den faktiske TV-en før GW2. Alt er verifisert på 1920x1080 headless — Lasses skjerm kan ha annen oppløsning eller overscan
 
 ## Fase 5 — drift
 
