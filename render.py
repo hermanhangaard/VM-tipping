@@ -5,7 +5,25 @@ ledertavle, gull/soelv/bronse paa topp tre), men Premier League-paletten i stede
 for den roede VM-bakgrunnen.
 """
 
+from datetime import datetime, timedelta, timezone
 from html import escape
+
+try:
+    from zoneinfo import ZoneInfo
+
+    OSLO = ZoneInfo("Europe/Oslo")
+except Exception:  # tzdata mangler - fall tilbake paa fast sommertid
+    OSLO = timezone(timedelta(hours=2))
+
+
+def _norsk_tid(iso):
+    """UTC-tidsstempel fra API-et om til norsk lokaltid."""
+    if not iso:
+        return ""
+    t = datetime.fromisoformat(iso.replace("Z", "+00:00"))
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone.utc)
+    return t.astimezone(OSLO).strftime("%d.%m kl. %H:%M")
 
 FONTS = (
     '<link rel="preconnect" href="https://fonts.googleapis.com">'
@@ -152,6 +170,7 @@ CSS = """
     margin-top: 0.5rem; color: var(--gronn);
     font-size: 0.92rem; font-weight: 600;
   }
+  .gw-live.tent { color: var(--gold); }
 
   .board { display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: start; }
   .board.to-kolonner { grid-template-columns: 1fr 1fr; }
@@ -268,17 +287,18 @@ CSS = """
   /* --- utfelt detalj: bytter + banevisning --- */
   .detalj { padding: 0.4rem 1.3rem 1.3rem; background: rgba(0, 0, 0, 0.28); }
 
-  /* Rundens poeng staar oeverst og midtstilt, med byttene under. */
+  /* Tre kolonner: byttene oppe til venstre, rundens poeng midtstilt.
+     Hoeyre kolonne staar tom og finnes bare for aa holde midten i midten. */
   .runde-topp {
-    display: flex; flex-direction: column; align-items: center;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: start;
+    gap: 1rem;
     padding: 0.7rem 0 0.9rem;
     border-bottom: 1px solid var(--divider);
     margin-bottom: 0.9rem;
   }
   .bytter {
-    display: flex; align-items: center; justify-content: center;
-    gap: 0.9rem; flex-wrap: wrap;
-    margin-top: 0.55rem;
+    display: flex; align-items: baseline; justify-content: flex-start;
+    gap: 0.7rem; flex-wrap: wrap;
   }
   .bytter-tittel {
     font-family: var(--display); font-weight: 600;
@@ -306,7 +326,7 @@ CSS = """
   /* Banen. Griden er fire rader (K/F/M/A) og benken ligger som egen stripe. */
   .bane {
     background:
-      linear-gradient(180deg, rgba(0, 92, 47, 0.55), rgba(0, 58, 30, 0.72)),
+      linear-gradient(180deg, rgba(0, 86, 44, 0.93), rgba(0, 52, 27, 0.96)),
       repeating-linear-gradient(180deg, rgba(255,255,255,0.045) 0 2.6rem, transparent 2.6rem 5.2rem);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
@@ -373,7 +393,9 @@ CSS = """
     .detalj { padding: 0.4rem 0.6rem 1rem; }
     .spiller { width: 4.4rem; }
     .spiller img { width: 2.5rem; height: 2.5rem; }
-    .gw-poeng-stor { margin-left: 0; }
+    /* Tre kolonner blir for trangt paa telefon - stables i stedet. */
+    .runde-topp { grid-template-columns: 1fr; gap: 0.6rem; justify-items: center; }
+    .bytter { justify-content: center; }
   }
 """
 
@@ -458,8 +480,9 @@ def _bytter(d):
     trekk = f' <span class="ut">(&minus;{d["trekk"]})</span>' if d.get("trekk") else ""
     return (
         f'<div class="runde-topp">'
-        f'<div class="gw-poeng-stor"><span>Rundens poeng</span>{d["gw_poeng"]}{trekk}</div>'
         f'<div class="bytter"><span class="bytter-tittel">Bytter</span>{biter}</div>'
+        f'<div class="gw-poeng-stor"><span>Rundens poeng</span>{d["gw_poeng"]}{trekk}</div>'
+        f'<div></div>'
         f"</div>"
     )
 
@@ -515,12 +538,20 @@ def render(data):
     k = data["kamper"]
     gw = data["gw"]
 
+    dempet = 'style="color:var(--muted);background:none;border-color:var(--line)"'
+    igjen = k["totalt"] - k["ferdig"]
     if data["live"]:
         status = f'<span class="status"><span class="dot"></span>{k["live"]} kamper pågår</span>'
     elif gw["ferdig"]:
-        status = f'<span class="status" style="color:var(--muted);background:none;border-color:var(--line)">{gw["navn"]} ferdig</span>'
+        status = f'<span class="status" {dempet}>{escape(gw["navn"])} ferdig</span>'
+    elif not igjen:
+        status = f'<span class="status" {dempet}>alle kamper spilt</span>'
+    elif k["ferdig"]:
+        # Pause mellom kampdagene - «venter paa avspark» ville vaert feil naar
+        # over halve runden allerede er spilt.
+        status = f'<span class="status" {dempet}>{igjen} kamper igjen</span>'
     else:
-        status = f'<span class="status" style="color:var(--muted);background:none;border-color:var(--line)">venter på avspark</span>'
+        status = f'<span class="status" {dempet}>venter på avspark</span>'
 
     # To kolonner naar gjengen vokser forbi det en TV-hoeyde taaler i en kolonne.
     if len(d) > 12:
@@ -533,8 +564,14 @@ def render(data):
 
     pct = round(100 * k["ferdig"] / k["totalt"]) if k["totalt"] else 0
     pct_live = round(100 * k["live"] / k["totalt"]) if k["totalt"] else 0
-    live_linje = f'<div class="gw-live">{k["live"]} pågår nå</div>' if k["live"] else ""
-    oppdatert = (data.get("sist_oppdatert") or data["generert"]).replace("T", " ")[:16]
+    if k["live"]:
+        live_linje = f'<div class="gw-live">{k["live"]} pågår nå</div>'
+    elif k.get("uavklart"):
+        # Forklarer hvorfor poeng kan endre seg selv om ingen kamp ruller.
+        live_linje = '<div class="gw-live tent">bonuspoeng ikke låst</div>'
+    else:
+        live_linje = ""
+    oppdatert = _norsk_tid(data.get("sist_oppdatert") or data["generert"])
 
     return f"""<!doctype html>
 <html lang="no">
@@ -572,7 +609,7 @@ def render(data):
 {kolonner}
   </div>
 
-  <footer>Oppdatert {oppdatert} UTC</footer>
+  <footer>Oppdatert {oppdatert}</footer>
 </div>
 </body>
 </html>

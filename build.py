@@ -122,8 +122,13 @@ def bygg():
         for e in fpl_api._get(f"event/{gw_id}/live/")["elements"]
     }
 
-    ferdig = sum(1 for f in kamper if f["finished"])
-    live = sum(1 for f in kamper if f["started"] and not f["finished"])
+    # finished settes foerst naar FPL har laast bonuspoengene, ofte timer etter
+    # sluttsignalet. finished_provisional er «kampen er spilt ferdig», som er
+    # det tavla skal vise.
+    ferdig = sum(1 for f in kamper if f["finished_provisional"])
+    live = sum(1 for f in kamper if f["started"] and not f["finished_provisional"])
+    # Spilt, men poengene kan fortsatt justeres.
+    uavklart = sum(1 for f in kamper if f["finished_provisional"] and not f["finished"])
 
     navn = les_json(NAVN_FIL, {})
     nye = hent_fornavn([r["entry"] for r in rader], navn)
@@ -159,7 +164,7 @@ def bygg():
     data = {
         "liga": tabell["league"]["name"],
         "gw": {"id": gw_id, "navn": gw["name"], "ferdig": gw["finished"]},
-        "kamper": {"ferdig": ferdig, "live": live, "totalt": len(kamper)},
+        "kamper": {"ferdig": ferdig, "live": live, "uavklart": uavklart, "totalt": len(kamper)},
         "live": live > 0,
         "sist_oppdatert": tabell.get("last_updated_data"),
         "generert": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -195,15 +200,17 @@ def bor_bygge():
     gw = fpl_api.naavaerende_gw(bs)
     kamper = fpl_api.fixtures(gw["id"])
 
-    if any(f["started"] and not f["finished"] for f in kamper):
+    if any(f["started"] and not f["finished_provisional"] for f in kamper):
         return True, "kamp paagaar"
 
     historikk = les_json(HISTORIKK_FIL, {})
     if str(gw["id"]) not in historikk:
         return True, f"GW{gw['id']} ikke i historikken enda"
 
-    if not gw.get("data_checked") and any(f["finished"] for f in kamper):
-        return True, "GW ferdigspilt, venter paa endelige bonuspoeng"
+    # Etter sluttsignalet justeres bonuspoengene fortsatt til FPL har
+    # data_checked. Vi maa fortsette aa bygge gjennom det vinduet.
+    if not gw.get("data_checked") and any(f["finished_provisional"] for f in kamper):
+        return True, "kamper spilt, venter paa endelige bonuspoeng"
 
     forrige = les_json(DATA / "sist.json", {}).get("tid")
     if forrige:
