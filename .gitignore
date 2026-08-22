@@ -6,3 +6,7 @@ dist/
 
 # Lokale forhaandsvisninger fra headless-render
 preview*.png
+
+# Bakgrunnskandidater o.l. - legges bevisst inn naar de skal brukes
+*.jpg
+*.jpeg
