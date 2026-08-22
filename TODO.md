@@ -103,7 +103,7 @@ Stort sett gjort som del av Fase 2, siden `render.py` ble skrevet mot TV-kravet 
 - [x] `noindex` lagt inn
 
 **Gjenstår:**
-- [ ] Bevegelsespiler opp/ned. `last_rank` ligger allerede i standings-svaret og hentes inn som `forrige_rank`, men rendres ikke. Meningsløst i GW1 (alle har `last_rank: 0`), virker fra GW2 den 28.08
+- [x] Bevegelsespiler opp/ned, drevet av `last_rank`. Grønn ▲, lysrosa ▼ (`--ned` #ff6b8a — PL-rosa var for mørk mot lilla på avstand), svak – ved uendret, ingenting når `last_rank` er 0. **Aktiveres først GW2 (28.08), så den er testet med syntetiske tall** — alle fire tilfeller verifisert i markup og på skjermbilde. Første størrelse (0.78rem) var for liten for TV, økt til 1.05rem
 - [ ] Se tavla på den faktiske TV-en før GW2. Alt er verifisert på 1920x1080 headless — Lasses skjerm kan ha annen oppløsning eller overscan
 
 ## Fase 5 — drift
@@ -113,6 +113,10 @@ Stort sett gjort som del av Fase 2, siden `render.py` ble skrevet mot TV-kravet 
 - [ ] Slett den gamle lokale cronjobben (`../vm-prosjekt-dev/fase2/cron_run2.sh`, `*/5 * * * *`) når dette er live
 
 ---
+
+## Utenfor dette prosjektet
+
+**Graf-greiene hører IKKE hjemme her.** `graf/`-koden i `../vm-prosjekt-dev/` er knyttet til et annet domene og et annet GitHub-repo. Ikke bland den inn i `fpl/`, og ikke kopier kode derfra uten å avklare først. Eventuell historikk-visualisering for FPL er et eget prosjekt vi kan ta senere — `data/historikk.json` samler grunnlaget i mellomtiden, men det er alt.
 
 ## Notater
 

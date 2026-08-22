@@ -27,6 +27,8 @@ CSS = """
     --gronn: #00ff87;
     --cyan: #04f5ff;
     --rosa: #e90052;
+    /* Nedpil: PL-rosa er for moerk mot lilla paa avstand, saa vi lysner den. */
+    --ned: #ff6b8a;
     --gold: #f6c453;
     --silver: #dcd6e2;
     --bronze: #e0a070;
@@ -126,7 +128,7 @@ CSS = """
   }
   .col-head, .lb-row {
     display: grid;
-    grid-template-columns: 3rem 2.2rem 1fr auto 4.2rem 5.4rem;
+    grid-template-columns: 4.4rem 2.2rem 1fr auto 4.2rem 5.4rem;
     align-items: center;
     gap: 0.8rem;
     padding: 0.75rem 1.3rem;
@@ -145,9 +147,19 @@ CSS = """
   .lb-row:last-child { border-bottom: none; }
 
   .lb-rank {
+    display: flex; align-items: baseline; justify-content: center; gap: 0.28rem;
     font-family: var(--display); font-weight: 800; font-size: 1.9rem;
-    color: var(--muted); text-align: center; line-height: 1;
+    color: var(--muted); line-height: 1;
   }
+  /* Bevegelse siden forrige GW. last_rank er 0 i GW1, da vises ingenting. */
+  /* 1.05rem, ikke mindre: dette skal leses fra andre siden av rommet. */
+  .pil {
+    font-family: var(--body); font-weight: 700; font-size: 1.05rem;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .pil.opp { color: var(--gronn); }
+  .pil.ned { color: var(--ned); }
+  .pil.lik { color: var(--muted); opacity: 0.6; }
   .lb-badge { width: 2.2rem; height: 2.2rem; object-fit: contain; }
   .lb-badge.tom { opacity: 0.12; border-radius: 50%; background: var(--chalk); }
 
@@ -215,6 +227,18 @@ CSS = """
 MEDALJE = {1: "gold", 2: "silver", 3: "bronze"}
 
 
+def _pil(rank, forrige):
+    """Bevegelse siden forrige GW. Tomt naar vi ikke har noe aa sammenligne med
+    (GW1, eller en deltaker som nettopp har blitt med)."""
+    if not forrige:
+        return ""
+    if rank < forrige:
+        return f'<span class="pil opp">&#9650;{forrige - rank}</span>'
+    if rank > forrige:
+        return f'<span class="pil ned">&#9660;{rank - forrige}</span>'
+    return '<span class="pil lik">&#8211;</span>'
+
+
 def _rad(d):
     kls = MEDALJE.get(d["rank"], "")
     badge = (
@@ -230,7 +254,7 @@ def _rad(d):
         meta.append(f'<span class="kaptein"><b>C</b>{escape(d["kaptein"])}</span>')
 
     return f"""      <div class="lb-row {kls}">
-        <div class="lb-rank">{d["rank"]}</div>
+        <div class="lb-rank">{d["rank"]}{_pil(d["rank"], d.get("forrige_rank"))}</div>
         {badge}
         <div class="lb-navn">
           <div class="lb-fornavn">{escape(d["fornavn"])}</div>
