@@ -73,7 +73,7 @@ def hent_lag(entry_id, gw, spillere, live):
         sp = spillere.get(pick["element"])
         if not sp:
             continue
-        raa = live.get(pick["element"], 0)
+        raa, minutter = live.get(pick["element"], (0, 0))
         if pick.get("is_captain"):
             kaptein = sp["web_name"]
         tropp.append({
@@ -84,6 +84,7 @@ def hent_lag(entry_id, gw, spillere, live):
             "mult": pick["multiplier"],
             # Startellever viser bidraget sitt (kaptein dobbelt), benken raa poeng.
             "poeng": raa * pick["multiplier"] if pick["multiplier"] else raa,
+            "spilt": minutter > 0,
             "kaptein": bool(pick.get("is_captain")),
             "vise": bool(pick.get("is_vice_captain")),
         })
@@ -114,8 +115,12 @@ def bygg():
     rader = tabell["standings"]["results"]
     kamper = fpl_api.fixtures(gw_id)
 
-    # Poeng per spiller akkurat naa - grunnlaget for banevisningen.
-    live_poeng = {e["id"]: e["stats"]["total_points"] for e in fpl_api._get(f"event/{gw_id}/live/")["elements"]}
+    # Poeng og spilletid per spiller akkurat naa - grunnlaget for banevisningen.
+    # minutes skiller «har ikke spilt enda» fra «spilte og fikk 0».
+    live_poeng = {
+        e["id"]: (e["stats"]["total_points"], e["stats"]["minutes"])
+        for e in fpl_api._get(f"event/{gw_id}/live/")["elements"]
+    }
 
     ferdig = sum(1 for f in kamper if f["finished"])
     live = sum(1 for f in kamper if f["started"] and not f["finished"])

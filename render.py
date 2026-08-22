@@ -18,8 +18,11 @@ FONTS = (
 
 CSS = """
   :root {
-    --surface: rgba(45, 8, 62, 0.88);
-    --surface-hover: rgba(64, 14, 86, 0.95);
+    /* Moerk og halvgjennomsiktig saa bakgrunnen leses gjennom tavla.
+       0.62 er grensen der navnene fortsatt holder mot et travelt motiv -
+       backdrop-filter hjelper der den stoettes, men kan ikke forutsettes. */
+    --surface: rgba(9, 5, 18, 0.62);
+    --surface-hover: rgba(30, 12, 48, 0.74);
     --chalk: #f6f2fa;
     --muted: #bda4d0;
     --line: rgba(246, 242, 250, 0.18);
@@ -58,21 +61,27 @@ CSS = """
   /* Bakgrunnsfoto. Kraftig sloering gjoer to ting: holder teksten lesbar, og
      skjuler at kilden er 686x386 og altsaa langt under TV-opploesning.
      scale(1.08) spiser vekk de gjennomsiktige kantene sloeringen lager. */
+  /* Bakgrunnsfoto. Kilden er 596x335 og skaleres ~3,2x - den kan ikke bli
+     skarp paa 1080p uansett hva vi gjoer. Ingen blur her, saa den i det minste
+     ikke blir slørete i tillegg. scale/translate skyver den innbakte
+     «PREMIER LEAGUE»-teksten i bunnen delvis ut av bildet. */
   body::before {
     content: ""; position: fixed; inset: 0; z-index: -2;
-    background: url("bakgrunn.jpg") center 42% / cover no-repeat;
-    filter: blur(4px) saturate(1.05);
-    transform: scale(1.06);
-    opacity: 0.95;
+    background: url("bakgrunn.jpg") center center / cover no-repeat;
+    /* Positiv translateY skyver bildet NED, saa den innbakte
+       «PREMIER LEAGUE»-teksten i bunnen havner utenfor rammen. Skalaen maa
+       vaere stor nok til at det ikke blir tomme kanter. Ingen blur - kilden
+       er 596x335 og blir uskarp nok av oppskaleringen alene. */
+    transform: scale(1.42) translateY(11%);
+    opacity: 1;
   }
-  /* Moerkleggingslag. Sterkest nederst der tavla ligger, svakest oeverst saa
-     spillerne i bildet faktisk vises bak tittelen. */
+  /* Moerkleggingslag. Sterkest nederst der tavla ligger. */
   body::after {
     content: ""; position: fixed; inset: 0; z-index: -1;
     background: linear-gradient(180deg,
-      rgba(30, 1, 42, 0.30) 0%,
-      rgba(28, 1, 40, 0.52) 30%,
-      rgba(22, 2, 31, 0.74) 100%);
+      rgba(8, 5, 18, 0.30) 0%,
+      rgba(8, 5, 18, 0.50) 35%,
+      rgba(6, 4, 14, 0.78) 100%);
   }
 
   .wrap { position: relative; max-width: 82rem; margin: 0 auto; padding: 1.5rem 1.5rem 1.2rem; }
@@ -127,13 +136,21 @@ CSS = """
   }
   .gw-tall { font-family: var(--digits); font-weight: 700; font-size: 1.9rem; }
   .gw-meta { color: var(--muted); font-size: 0.95rem; margin-top: 0.15rem; }
+  /* To segmenter: ferdigspilte kamper solid, paagaaende dempet og pulserende.
+     Uten det andre segmentet ser stripa tom ut midt i en runde. */
   .progress {
-    margin-top: 0.7rem; height: 4px;
-    background: var(--divider); border-radius: 2px; overflow: hidden;
+    margin-top: 0.7rem; height: 5px; display: flex;
+    background: var(--divider); border-radius: 3px; overflow: hidden;
   }
-  .progress > span {
-    display: block; height: 100%;
-    background: linear-gradient(90deg, var(--gronn), var(--cyan));
+  .progress > span { display: block; height: 100%; }
+  .progress .p-ferdig { background: linear-gradient(90deg, var(--gronn), var(--cyan)); }
+  .progress .p-live {
+    background: var(--gronn); opacity: 0.35;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .gw-live {
+    margin-top: 0.5rem; color: var(--gronn);
+    font-size: 0.92rem; font-weight: 600;
   }
 
   .board { display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: start; }
@@ -141,17 +158,23 @@ CSS = """
 
   .col {
     background: var(--surface);
-    border: 1px solid var(--divider);
+    /* Glassplate: slipper bakgrunnen gjennom, men demper detaljene bak
+       teksten saa radene holder kontrast. */
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(14px) saturate(1.15);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 20px 44px -28px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 24px 50px -26px rgba(0, 0, 0, 0.95);
   }
   .col-head, .lb-row {
     display: grid;
-    grid-template-columns: 4.4rem 2.2rem 1fr auto 4.2rem 5.4rem 1.4rem;
+    /* Foerste kolonne er bevegelsespila, helt ute til venstre og adskilt fra
+       plasseringstallet. */
+    grid-template-columns: 2.4rem 2.6rem 2.2rem 1fr auto 4.2rem 5.4rem 1.4rem;
     align-items: center;
-    gap: 0.8rem;
-    padding: 0.75rem 1.3rem;
+    gap: 0.7rem;
+    padding: 0.75rem 1.3rem 0.75rem 0.9rem;
   }
   .col-head {
     font-family: var(--display); font-weight: 600;
@@ -180,13 +203,14 @@ CSS = """
   .lb-item[open] .utvid { transform: rotate(90deg); }
 
   .lb-rank {
-    display: flex; align-items: baseline; justify-content: center; gap: 0.28rem;
     font-family: var(--display); font-weight: 800; font-size: 1.9rem;
-    color: var(--muted); line-height: 1;
+    color: var(--muted); line-height: 1; text-align: center;
   }
-  /* Bevegelse siden forrige GW. last_rank er 0 i GW1, da vises ingenting. */
-  /* 1.05rem, ikke mindre: dette skal leses fra andre siden av rommet. */
+  /* Bevegelse siden forrige GW - egen kolonne helt til venstre, adskilt fra
+     plasseringstallet. last_rank er 0 i GW1, da staar kolonnen tom.
+     1.05rem, ikke mindre: dette skal leses fra andre siden av rommet. */
   .pil {
+    display: flex; align-items: center; gap: 0.08rem;
     font-family: var(--body); font-weight: 700; font-size: 1.05rem;
     letter-spacing: -0.02em; line-height: 1;
   }
@@ -244,11 +268,17 @@ CSS = """
   /* --- utfelt detalj: bytter + banevisning --- */
   .detalj { padding: 0.4rem 1.3rem 1.3rem; background: rgba(0, 0, 0, 0.28); }
 
-  .bytter {
-    display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
-    padding: 0.6rem 0 0.9rem;
+  /* Rundens poeng staar oeverst og midtstilt, med byttene under. */
+  .runde-topp {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0.7rem 0 0.9rem;
     border-bottom: 1px solid var(--divider);
     margin-bottom: 0.9rem;
+  }
+  .bytter {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.9rem; flex-wrap: wrap;
+    margin-top: 0.55rem;
   }
   .bytter-tittel {
     font-family: var(--display); font-weight: 600;
@@ -263,13 +293,14 @@ CSS = """
   .bytte .pil-ut { color: var(--ned); }
   .bytte .pil-inn { color: var(--gronn); }
   .gw-poeng-stor {
-    margin-left: auto;
-    font-family: var(--digits); font-weight: 700; font-size: 1.5rem;
+    font-family: var(--digits); font-weight: 700; font-size: 1.9rem;
+    line-height: 1; text-align: center;
   }
   .gw-poeng-stor span {
-    font-family: var(--display); font-size: 0.62em;
-    letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
-    margin-right: 0.45rem;
+    display: block;
+    font-family: var(--display); font-size: 0.42em; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.25rem;
   }
 
   /* Banen. Griden er fire rader (K/F/M/A) og benken ligger som egen stripe. */
@@ -282,7 +313,7 @@ CSS = """
     padding: 1rem 0.6rem 0.9rem;
     display: grid; gap: 0.7rem;
   }
-  .bane-rad { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
+  .bane-rad { display: flex; justify-content: center; gap: 1.15rem; flex-wrap: wrap; }
 
   .benk {
     margin-top: 0.7rem;
@@ -311,6 +342,7 @@ CSS = """
     border-radius: 0 0 3px 3px; padding: 0.06rem 0.2rem;
   }
   .benk .spiller-poeng { background: var(--muted); color: #241033; }
+  .spiller-poeng.ikke-spilt { background: rgba(255, 255, 255, 0.22); color: var(--chalk); }
   .kaptein-merke {
     position: absolute; top: -0.15rem; right: 0.55rem;
     width: 1.25rem; height: 1.25rem; border-radius: 50%;
@@ -349,15 +381,15 @@ MEDALJE = {1: "gold", 2: "silver", 3: "bronze"}
 
 
 def _pil(rank, forrige):
-    """Bevegelse siden forrige GW. Tomt naar vi ikke har noe aa sammenligne med
-    (GW1, eller en deltaker som nettopp har blitt med)."""
+    """Bevegelse siden forrige GW, som egen celle helt til venstre. Tom naar vi
+    ikke har noe aa sammenligne med (GW1, eller en nyinnmeldt deltaker)."""
     if not forrige:
-        return ""
+        return '<div class="pil"></div>'
     if rank < forrige:
-        return f'<span class="pil opp">&#9650;{forrige - rank}</span>'
+        return f'<div class="pil opp">&#9650;{forrige - rank}</div>'
     if rank > forrige:
-        return f'<span class="pil ned">&#9660;{rank - forrige}</span>'
-    return '<span class="pil lik">&#8211;</span>'
+        return f'<div class="pil ned">&#9660;{rank - forrige}</div>'
+    return '<div class="pil lik">&#8211;</div>'
 
 
 SHIRT = "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_{kode}{gk}-110.png"
@@ -371,11 +403,15 @@ def _spiller(sp):
     elif sp["vise"]:
         merke = '<span class="kaptein-merke vise">V</span>'
     url = SHIRT.format(kode=sp["lag_kode"], gk="_1" if sp["type"] == 1 else "")
+    # Strek naar spilleren ikke har vaert paa banen enda. «0» er forbeholdt
+    # dem som faktisk spilte og ikke fikk poeng.
+    poeng = sp["poeng"] if sp.get("spilt") else "&ndash;"
+    ikke_spilt = "" if sp.get("spilt") else " ikke-spilt"
     return (
         f'<div class="spiller">{merke}'
         f'<img src="{url}" alt="" loading="lazy">'
         f'<div class="spiller-navn">{escape(sp["navn"])}</div>'
-        f'<div class="spiller-poeng">{sp["poeng"]}</div>'
+        f'<div class="spiller-poeng{ikke_spilt}">{poeng}</div>'
         f"</div>"
     )
 
@@ -404,8 +440,10 @@ def _bane(tropp):
 
 
 def _bytter(d):
-    """Byttestripe. Staar tom til vi har verifisert transfers-endepunktet mot
-    ekte data - foerste sjanse er GW2-deadline."""
+    """Rundens poeng oeverst og midtstilt, byttene under.
+
+    Byttestripa staar tom til transfers-endepunktet er verifisert mot ekte
+    data - foerste sjanse er GW2-deadline."""
     if d.get("bytter"):
         biter = "".join(
             f'<span class="bytte"><span class="pil-ut">&laquo;&laquo;&laquo;</span>'
@@ -417,12 +455,12 @@ def _bytter(d):
     else:
         biter = '<span class="bytter-tom">Ingen bytter denne runden</span>'
 
-    trekk = ""
-    if d.get("trekk"):
-        trekk = f' <span class="ut">(&minus;{d["trekk"]})</span>'
+    trekk = f' <span class="ut">(&minus;{d["trekk"]})</span>' if d.get("trekk") else ""
     return (
-        f'<div class="bytter"><span class="bytter-tittel">Bytter</span>{biter}'
-        f'<span class="gw-poeng-stor"><span>GW</span>{d["gw_poeng"]}{trekk}</span></div>'
+        f'<div class="runde-topp">'
+        f'<div class="gw-poeng-stor"><span>Rundens poeng</span>{d["gw_poeng"]}{trekk}</div>'
+        f'<div class="bytter"><span class="bytter-tittel">Bytter</span>{biter}</div>'
+        f"</div>"
     )
 
 
@@ -442,7 +480,8 @@ def _rad(d):
 
     return f"""      <details class="lb-item">
         <summary class="lb-row {kls}">
-          <div class="lb-rank">{d["rank"]}{_pil(d["rank"], d.get("forrige_rank"))}</div>
+          {_pil(d["rank"], d.get("forrige_rank"))}
+          <div class="lb-rank">{d["rank"]}</div>
           {badge}
           <div class="lb-navn">
             <div class="lb-fornavn">{escape(d["fornavn"])}</div>
@@ -464,7 +503,7 @@ def _kolonne(deltakere):
     rader = "\n".join(_rad(d) for d in deltakere)
     return f"""    <div class="col">
       <div class="col-head">
-        <div class="h-rank">#</div><div></div><div>Deltaker</div>
+        <div></div><div class="h-rank">#</div><div></div><div>Deltaker</div>
         <div class="h-meta"></div><div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
       </div>
 {rader}
@@ -493,6 +532,8 @@ def render(data):
         kolonner = _kolonne(d)
 
     pct = round(100 * k["ferdig"] / k["totalt"]) if k["totalt"] else 0
+    pct_live = round(100 * k["live"] / k["totalt"]) if k["totalt"] else 0
+    live_linje = f'<div class="gw-live">{k["live"]} pågår nå</div>' if k["live"] else ""
     oppdatert = (data.get("sist_oppdatert") or data["generert"]).replace("T", " ")[:16]
 
     return f"""<!doctype html>
@@ -518,7 +559,11 @@ def render(data):
         <div class="gw-label">{escape(gw["navn"])}</div>
         <div class="gw-tall">{k["ferdig"]}<span style="color:var(--muted);font-size:0.6em"> / {k["totalt"]}</span></div>
         <div class="gw-meta">kamper ferdigspilt</div>
-        <div class="progress"><span style="width:{pct}%"></span></div>
+        <div class="progress">
+          <span class="p-ferdig" style="width:{pct}%"></span>
+          <span class="p-live" style="width:{pct_live}%"></span>
+        </div>
+        {live_linje}
       </div>
     </div>
   </header>
