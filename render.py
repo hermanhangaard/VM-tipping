@@ -76,30 +76,23 @@ CSS = """
     background-attachment: fixed;
   }
 
-  /* Bakgrunnsfoto. Kraftig sloering gjoer to ting: holder teksten lesbar, og
-     skjuler at kilden er 686x386 og altsaa langt under TV-opploesning.
-     scale(1.08) spiser vekk de gjennomsiktige kantene sloeringen lager. */
-  /* Bakgrunnsfoto. Kilden er 596x335 og skaleres ~3,2x - den kan ikke bli
-     skarp paa 1080p uansett hva vi gjoer. Ingen blur her, saa den i det minste
-     ikke blir slørete i tillegg. scale/translate skyver den innbakte
-     «PREMIER LEAGUE»-teksten i bunnen delvis ut av bildet. */
-  /* Bakgrunnsfoto, 1908x1188. Ramma er satt med background-size/-position
-     framfor transform fordi det er langt lettere aa regne paa:
-       130% bredde  -> 2496x1554 px, altsaa bare 1,31x oppskalering
-       posisjon 28% -> viser kildens rader 8,5%-78%, slik at den innbakte
-                       «PREMIER LEAGUE»-teksten nederst faller utenfor.
-     Ingen blur - kilden er skarp nok til aa taale full oppløsning. */
+  /* Bakgrunnsfoto: Old Trafford, kilde 4256x2756 nedskalert til 2560x1658.
+     120% bredde gir 2304 px paa en 1920-skjerm, altsaa fortsatt nedskalering
+     og full skarphet. Posisjon 22% biaser mot tribunene og flomlyset oeverst
+     og tar med omtrent halve banen. */
   body::before {
     content: ""; position: fixed; inset: 0; z-index: -2;
-    background: url("bakgrunn.jpg") center 28% / 130% auto no-repeat;
+    background: url("bakgrunn.jpg") center 22% / 120% auto no-repeat;
   }
-  /* Moerkleggingslag. Sterkest nederst der tavla ligger. */
+  /* Moerkleggingslag. Denne bakgrunnen er motsatt av den forrige - lys
+     graesmatte nederst, moerk himmel oeverst - saa dempingen maa vaere
+     kraftigst i bunnen for at radene skal holde kontrast. */
   body::after {
     content: ""; position: fixed; inset: 0; z-index: -1;
     background: linear-gradient(180deg,
-      rgba(8, 5, 18, 0.30) 0%,
-      rgba(8, 5, 18, 0.50) 35%,
-      rgba(6, 4, 14, 0.78) 100%);
+      rgba(6, 4, 14, 0.42) 0%,
+      rgba(6, 4, 14, 0.58) 30%,
+      rgba(5, 3, 12, 0.86) 100%);
   }
 
   .wrap { position: relative; max-width: 82rem; margin: 0 auto; padding: 1.5rem 1.5rem 1.2rem; }
@@ -284,17 +277,17 @@ CSS = """
   .lb-row.gold   .lb-rank { color: var(--gold); }
   .lb-row.silver .lb-rank { color: var(--silver); }
 
-  /* Beste enkeltrunde - tredje premie. Kan falle sammen med 1. eller 2. plass,
-     derfor et merke og ikke en kantfarge (den er opptatt av medaljen). */
-  .beste-gw {
-    display: inline-flex; align-items: baseline; gap: 0.35rem;
-    background: rgba(4, 245, 255, 0.14);
-    border: 1px solid rgba(4, 245, 255, 0.45);
-    border-radius: 999px; padding: 0.14rem 0.6rem;
-    font-size: 0.86rem; font-weight: 700; color: var(--cyan);
-    white-space: nowrap;
+  /* Beste enkeltrunde - tredje premie. Groenn ring rundt plasseringstallet,
+     ikke enda en boks. Tallet beholder medaljefargen sin inni ringen, saa
+     1./2. plass og beste GW kan vises samtidig uten aa slaas om plassen. */
+  .lb-rank.beste {
+    border: 2px solid var(--gronn);
+    border-radius: 50%;
+    width: 2.5rem; height: 2.5rem;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 0 12px -2px rgba(0, 255, 135, 0.55);
   }
-  .beste-gw b { font-family: var(--digits); color: var(--chalk); }
 
   /* Oppbrukte chips: forkortelse i roed boks, tett inntil navnet.
      Aktiv chip staar lenger ute med fullt navn i gult. */
@@ -521,9 +514,10 @@ def _rad(d):
     # Oppbrukte chips tett paa navnet, aktiv chip ute i meta-kolonnen.
     brukt = "".join(f'<span class="brukt-chip">{c}</span>' for c in d.get("brukte_chips") or [])
 
+    beste = ' beste' if d.get("har_beste_gw") else ""
+    tittel = f' title="Beste enkeltrunde: {d["beste_gw"]} poeng"' if d.get("har_beste_gw") else ""
+
     meta = []
-    if d.get("har_beste_gw"):
-        meta.append(f'<span class="beste-gw">Beste GW <b>{d["beste_gw"]}</b></span>')
     if d.get("chip"):
         meta.append(f'<span class="chip-badge">{escape(d["chip"])}</span>')
     if d.get("kaptein"):
@@ -532,7 +526,7 @@ def _rad(d):
     return f"""      <details class="lb-item">
         <summary class="lb-row {kls}">
           {_pil(d["rank"], d.get("forrige_rank"))}
-          <div class="lb-rank">{d["rank"]}</div>
+          <div class="lb-rank{beste}"{tittel}>{d["rank"]}</div>
           {badge}
           <div class="lb-navn">
             <div class="lb-lagnavn">{escape(d["lagnavn"])}</div>
