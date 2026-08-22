@@ -1,0 +1,59 @@
+name: FPL board
+
+on:
+  schedule:
+    # NB: UTC. Actions kjoerer ikke presist - 5-20 min forsinkelse er vanlig
+    # under last, og jobber kan droppes helt. build.py avslutter tidlig naar
+    # ingen kamp er i gang, saa bomturene koster under et sekund.
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # committe data/ tilbake
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  board:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Bygg tavla
+        id: bygg
+        run: python build.py
+
+      - name: Lagre historikk
+        if: steps.bygg.outputs.bygget == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "ingen endring i data/"
+          else
+            git commit -m "Oppdater historikk $(date -u +'%Y-%m-%d %H:%M') UTC"
+            git push
+          fi
+
+      - name: Last opp Pages-artifact
+        if: steps.bygg.outputs.bygget == 'true'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+      - name: Deploy
+        id: deploy
+        if: steps.bygg.outputs.bygget == 'true'
+        uses: actions/deploy-pages@v5

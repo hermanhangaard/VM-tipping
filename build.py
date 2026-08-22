@@ -6,6 +6,7 @@ Kjoeres lokalt under utvikling og fra .github/workflows/board.yml i drift.
 
 import argparse
 import json
+import os
 import shutil
 import sys
 from datetime import datetime, timezone
@@ -146,12 +147,61 @@ def bygg():
     return data
 
 
+def bor_bygge():
+    """Sier fra om det er verdt aa kjoere hele pipelinen.
+
+    Cron gaar hvert 10. minutt hele aaret, men det skjer bare noe ~3 dager i uka.
+    Vi bygger naar en kamp er i gang, naar GW nettopp ble ferdig (bonuspoeng
+    laases foerst da), eller hvis det er over 6 timer siden sist - saa siden ikke
+    staar og roter med et gammelt tidsstempel gjennom uka.
+
+    Returnerer (bygg: bool, grunn: str). Koster ett API-kall.
+    """
+    bs = fpl_api.bootstrap()
+    gw = fpl_api.naavaerende_gw(bs)
+    kamper = fpl_api.fixtures(gw["id"])
+
+    if any(f["started"] and not f["finished"] for f in kamper):
+        return True, "kamp paagaar"
+
+    historikk = les_json(HISTORIKK_FIL, {})
+    if str(gw["id"]) not in historikk:
+        return True, f"GW{gw['id']} ikke i historikken enda"
+
+    if not gw.get("data_checked") and any(f["finished"] for f in kamper):
+        return True, "GW ferdigspilt, venter paa endelige bonuspoeng"
+
+    forrige = les_json(DATA / "sist.json", {}).get("tid")
+    if forrige:
+        alder = (datetime.now(timezone.utc) - datetime.fromisoformat(forrige)).total_seconds()
+        if alder < 6 * 3600:
+            return False, f"ingen kamper, sist bygget for {int(alder / 60)} min siden"
+    return True, "over 6 timer siden sist"
+
+
+def sett_output(bygget):
+    """Forteller workflowen om det finnes en dist/ aa deploye."""
+    fil = os.environ.get("GITHUB_OUTPUT")
+    if fil:
+        with open(fil, "a", encoding="utf-8") as f:
+            f.write(f"bygget={'true' if bygget else 'false'}\n")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--force", action="store_true", help="bygg uansett (hopper over live-sjekk)")
     args = ap.parse_args()
 
+    if not args.force:
+        bygg_na, grunn = bor_bygge()
+        print(f"{'bygger' if bygg_na else 'hopper over'}: {grunn}")
+        if not bygg_na:
+            sett_output(False)
+            return 0
+
     data = bygg()
+    skriv_json(DATA / "sist.json", {"tid": data["generert"]})
+    sett_output(True)
     k = data["kamper"]
     status = "LIVE" if data["live"] else ("ferdig" if data["gw"]["ferdig"] else "venter")
     print(f"GW{data['gw']['id']} [{status}] - {k['ferdig']}/{k['totalt']} ferdig, {k['live']} paagaar")

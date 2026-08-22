@@ -69,9 +69,10 @@ Workflow = YAML-fil i `.github/workflows/`. Kjører på en fersk Ubuntu-VM (runn
 Kjør lokalt: `python3 build.py`, åpne `dist/index.html`.
 
 **Åpne punkter:**
-- [ ] `Torbjorn` mangler ø — hans FPL-konto er registrert med ASCII. Fikses ved å håndredigere `data/navn.json`; build.py henter kun ukjente ider, så endringen overlever
-- [ ] Under live GW er `event_total` fra ligatabellen FPL sin egen oppdatering, ikke sanntid. Ekte live-poeng krever `event/{gw}/live/` + picks per deltaker og egen utregning av kaptein/auto-subs/bonus. Vurder i Fase 4
-- [ ] Bare 3 av 9 har `club_badge_src` — resten får en tom sirkel. Vurder å droppe kolonnen hvis den forblir halvtom
+- [x] `Torbjorn` → `Torbjørn` rettet manuelt i `data/navn.json`. `build.py` henter kun ukjente ider, så rettelsen overlever. Samme grep for framtidige navn med æøå
+- [x] ~~Egen live-poengberegning~~ — **ikke nødvendig.** Målt 22.08 med 6 kamper live: ligatabellens `event_total` matcher en fra bunnen av utregning (`event/{gw}/live/` × multiplier − transferkost) med **0 avvik for alle 9**. Endepunktet er allerede live. Reell forsinkelse mot tlf-appen er 5-min meta-refresh + ~10 min Pages-CDN, altså leveranse og ikke data
+- [ ] **HUSK: spør Lasse om klubblogoene.** Bare 3 av 9 har `club_badge_src` satt — resten får tom sirkel. Enten får folk sette favorittklubb i FPL-profilen sin, eller så dropper vi kolonnen
+- [ ] Sjekk om `Aasmund` og `Jarle Andre` skal ha `Åsmund` / `André`. Ikke endret på eget initiativ — «Aasmund» er en gyldig skrivemåte, og feil retting er verre enn ingen retting
 
 ## Fase 3 — workflow
 

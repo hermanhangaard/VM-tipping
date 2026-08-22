@@ -15,15 +15,26 @@ LIGA_ID = 562901  # Norconsult Sarpsborg 26/27
 _UA = "Mozilla/5.0 (hangaard.no FPL-tavle)"
 
 
+_memo = {}
+
+
 def _get(sti, forsok=4):
-    """GET med enkel backoff. FPL kan gi sporadiske 5xx/SSL-brudd."""
+    """GET med enkel backoff. FPL kan gi sporadiske 5xx/SSL-brudd.
+
+    Memoiseres per prosess: bor_bygge() og bygg() ber begge om bootstrap
+    (1,5 MB) og fixtures, og det er ingen grunn til aa hente dem to ganger
+    i samme kjoering.
+    """
+    if sti in _memo:
+        return _memo[sti]
     url = f"{BASE}/{sti}"
     siste = None
     for n in range(forsok):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": _UA})
             with urllib.request.urlopen(req, timeout=30) as r:
-                return json.load(r)
+                _memo[sti] = json.load(r)
+                return _memo[sti]
         except (urllib.error.URLError, urllib.error.HTTPError, OSError, ValueError) as e:
             siste = e
             if n < forsok - 1:
