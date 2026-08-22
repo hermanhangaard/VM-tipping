@@ -86,10 +86,11 @@ Ligger i `.github/workflows/board.yml`. Kjører hvert 10. minutt (UTC) + `workfl
 - [x] Første kjøring verifisert: run 32587275979, 25 s, bygde + committet + deployet. hangaard.no svarer 200 med den nye tavla
 - [x] `_get()` memoiseres per prosess — `bor_bygge()` og `bygg()` ba begge om bootstrap (1,5 MB)
 
+- [x] `.github/workflows/test.yml` slettet
+- [x] **Planlagt cron verifisert.** Run 32588413100, `event: schedule`, 17:39:51Z → 17:40:13Z, 22 s, success. Punktlig på `*/10` uten målbar forsinkelse. Første planlagte kjøring kom ca. 20 min etter at workflowen kom på `main` — GitHub bruker litt tid på å aktivere en ny `schedule:`
+
 **Gjenstår:**
-- [ ] Slett `.github/workflows/test.yml` — røyktesten har gjort jobben sin
-- [ ] Verifiser at den *planlagte* cronen faktisk fyrer (til nå kun manuelt trigget). Sjekk `gh run list --workflow=board.yml` om en time
-- [ ] Se at early exit oppfører seg riktig i Actions midt i uka, når det ikke er kamper
+- [ ] Se at early exit oppfører seg riktig i Actions midt i uka, når det ikke er kamper (forventet logglinje: `hopper over: ingen kamper, sist bygget for N min siden`)
 
 ## Fase 4 — TV-visning
 
