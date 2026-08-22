@@ -58,11 +58,20 @@ Workflow = YAML-fil i `.github/workflows/`. Kjører på en fersk Ubuntu-VM (runn
 
 `parser.py` og `score.py` fra VM-prosjektet faller bort — FPL regner poengene selv.
 
-- [ ] `fpl_api.py` — henter bootstrap, standings, fixtures
-- [ ] `navn.json` — engangs-henting av `player_first_name` per entry, committes. Kjøres på nytt ved ny deltaker
-- [ ] `historikk.json` — poeng per deltaker per GW, akkumuleres hver kjøring. **Grunnlag for grafene — fås ikke i ettertid hvis den ikke lagres underveis**
-- [ ] `render.py` → `dist/index.html`. Start fra `../vm-prosjekt-dev/fase2/render2.py`, bytt datamodell
-- [ ] Kjør lokalt til HTML-en ser riktig ut. Ikke rør Actions før den stemmer
+- [x] `fpl_api.py` — bootstrap, standings, entry, picks, fixtures. `urllib` framfor `requests`, så ingen `pip install` noe sted. Retry med backoff (FPL gir sporadiske SSL-brudd, jf. football-data.org-mønsteret)
+- [x] `data/navn.json` — `player_first_name` per entry, hentes kun for ukjente ider. Håndredigerbar
+- [x] `data/historikk.json` — `{gw: {entry: {p, tot, rank}}}`, akkumuleres hver kjøring
+- [x] `render.py` → `dist/index.html`. PL-palett (#37003c-lilla, `--gronn` #00ff87, `--cyan` #04f5ff) i stedet for VM-rødt. Samme grep ellers: flytende vh-skalering, kortbasert tavle, gull/sølv/bronse
+- [x] `build.py` — orkestrator. Kopierer også `CNAME` inn i `dist/`
+- [x] Verifisert mot ekte GW1-data (9 deltakere, live-kamper) og skjermbilde på 1920x1080
+- [x] `index.html` (VM-tavla) slettet fra rota, `dist/` lagt i `.gitignore`
+
+Kjør lokalt: `python3 build.py`, åpne `dist/index.html`.
+
+**Åpne punkter:**
+- [ ] `Torbjorn` mangler ø — hans FPL-konto er registrert med ASCII. Fikses ved å håndredigere `data/navn.json`; build.py henter kun ukjente ider, så endringen overlever
+- [ ] Under live GW er `event_total` fra ligatabellen FPL sin egen oppdatering, ikke sanntid. Ekte live-poeng krever `event/{gw}/live/` + picks per deltaker og egen utregning av kaptein/auto-subs/bonus. Vurder i Fase 4
+- [ ] Bare 3 av 9 har `club_badge_src` — resten får en tom sirkel. Vurder å droppe kolonnen hvis den forblir halvtom
 
 ## Fase 3 — workflow
 

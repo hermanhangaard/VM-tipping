@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# Generert av build.py, lastes opp som Pages-artifact - committes aldri
+dist/
