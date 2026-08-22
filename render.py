@@ -568,7 +568,7 @@ def render(data):
         live_linje = f'<div class="gw-live">{k["live"]} pågår nå</div>'
     elif k.get("uavklart"):
         # Forklarer hvorfor poeng kan endre seg selv om ingen kamp ruller.
-        live_linje = '<div class="gw-live tent">bonuspoeng ikke låst</div>'
+        live_linje = '<div class="gw-live tent">Bonuspoeng ikke låst</div>'
     else:
         live_linje = ""
     oppdatert = _norsk_tid(data.get("sist_oppdatert") or data["generert"])
