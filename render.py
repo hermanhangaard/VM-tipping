@@ -55,6 +55,26 @@ CSS = """
     background-attachment: fixed;
   }
 
+  /* Bakgrunnsfoto. Kraftig sloering gjoer to ting: holder teksten lesbar, og
+     skjuler at kilden er 686x386 og altsaa langt under TV-opploesning.
+     scale(1.08) spiser vekk de gjennomsiktige kantene sloeringen lager. */
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -2;
+    background: url("bakgrunn.jpg") center 42% / cover no-repeat;
+    filter: blur(4px) saturate(1.05);
+    transform: scale(1.06);
+    opacity: 0.95;
+  }
+  /* Moerkleggingslag. Sterkest nederst der tavla ligger, svakest oeverst saa
+     spillerne i bildet faktisk vises bak tittelen. */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(180deg,
+      rgba(30, 1, 42, 0.30) 0%,
+      rgba(28, 1, 40, 0.52) 30%,
+      rgba(22, 2, 31, 0.74) 100%);
+  }
+
   .wrap { position: relative; max-width: 82rem; margin: 0 auto; padding: 1.5rem 1.5rem 1.2rem; }
 
   header { margin-bottom: 1.1rem; }
@@ -128,7 +148,7 @@ CSS = """
   }
   .col-head, .lb-row {
     display: grid;
-    grid-template-columns: 4.4rem 2.2rem 1fr auto 4.2rem 5.4rem;
+    grid-template-columns: 4.4rem 2.2rem 1fr auto 4.2rem 5.4rem 1.4rem;
     align-items: center;
     gap: 0.8rem;
     padding: 0.75rem 1.3rem;
@@ -143,8 +163,21 @@ CSS = """
   .col-head .h-gw, .col-head .h-tot { text-align: right; }
   .col-head .h-tot { color: var(--gronn); }
 
-  .lb-row { border-bottom: 1px solid var(--divider); }
-  .lb-row:last-child { border-bottom: none; }
+  /* Rad + utfellbar detalj. <details>/<summary> gir klikk-for-aa-utvide uten
+     en linje JavaScript. TV-en kan ikke klikkes uansett - dette er for telefon. */
+  .lb-item { border-bottom: 1px solid var(--divider); }
+  .lb-item:last-child { border-bottom: none; }
+  .lb-row { cursor: pointer; list-style: none; transition: background 0.15s; }
+  .lb-row::-webkit-details-marker { display: none; }
+  .lb-row:hover { background: var(--surface-hover); }
+  .lb-item[open] > .lb-row { background: var(--surface-hover); }
+
+  /* Liten pil som viser at raden kan aapnes. Skjules paa TV-bredder. */
+  .utvid {
+    font-size: 0.9rem; color: var(--muted); opacity: 0.5;
+    transition: transform 0.15s; text-align: center;
+  }
+  .lb-item[open] .utvid { transform: rotate(90deg); }
 
   .lb-rank {
     display: flex; align-items: baseline; justify-content: center; gap: 0.28rem;
@@ -208,6 +241,85 @@ CSS = """
   .lb-row.silver .lb-rank { color: var(--silver); }
   .lb-row.bronze .lb-rank { color: var(--bronze); }
 
+  /* --- utfelt detalj: bytter + banevisning --- */
+  .detalj { padding: 0.4rem 1.3rem 1.3rem; background: rgba(0, 0, 0, 0.28); }
+
+  .bytter {
+    display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+    padding: 0.6rem 0 0.9rem;
+    border-bottom: 1px solid var(--divider);
+    margin-bottom: 0.9rem;
+  }
+  .bytter-tittel {
+    font-family: var(--display); font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .bytter-tom { color: var(--muted); opacity: 0.65; font-size: 0.98rem; }
+  .bytte { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 1.02rem; }
+  .bytte .ut { color: var(--ned); font-weight: 700; }
+  .bytte .inn { color: var(--gronn); font-weight: 700; }
+  .bytte .pil-ut, .bytte .pil-inn { font-weight: 800; letter-spacing: -0.08em; }
+  .bytte .pil-ut { color: var(--ned); }
+  .bytte .pil-inn { color: var(--gronn); }
+  .gw-poeng-stor {
+    margin-left: auto;
+    font-family: var(--digits); font-weight: 700; font-size: 1.5rem;
+  }
+  .gw-poeng-stor span {
+    font-family: var(--display); font-size: 0.62em;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+    margin-right: 0.45rem;
+  }
+
+  /* Banen. Griden er fire rader (K/F/M/A) og benken ligger som egen stripe. */
+  .bane {
+    background:
+      linear-gradient(180deg, rgba(0, 92, 47, 0.55), rgba(0, 58, 30, 0.72)),
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.045) 0 2.6rem, transparent 2.6rem 5.2rem);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 1rem 0.6rem 0.9rem;
+    display: grid; gap: 0.7rem;
+  }
+  .bane-rad { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
+
+  .benk {
+    margin-top: 0.7rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--divider);
+    border-radius: 10px;
+    padding: 0.7rem 0.6rem;
+  }
+  .benk-tittel {
+    font-family: var(--display); font-weight: 600;
+    font-size: 0.8rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); text-align: center; margin-bottom: 0.5rem;
+  }
+
+  .spiller { width: 5.4rem; text-align: center; position: relative; }
+  .spiller img { width: 3.1rem; height: 3.1rem; object-fit: contain; display: block; margin: 0 auto; }
+  .spiller-navn {
+    font-size: 0.86rem; font-weight: 600;
+    background: rgba(0, 0, 0, 0.55); border-radius: 3px 3px 0 0;
+    padding: 0.1rem 0.2rem; margin-top: 0.2rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .spiller-poeng {
+    font-family: var(--digits); font-weight: 700; font-size: 0.92rem;
+    background: var(--gronn); color: #06231a;
+    border-radius: 0 0 3px 3px; padding: 0.06rem 0.2rem;
+  }
+  .benk .spiller-poeng { background: var(--muted); color: #241033; }
+  .kaptein-merke {
+    position: absolute; top: -0.15rem; right: 0.55rem;
+    width: 1.25rem; height: 1.25rem; border-radius: 50%;
+    background: var(--chalk); color: #240132;
+    font-family: var(--digits); font-weight: 700; font-size: 0.72rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .kaptein-merke.vise { background: var(--muted); }
+
   footer {
     margin-top: 1.4rem; text-align: right;
     font-size: 0.9rem; color: var(--muted);
@@ -217,10 +329,19 @@ CSS = """
   @media (max-width: 720px) {
     html { font-size: 15px; }
     .board.to-kolonner { grid-template-columns: 1fr; }
-    .col-head, .lb-row { grid-template-columns: 2.2rem 1.8rem 1fr 3.2rem 4rem; gap: 0.5rem; padding: 0.6rem 0.8rem; }
+    .col-head, .lb-row {
+      grid-template-columns: 3.4rem 1.8rem 1fr 3.2rem 4rem 1.2rem;
+      gap: 0.5rem; padding: 0.6rem 0.7rem;
+    }
+    /* Kaptein/chip-pillene tar for mye bredde paa telefon - de staar
+       uansett i detaljvisningen som er hovedpoenget der. */
     .col-head .h-meta, .meta { display: none; }
     .lb-fornavn { font-size: 1.15rem; }
     .lb-tot { font-size: 1.4rem; }
+    .detalj { padding: 0.4rem 0.6rem 1rem; }
+    .spiller { width: 4.4rem; }
+    .spiller img { width: 2.5rem; height: 2.5rem; }
+    .gw-poeng-stor { margin-left: 0; }
   }
 """
 
@@ -239,6 +360,72 @@ def _pil(rank, forrige):
     return '<span class="pil lik">&#8211;</span>'
 
 
+SHIRT = "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_{kode}{gk}-110.png"
+
+
+def _spiller(sp):
+    """En drakt med navn og poeng. Keepere har egen draktvariant (_1)."""
+    merke = ""
+    if sp["kaptein"]:
+        merke = '<span class="kaptein-merke">C</span>'
+    elif sp["vise"]:
+        merke = '<span class="kaptein-merke vise">V</span>'
+    url = SHIRT.format(kode=sp["lag_kode"], gk="_1" if sp["type"] == 1 else "")
+    return (
+        f'<div class="spiller">{merke}'
+        f'<img src="{url}" alt="" loading="lazy">'
+        f'<div class="spiller-navn">{escape(sp["navn"])}</div>'
+        f'<div class="spiller-poeng">{sp["poeng"]}</div>'
+        f"</div>"
+    )
+
+
+def _bane(tropp):
+    """Startellever gruppert K/F/M/A, benken i egen stripe under."""
+    if not tropp:
+        return '<div class="bytter-tom">Laget er ikke synlig før deadline.</div>'
+
+    start = sorted((s for s in tropp if s["posisjon"] <= 11), key=lambda s: s["posisjon"])
+    benk = sorted((s for s in tropp if s["posisjon"] > 11), key=lambda s: s["posisjon"])
+
+    rader = []
+    for t in (1, 2, 3, 4):
+        i_rad = [s for s in start if s["type"] == t]
+        if i_rad:
+            rader.append(f'<div class="bane-rad">{"".join(_spiller(s) for s in i_rad)}</div>')
+
+    benk_html = ""
+    if benk:
+        benk_html = (
+            '<div class="benk"><div class="benk-tittel">Benk</div>'
+            f'<div class="bane-rad">{"".join(_spiller(s) for s in benk)}</div></div>'
+        )
+    return f'<div class="bane">{"".join(rader)}</div>{benk_html}'
+
+
+def _bytter(d):
+    """Byttestripe. Staar tom til vi har verifisert transfers-endepunktet mot
+    ekte data - foerste sjanse er GW2-deadline."""
+    if d.get("bytter"):
+        biter = "".join(
+            f'<span class="bytte"><span class="pil-ut">&laquo;&laquo;&laquo;</span>'
+            f'<span class="ut">{escape(b["ut"])}</span>'
+            f'<span class="pil-inn">&raquo;&raquo;&raquo;</span>'
+            f'<span class="inn">{escape(b["inn"])}</span></span>'
+            for b in d["bytter"]
+        )
+    else:
+        biter = '<span class="bytter-tom">Ingen bytter denne runden</span>'
+
+    trekk = ""
+    if d.get("trekk"):
+        trekk = f' <span class="ut">(&minus;{d["trekk"]})</span>'
+    return (
+        f'<div class="bytter"><span class="bytter-tittel">Bytter</span>{biter}'
+        f'<span class="gw-poeng-stor"><span>GW</span>{d["gw_poeng"]}{trekk}</span></div>'
+    )
+
+
 def _rad(d):
     kls = MEDALJE.get(d["rank"], "")
     badge = (
@@ -253,17 +440,24 @@ def _rad(d):
     if d.get("kaptein"):
         meta.append(f'<span class="kaptein"><b>C</b>{escape(d["kaptein"])}</span>')
 
-    return f"""      <div class="lb-row {kls}">
-        <div class="lb-rank">{d["rank"]}{_pil(d["rank"], d.get("forrige_rank"))}</div>
-        {badge}
-        <div class="lb-navn">
-          <div class="lb-fornavn">{escape(d["fornavn"])}</div>
-          <div class="lb-lagnavn">{escape(d["lagnavn"])}</div>
+    return f"""      <details class="lb-item">
+        <summary class="lb-row {kls}">
+          <div class="lb-rank">{d["rank"]}{_pil(d["rank"], d.get("forrige_rank"))}</div>
+          {badge}
+          <div class="lb-navn">
+            <div class="lb-fornavn">{escape(d["fornavn"])}</div>
+            <div class="lb-lagnavn">{escape(d["lagnavn"])}</div>
+          </div>
+          <div class="meta">{"".join(meta)}</div>
+          <div class="lb-gw">{d["gw_poeng"]}</div>
+          <div class="lb-tot">{d["total"]}</div>
+          <div class="utvid">&#9656;</div>
+        </summary>
+        <div class="detalj">
+{_bytter(d)}
+{_bane(d.get("tropp") or [])}
         </div>
-        <div class="meta">{"".join(meta)}</div>
-        <div class="lb-gw">{d["gw_poeng"]}</div>
-        <div class="lb-tot">{d["total"]}</div>
-      </div>"""
+      </details>"""
 
 
 def _kolonne(deltakere):
@@ -271,7 +465,7 @@ def _kolonne(deltakere):
     return f"""    <div class="col">
       <div class="col-head">
         <div class="h-rank">#</div><div></div><div>Deltaker</div>
-        <div class="h-meta"></div><div class="h-gw">GW</div><div class="h-tot">Tot</div>
+        <div class="h-meta"></div><div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
       </div>
 {rader}
     </div>"""

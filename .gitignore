@@ -7,6 +7,8 @@ dist/
 # Lokale forhaandsvisninger fra headless-render
 preview*.png
 
-# Bakgrunnskandidater o.l. - legges bevisst inn naar de skal brukes
+# Loese bildefiler i rota spores ikke - bevisste assets legges i design/
 *.jpg
 *.jpeg
+*.png
+!design/*

@@ -56,20 +56,37 @@ def hent_fornavn(entry_ider, cache):
     return nye
 
 
-def hent_lag(entry_id, gw, spillere):
-    """Kaptein, chip og benkepoeng for en manager. Returnerer tomt dict foer deadline."""
+def hent_lag(entry_id, gw, spillere, live):
+    """Tropp, kaptein, chip og benkepoeng for en manager.
+
+    picks er tomt foer deadline - da faar vi RuntimeError og returnerer {}.
+    posisjon 1-11 er startellever, 12-15 er benk.
+    """
     try:
         p = fpl_api.picks(entry_id, gw)
     except RuntimeError:
         return {}
 
     kaptein = None
+    tropp = []
     for pick in p.get("picks", []):
+        sp = spillere.get(pick["element"])
+        if not sp:
+            continue
+        raa = live.get(pick["element"], 0)
         if pick.get("is_captain"):
-            sp = spillere.get(pick["element"])
-            if sp:
-                kaptein = sp["web_name"]
-            break
+            kaptein = sp["web_name"]
+        tropp.append({
+            "navn": sp["web_name"],
+            "type": sp["element_type"],
+            "lag_kode": sp["team_code"],
+            "posisjon": pick["position"],
+            "mult": pick["multiplier"],
+            # Startellever viser bidraget sitt (kaptein dobbelt), benken raa poeng.
+            "poeng": raa * pick["multiplier"] if pick["multiplier"] else raa,
+            "kaptein": bool(pick.get("is_captain")),
+            "vise": bool(pick.get("is_vice_captain")),
+        })
 
     hist = p.get("entry_history") or {}
     return {
@@ -77,6 +94,11 @@ def hent_lag(entry_id, gw, spillere):
         "chip": CHIP_NAVN.get(p.get("active_chip") or ""),
         "benk": hist.get("points_on_bench"),
         "trekk": hist.get("event_transfers_cost") or 0,
+        "tropp": tropp,
+        # Bytter hentes fra entry/{id}/transfers/. Tom hele GW1 fordi sesongen
+        # nettopp har startet - feltnavnene er derfor IKKE verifisert mot ekte
+        # data enda. Foerste sjanse: GW2-deadline 28.08.
+        "bytter": [],
     }
 
 
@@ -91,6 +113,9 @@ def bygg():
     tabell = fpl_api.standings()
     rader = tabell["standings"]["results"]
     kamper = fpl_api.fixtures(gw_id)
+
+    # Poeng per spiller akkurat naa - grunnlaget for banevisningen.
+    live_poeng = {e["id"]: e["stats"]["total_points"] for e in fpl_api._get(f"event/{gw_id}/live/")["elements"]}
 
     ferdig = sum(1 for f in kamper if f["finished"])
     live = sum(1 for f in kamper if f["started"] and not f["finished"])
@@ -114,7 +139,7 @@ def bygg():
             "total": r["total"],
             "badge": r.get("club_badge_src"),
         }
-        d.update(hent_lag(eid, gw_id, spillere))
+        d.update(hent_lag(eid, gw_id, spillere, live_poeng))
         deltakere.append(d)
 
     # Historikk akkumuleres underveis - FPL gir oss ikke ligarangeringen tilbake i tid,
@@ -143,6 +168,10 @@ def bygg():
     # Pages serverer naa kun det artifacten inneholder. Uten CNAME i dist/
     # mister vi custom domain ved foerste deploy.
     shutil.copy(ROT / "CNAME", DIST / "CNAME")
+
+    bakgrunn = ROT / "design" / "bakgrunn.jpg"
+    if bakgrunn.exists():
+        shutil.copy(bakgrunn, DIST / "bakgrunn.jpg")
 
     return data
 
