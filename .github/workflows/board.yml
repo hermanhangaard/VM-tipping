@@ -2,10 +2,12 @@ name: FPL board
 
 on:
   schedule:
-    # NB: UTC. Actions kjoerer ikke presist - 5-20 min forsinkelse er vanlig
-    # under last, og jobber kan droppes helt. build.py avslutter tidlig naar
-    # ingen kamp er i gang, saa bomturene koster under et sekund.
-    - cron: '*/10 * * * *'
+    # NB: UTC. 5 min er GitHubs korteste tillatte intervall, og de dropper
+    # planlagte kjoeringer under last uansett: maalt 22.08 ga '*/10' reelle
+    # intervaller paa 16-34 min. Vi ber om dobbelt saa ofte for aa faa flere
+    # faktiske kjoeringer - build.py avslutter paa under et sekund naar det
+    # ikke er kamper, saa bomturene er gratis.
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
