@@ -133,6 +133,25 @@ CSS = """
     text-shadow: 0 2px 26px rgba(0, 0, 0, 0.4);
   }
 
+  /* Tegnforklaring under tittelen. Ligger i lufta som allerede fantes mellom
+     h1 og bunnen av GW-kortet, saa headeren ikke blir hoeyere og tavla ikke
+     skyves nedover. */
+  .tegnforklaring {
+    display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap;
+    margin-top: 0.15rem;
+    font-size: 0.86rem; color: var(--muted);
+  }
+  .tf { display: inline-flex; align-items: center; gap: 0.42rem; }
+  .tf-ring {
+    width: 1.5rem; height: 1.5rem; border-radius: 50%;
+    border: 2px solid var(--gronn);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-weight: 800; font-size: 0.95rem;
+    color: var(--chalk); line-height: 1;
+  }
+  .tf .brukt-chip, .tf .chip-badge { font-size: 0.72rem; padding: 0.08rem 0.32rem; }
+  .tf .chip-badge { border-radius: 4px; }
+
   .gw-kort {
     background: linear-gradient(140deg, rgba(233, 0, 82, 0.22), rgba(45, 8, 62, 0.85) 70%);
     border: 1px solid rgba(246, 242, 250, 0.2);
@@ -615,6 +634,11 @@ def render(data):
       <div>
         <div class="eyebrow"><span>Fantasy Premier League</span>{status}</div>
         <h1>{escape(data["liga"])}</h1>
+        <div class="tegnforklaring">
+          <span class="tf"><span class="tf-ring">6</span>Beste enkeltrunde</span>
+          <span class="tf"><span class="chip-badge">Bench Boost</span>Chip i spill</span>
+          <span class="tf"><span class="brukt-chip">BB</span>Chip brukt opp</span>
+        </div>
       </div>
       <div class="gw-kort">
         <div class="gw-label">{escape(gw["navn"])}</div>
