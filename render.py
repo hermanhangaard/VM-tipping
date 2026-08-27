@@ -182,7 +182,6 @@ CSS = """
     margin-top: 0.5rem; color: var(--gronn);
     font-size: 0.92rem; font-weight: 600;
   }
-  .gw-live.tent { color: var(--gold); }
 
   .board { display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: start; }
   .board.to-kolonner { grid-template-columns: 1fr 1fr; }
@@ -276,9 +275,9 @@ CSS = """
   }
   .kaptein b { font-family: var(--digits); font-weight: 700; color: var(--cyan); font-size: 0.82em; }
   .chip-badge {
-    background: rgba(246, 196, 83, 0.15);
-    border: 1px solid rgba(246, 196, 83, 0.45);
-    color: var(--gold);
+    background: rgba(0, 255, 135, 0.14);
+    border: 1px solid rgba(0, 255, 135, 0.45);
+    color: var(--gronn);
   }
 
   .lb-gw, .lb-tot {
@@ -607,13 +606,7 @@ def render(data):
 
     pct = round(100 * k["ferdig"] / k["totalt"]) if k["totalt"] else 0
     pct_live = round(100 * k["live"] / k["totalt"]) if k["totalt"] else 0
-    if k["live"]:
-        live_linje = f'<div class="gw-live">{k["live"]} pågår nå</div>'
-    elif k.get("uavklart"):
-        # Forklarer hvorfor poeng kan endre seg selv om ingen kamp ruller.
-        live_linje = '<div class="gw-live tent">Bonuspoeng ikke låst</div>'
-    else:
-        live_linje = ""
+    live_linje = f'<div class="gw-live">{k["live"]} pågår nå</div>' if k["live"] else ""
     oppdatert = _norsk_tid(data.get("sist_oppdatert") or data["generert"])
 
     return f"""<!doctype html>

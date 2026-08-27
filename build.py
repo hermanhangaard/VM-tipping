@@ -154,8 +154,6 @@ def bygg():
     # det tavla skal vise.
     ferdig = sum(1 for f in kamper if f["finished_provisional"])
     live = sum(1 for f in kamper if f["started"] and not f["finished_provisional"])
-    # Spilt, men poengene kan fortsatt justeres.
-    uavklart = sum(1 for f in kamper if f["finished_provisional"] and not f["finished"])
 
     navn = les_json(NAVN_FIL, {})
     nye = hent_fornavn([r["entry"] for r in rader], navn)
@@ -200,7 +198,7 @@ def bygg():
     data = {
         "liga": tabell["league"]["name"],
         "gw": {"id": gw_id, "navn": gw["name"], "ferdig": gw["finished"]},
-        "kamper": {"ferdig": ferdig, "live": live, "uavklart": uavklart, "totalt": len(kamper)},
+        "kamper": {"ferdig": ferdig, "live": live, "totalt": len(kamper)},
         "live": live > 0,
         "sist_oppdatert": tabell.get("last_updated_data"),
         "generert": datetime.now(timezone.utc).isoformat(timespec="seconds"),
