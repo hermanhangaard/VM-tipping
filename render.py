@@ -139,7 +139,10 @@ CSS = """
   .tegnforklaring {
     display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap;
     margin-top: 0.15rem;
-    font-size: 0.86rem; color: var(--muted);
+    font-size: 0.86rem;
+    /* Gull brukes ellers bare til foersteplassen, saa fargen er ledig her og
+       skiller forklaringen fra selve tavla. */
+    color: var(--gold);
   }
   .tf { display: inline-flex; align-items: center; gap: 0.42rem; }
   .tf-ring {
