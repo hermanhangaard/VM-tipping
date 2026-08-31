@@ -8,7 +8,7 @@ Ledertavle for FPL-mini-ligaen, vises på TV hos Lasse. Etterfølger til VM-tipp
 |---|---|
 | Liga | Norconsult Sarpsborg 26/27 |
 | Liga-ID | `562901` (classic, privat, `start_event: 1`) |
-| Admin | entry 2795526 (Are Stifjell) — ikke Herman |
+| Admin | entry 2795526 (Are) — ikke Herman |
 | Deltakere | 9 per 21.08.2026, `closed: false` |
 | Sesong | GW1 deadline 21.08.2026 19:30 norsk → GW38 30.05.2027 |
 | API | `https://fantasy.premierleague.com/api/` — gratis, ingen nøkkel, ingen kvote observert |

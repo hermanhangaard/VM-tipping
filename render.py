@@ -351,8 +351,8 @@ CSS = """
      som ellers stod tom mellom chipsene og aktiv-chip-slissen. */
   .ring-info {
     display: flex; flex-direction: column; align-items: flex-end;
-    gap: 0.1rem; line-height: 1.2;
-    font-size: 0.78rem; color: var(--muted);
+    gap: 0.25rem; line-height: 1.2;
+    font-size: 0.92rem; color: var(--muted);
   }
   .ri { display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
   .ri-ring {
@@ -559,16 +559,12 @@ CSS = """
     .mobil-linje {
       grid-column: 2 / -1; grid-row: 2;
       display: grid;
-      grid-template-columns: repeat(4, 1.8rem) auto 1fr;
+      grid-template-columns: repeat(4, 1.8rem) auto;
       gap: 0.22rem;
-      justify-content: stretch; align-items: center;
+      justify-content: start; align-items: center;
     }
+    .mobil-linje .spacer { display: none; }
     .brukt-chips { display: contents; }
-    /* Eksplisitt plassering: chipsene i slisse 1-5, rundeinfoen ytterst til
-       hoeyre, altsaa rett under poengkolonnene. */
-    .meta-chip { grid-column: 5; }
-    .ring-info { grid-column: 6; justify-self: end; font-size: 0.68rem; }
-    .ri-ring { width: 0.72rem; height: 0.72rem; border-width: 2px; }
     .brukt-chips > span { justify-self: start; }
     .brukt-chip { font-size: 0.68rem; padding: 0.05rem 0.28rem; }
     .meta-chip { justify-content: flex-start; min-width: 0; }
@@ -587,8 +583,10 @@ CSS = """
       gap: 0.4rem 0.9rem;
       justify-items: stretch; align-items: start;
     }
-    .runde-topp > div:last-child { display: none; }
-    .gw-poeng-stor { font-size: 1.5rem; text-align: right; }
+    .runde-topp { grid-template-columns: 1fr auto auto; }
+    .gw-poeng-stor { font-size: 1.4rem; text-align: right; }
+    .ring-info { font-size: 0.8rem; gap: 0.2rem; }
+    .ri-ring { width: 0.75rem; height: 0.75rem; }
     /* Fire spillere paa rad maa faa plass paa 390 px:
        4 x 3.5rem + 3 x 0.4rem = 15,2rem ~ 198 px. */
     .bane { padding: 0.6rem 0.3rem 0.5rem; gap: 0.45rem; }
@@ -695,11 +693,22 @@ def _bytter(d):
         liste = '<div class="bytter-tom">Ingen bytter denne runden</div>'
 
     trekk = f' <span class="ut">(&minus;{d["trekk"]})</span>' if d.get("trekk") else ""
+
+    # Naar runden skjedde - bare for dem som eier en ring. Samme symboler som
+    # tegnforklaringen, saa de betyr det samme overalt.
+    ringer = ""
+    if d.get("har_beste_gw") and d.get("beste_gw_nr"):
+        ringer += (f'<span class="ri"><span class="ri-ring beste"></span>'
+                   f'&ndash; GW{d["beste_gw_nr"]}</span>')
+    if d.get("har_verste_gw") and d.get("verste_gw_nr"):
+        ringer += (f'<span class="ri"><span class="ri-ring verst"></span>'
+                   f'&ndash; GW{d["verste_gw_nr"]}</span>')
+
     return (
         f'<div class="runde-topp">'
         f'<div class="bytter"><span class="bytter-tittel">Bytter</span>{liste}</div>'
         f'<div class="gw-poeng-stor"><span>Rundens poeng</span>{d["gw_poeng"]}{trekk}</div>'
-        f'<div></div>'
+        f'<div class="ring-info">{ringer}</div>'
         f"</div>"
     )
 
@@ -764,17 +773,6 @@ def _rad(d, gw_na=None, gw_liste=None):
     tittel = f' title="{escape(" · ".join(hint))}"' if hint else ""
 
     # Fullt navn paa TV, forkortelse paa mobil. Begge rendres, CSS velger.
-    # Naar deltakerens beste og verste runde inntraff. Bruker samme ringer som
-    # tegnforklaringen, saa symbolene betyr det samme overalt.
-    ring_info = ""
-    if d.get("beste_gw_nr") and d.get("verste_gw_nr"):
-        ring_info = (
-            f'<span class="ri"><span class="ri-ring beste"></span>'
-            f'&ndash; GW{d["beste_gw_nr"]}</span>'
-            f'<span class="ri"><span class="ri-ring verst"></span>'
-            f'&ndash; GW{d["verste_gw_nr"]}</span>'
-        )
-
     aktiv_chip = (
         f'<span class="chip-badge"><span class="lang">{escape(d["chip"])}</span>'
         f'<span class="kort">{escape(d.get("chip_kort") or "")}</span></span>'
@@ -794,7 +792,7 @@ def _rad(d, gw_na=None, gw_liste=None):
           </div>
           <div class="mobil-linje">
             <div class="brukt-chips">{brukt}</div>
-            <div class="ring-info">{ring_info}</div>
+            <div class="spacer"></div>
             <div class="meta-chip">{aktiv_chip}</div>
           </div>
           <div class="meta-kaptein">{kaptein}</div>
