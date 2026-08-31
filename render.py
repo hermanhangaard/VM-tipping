@@ -435,6 +435,10 @@ CSS = """
   /* Aktiv chip: fullt navn paa TV, forkortelse paa mobil. */
   .chip-badge .kort { display: none; }
 
+  /* Andre-linje-beholderen for mobil. display:contents gjoer den usynlig for
+     TV-gridet - barna er fortsatt direkte grid-items og layouten er uendret. */
+  .mobil-linje { display: contents; }
+
   /* ------------------------------------------------------------------
      MOBIL. Alt herfra gjelder kun under 720 px og roerer ikke TV-visningen.
      Raden gaar fra 11 kolonner til et 2x4-rutenett:
@@ -486,21 +490,23 @@ CSS = """
 
     /* Andre linje: chips og kaptein. Fast justering er en TV-luksus vi ikke
        har raad til her, saa slissene faar flyte. */
-    .brukt-chips {
-      grid-column: 2 / 5; grid-row: 2;
-      display: flex; gap: 0.25rem; flex-wrap: wrap; align-items: center;
+    /* Hele andre linje i én flex-strek: oppbrukte chips, aktiv chip og
+       kaptein side om side. Ingen faste slisser her - kapteinsnavnet faar
+       den bredden det trenger. Dimensjonert etter det folk faktisk kapteiner
+       («B.Fernandes», «João Pedro»), ikke etter ligaens lengste navn;
+       skulle noen kapteine en 16-tegns spiller, bryter linja i stedet. */
+    .mobil-linje {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: 0.25rem 0.35rem;
+      grid-column: 2 / -1; grid-row: 2;
+      min-width: 0;
     }
+    .mobil-linje .spacer { display: none; }
+    .brukt-chips { display: flex; gap: 0.25rem; align-items: center; }
     .brukt-chips > span:empty { display: none; }
     .brukt-chip { font-size: 0.68rem; padding: 0.05rem 0.28rem; }
-    .meta-chip {
-      grid-column: 3 / 5; grid-row: 2;
-      justify-content: flex-start; align-self: center;
-    }
-    /* Kapteinen droppes paa mobil. Den er lik for de fleste (7 av 9 hadde
-       Haaland i GW1), saa den skiller knapt radene - og den staar uansett i
-       detaljvisningen, som er lett aa naa med tommelen. En hel linje per rad
-       er for dyrt for den informasjonen. */
-    .meta-kaptein { display: none; }
+    .meta-chip, .meta-kaptein { justify-content: flex-start; min-width: 0; }
+    .meta-chip:empty, .meta-kaptein:empty { display: none; }
     .chip-badge .lang { display: none; }
     .chip-badge .kort { display: inline; }
     .chip-badge, .kaptein { font-size: 0.72rem; padding: 0.05rem 0.4rem; }
@@ -654,10 +660,12 @@ def _rad(d):
             <div class="lb-lagnavn">{escape(d["lagnavn"])}</div>
             <div class="lb-fornavn">{escape(d["fornavn"])}</div>
           </div>
-          <div class="brukt-chips">{brukt}</div>
-          <div class="spacer"></div>
-          <div class="meta-chip">{aktiv_chip}</div>
-          <div class="meta-kaptein">{kaptein}</div>
+          <div class="mobil-linje">
+            <div class="brukt-chips">{brukt}</div>
+            <div class="spacer"></div>
+            <div class="meta-chip">{aktiv_chip}</div>
+            <div class="meta-kaptein">{kaptein}</div>
+          </div>
           <div class="lb-gw">{d["gw_poeng"]}</div>
           <div class="lb-tot">{d["total"]}</div>
           <div class="utvid">&#9656;</div>
@@ -674,8 +682,10 @@ def _kolonne(deltakere):
     return f"""    <div class="col">
       <div class="col-head">
         <div></div><div class="h-rank">#</div><div></div><div>Deltaker</div>
-        <div></div><div class="spacer"></div>
-        <div class="h-meta"></div><div class="h-meta"></div>
+        <div class="mobil-linje">
+          <div></div><div class="spacer"></div>
+          <div class="h-meta"></div><div class="h-meta"></div>
+        </div>
         <div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
       </div>
 {rader}
