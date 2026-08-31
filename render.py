@@ -350,22 +350,26 @@ CSS = """
     border-bottom: 1px solid var(--divider);
     margin-bottom: 0.9rem;
   }
-  .bytter {
-    display: flex; align-items: baseline; justify-content: flex-start;
-    gap: 0.7rem; flex-wrap: wrap;
-  }
   .bytter-tittel {
+    display: block;
     font-family: var(--display); font-weight: 600;
     font-size: 0.85rem; letter-spacing: 0.22em; text-transform: uppercase;
     color: var(--muted);
+    margin-bottom: 0.4rem;
   }
   .bytter-tom { color: var(--muted); opacity: 0.65; font-size: 0.98rem; }
-  .bytte { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 1.02rem; }
-  .bytte .ut { color: var(--ned); font-weight: 700; }
-  .bytte .inn { color: var(--gronn); font-weight: 700; }
-  .bytte .pil-ut, .bytte .pil-inn { font-weight: 800; letter-spacing: -0.08em; }
-  .bytte .pil-ut { color: var(--ned); }
-  .bytte .pil-inn { color: var(--gronn); }
+  /* Ut og inn i hver sin loddrette bolk. Lista vokser nedover og skyver banen
+     ned med seg - .detalj er en vanlig blokk, saa de kan ikke overlappe. */
+  .bytte-liste { display: grid; gap: 0.12rem; }
+  .bytte-rad {
+    display: flex; align-items: baseline; gap: 0.5rem;
+    font-size: 1.02rem; white-space: nowrap;
+  }
+  .bytte-rad .ut { color: var(--ned); font-weight: 700; }
+  .bytte-rad .inn { color: var(--gronn); font-weight: 700; }
+  .pil-ut, .pil-inn { font-weight: 800; letter-spacing: -0.08em; }
+  .pil-ut { color: var(--ned); }
+  .pil-inn { color: var(--gronn); }
   .gw-poeng-stor {
     font-family: var(--digits); font-weight: 700; font-size: 1.9rem;
     line-height: 1; text-align: center;
@@ -602,25 +606,33 @@ def _bane(tropp):
 
 
 def _bytter(d):
-    """Rundens poeng oeverst og midtstilt, byttene under.
+    """Rundens poeng midtstilt, byttene oppe til venstre.
 
-    Byttestripa staar tom til transfers-endepunktet er verifisert mot ekte
-    data - foerste sjanse er GW2-deadline."""
-    if d.get("bytter"):
-        biter = "".join(
-            f'<span class="bytte"><span class="pil-ut">&laquo;&laquo;&laquo;</span>'
-            f'<span class="ut">{escape(b["ut"])}</span>'
-            f'<span class="pil-inn">&raquo;&raquo;&raquo;</span>'
-            f'<span class="inn">{escape(b["inn"])}</span></span>'
+    Ut og inn staar i hver sin loddrette bolk - alle roede foerst, saa alle
+    groenne. Med Free Hit eller Wildcard er antallet bytter ubegrenset, og da
+    slaas lista av framfor aa la den vokse ukontrollert.
+    """
+    aktiv = d.get("chip")
+    if aktiv in ("Free Hit", "Wildcard"):
+        liste = f'<div class="bytter-tom">{escape(aktiv)} aktiv &ndash; bytter vises ikke</div>'
+    elif d.get("bytter"):
+        rader = [
+            f'<div class="bytte-rad"><span class="pil-ut">&laquo;&laquo;&laquo;</span>'
+            f'<span class="ut">{escape(b["ut"])}</span></div>'
             for b in d["bytter"]
-        )
+        ] + [
+            f'<div class="bytte-rad"><span class="pil-inn">&raquo;&raquo;&raquo;</span>'
+            f'<span class="inn">{escape(b["inn"])}</span></div>'
+            for b in d["bytter"]
+        ]
+        liste = f'<div class="bytte-liste">{"".join(rader)}</div>'
     else:
-        biter = '<span class="bytter-tom">Ingen bytter denne runden</span>'
+        liste = '<div class="bytter-tom">Ingen bytter denne runden</div>'
 
     trekk = f' <span class="ut">(&minus;{d["trekk"]})</span>' if d.get("trekk") else ""
     return (
         f'<div class="runde-topp">'
-        f'<div class="bytter"><span class="bytter-tittel">Bytter</span>{biter}</div>'
+        f'<div class="bytter"><span class="bytter-tittel">Bytter</span>{liste}</div>'
         f'<div class="gw-poeng-stor"><span>Rundens poeng</span>{d["gw_poeng"]}{trekk}</div>'
         f'<div></div>'
         f"</div>"
