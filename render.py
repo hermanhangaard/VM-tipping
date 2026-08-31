@@ -586,16 +586,31 @@ CSS = """
       gap: 0.4rem 0.9rem;
       justify-items: stretch; align-items: start;
     }
-    .runde-topp { grid-template-columns: 1fr auto; }
-    .gw-poeng-stor { font-size: 1.4rem; text-align: center; }
-    /* Under poengene, ikke ved siden av - bredden holder ikke til tre spalter. */
+    /* Tre rader: pilene sentrert oeverst over hele bredden, deretter bytter
+       til venstre og poengblokka til hoeyre. display:contents paa .runde-midt
+       loeser opp TV-grupperingen saa nav og poeng kan plasseres hver for seg. */
+    .runde-topp {
+      grid-template-columns: 1fr auto;
+      gap: 0.15rem 0.8rem;
+      align-items: start;
+    }
+    .runde-midt { display: contents; }
+    .gw-nav {
+      grid-column: 1 / -1; grid-row: 1;
+      justify-content: center; gap: 0.6rem;
+      margin-bottom: 0.55rem;
+    }
     /* 9rem er satt for TV; her presser den pilene fra hverandre. */
     .gw-merke { min-width: 0; font-size: 0.78rem; letter-spacing: 0.18em; }
-    .gw-nav { gap: 0.6rem; }
-    .ring-info {
+    .bytter { grid-column: 1; grid-row: 2 / 4; }
+    .gw-poeng-stor {
       grid-column: 2; grid-row: 2;
-      align-items: center; font-size: 0.8rem; gap: 0.2rem;
-      margin-top: 0.35rem;
+      font-size: 1.4rem; text-align: right;
+    }
+    .ring-info {
+      grid-column: 2; grid-row: 3;
+      align-items: flex-end; font-size: 0.8rem; gap: 0.2rem;
+      margin-top: 0.3rem;
     }
     .ri-ring { width: 0.75rem; height: 0.75rem; }
     /* Fire spillere paa rad maa faa plass paa 390 px:
