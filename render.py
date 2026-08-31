@@ -482,6 +482,8 @@ CSS = """
     font-family: var(--body); font-weight: 600;
     font-size: 0.74rem; letter-spacing: -0.01em;
   }
+  /* Dobbeltrunde: begge kampene stables i boksen. */
+  .spiller-poeng.dobbel { font-size: 0.66rem; line-height: 1.25; padding: 0.1rem 0.2rem; }
   .kaptein-merke {
     position: absolute; top: -0.15rem; right: 0.55rem;
     width: 1.25rem; height: 1.25rem; border-radius: 50%;
@@ -621,13 +623,19 @@ CSS = """
     .ri-ring { width: 0.75rem; height: 0.75rem; }
     /* Fire spillere paa rad maa faa plass paa 390 px:
        4 x 3.5rem + 3 x 0.4rem = 15,2rem ~ 198 px. */
-    .bane { padding: 0.6rem 0.3rem 0.5rem; gap: 0.45rem; }
-    .bane-rad { gap: 0.4rem; }
-    .spiller { width: 3.5rem; }
-    .spiller img { width: 1.9rem; height: 1.9rem; }
-    .spiller-navn { font-size: 0.66rem; }
-    .spiller-poeng { font-size: 0.72rem; }
-    .spiller-poeng.kamp { font-size: 0.6rem; }
+    /* Bredden er det vi har rikelig av paa mobil; hoeyden gaar det ogsaa an
+       aa bruke litt mer av. 4 x 4.6rem + 3 x 0.5rem = 19,9rem ~ 259 px av
+       de ~360 tilgjengelige, saa det er luft igjen til dobbeltrunder. */
+    .bane { padding: 0.8rem 0.3rem 0.7rem; gap: 0.7rem; }
+    .bane-rad { gap: 0.5rem; }
+    .spiller { width: 4.6rem; }
+    .spiller img { width: 2.6rem; height: 2.6rem; }
+    .spiller-navn { font-size: 0.74rem; }
+    .spiller-poeng { font-size: 0.82rem; }
+    .spiller-poeng.kamp { font-size: 0.68rem; }
+    .spiller-poeng.dobbel { font-size: 0.6rem; }
+    .kaptein-merke { width: 1.15rem; height: 1.15rem; font-size: 0.66rem; right: 0.5rem; }
+    .benk { padding: 0.7rem 0.3rem; }
     .kaptein-merke { width: 0.95rem; height: 0.95rem; font-size: 0.58rem; right: 0.25rem; }
     .benk { margin-top: 0.5rem; padding: 0.5rem 0.3rem; }
 
@@ -671,7 +679,11 @@ def _spiller(sp):
     if sp.get("spilt"):
         poeng, ikke_spilt = sp["poeng"], ""
     elif sp.get("motstander"):
-        poeng, ikke_spilt = escape(sp["motstander"]), " ikke-spilt kamp"
+        kamper = sp["motstander"]
+        if isinstance(kamper, str):          # eldre bufrede runder
+            kamper = [kamper]
+        poeng = "<br>".join(escape(k) for k in kamper)
+        ikke_spilt = " ikke-spilt kamp" + (" dobbel" if len(kamper) > 1 else "")
     else:
         poeng, ikke_spilt = "&ndash;", " ikke-spilt"
     return (

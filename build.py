@@ -117,15 +117,15 @@ def motstandere(kamper, lag):
     Bare kamper som ikke er i gang teller. Har kampen begynt og spilleren
     likevel null minutter, satt han paa benken - da skal det staa strek, ikke
     en motstander som om kampen laa foran ham.
-    Dobbeltrunder: foerste kamp som ikke har startet vinner. Blanke runder:
-    laget mangler i mappingen og faller tilbake paa strek.
+    Dobbeltrunder gir flere kamper i lista - alle vises. Blanke runder: laget
+    mangler i mappingen og faller tilbake paa strek.
     """
     ut = {}
     for f in sorted(kamper, key=lambda x: x["kickoff_time"] or ""):
         if f["started"]:
             continue
-        ut.setdefault(f["team_h"], f"{lag[f['team_a']]} (H)")
-        ut.setdefault(f["team_a"], f"{lag[f['team_h']]} (A)")
+        ut.setdefault(f["team_h"], []).append(f"{lag[f['team_a']]} (H)")
+        ut.setdefault(f["team_a"], []).append(f"{lag[f['team_h']]} (A)")
     return ut
 
 

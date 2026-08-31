@@ -104,7 +104,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Ødegaard",
      "poeng": 0,
@@ -251,7 +253,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Calafiori",
      "poeng": 0,
@@ -287,7 +291,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Tzolis",
      "poeng": 0,
@@ -455,7 +461,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Calafiori",
      "poeng": 0,
@@ -467,7 +475,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Ødegaard",
      "poeng": 0,
@@ -479,7 +489,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Tzolis",
      "poeng": 0,
@@ -626,7 +638,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Calafiori",
      "poeng": 0,
@@ -698,7 +712,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Ødegaard",
      "poeng": 0,
@@ -833,7 +849,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Calafiori",
      "poeng": 0,
@@ -869,7 +887,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Tzolis",
      "poeng": 0,
@@ -965,7 +985,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 0,
      "navn": "Konsa",
      "poeng": 0,
@@ -1021,7 +1043,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Gabriel",
      "poeng": 0,
@@ -1216,7 +1240,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Gabriel",
      "poeng": 0,
@@ -1264,7 +1290,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Tzolis",
      "poeng": 0,
@@ -1300,7 +1328,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Havertz",
      "poeng": 0,
@@ -1416,7 +1446,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Gabriel",
      "poeng": 0,
@@ -1428,7 +1460,9 @@
     {
      "kaptein": false,
      "lag_kode": 7,
-     "motstander": "ARS (H)",
+     "motstander": [
+      "ARS (H)"
+     ],
      "mult": 1,
      "navn": "Cash",
      "poeng": 0,
@@ -1464,7 +1498,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Saka",
      "poeng": 0,
@@ -1560,7 +1596,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 0,
      "navn": "Konsa",
      "poeng": 0,
@@ -1604,7 +1642,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "Raya",
      "poeng": 0,
@@ -1628,7 +1668,9 @@
     {
      "kaptein": false,
      "lag_kode": 3,
-     "motstander": "AVL (A)",
+     "motstander": [
+      "AVL (A)"
+     ],
      "mult": 1,
      "navn": "White",
      "poeng": 0,
