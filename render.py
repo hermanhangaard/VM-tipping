@@ -443,10 +443,10 @@ CSS = """
       repeating-linear-gradient(180deg, rgba(255,255,255,0.045) 0 2.6rem, transparent 2.6rem 5.2rem);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
-    padding: 1rem 0.6rem 0.9rem;
-    display: grid; gap: 0.7rem;
+    padding: 1.4rem 0.6rem 1.2rem;
+    display: grid; gap: 1.1rem;
   }
-  .bane-rad { display: flex; justify-content: center; gap: 1.15rem; flex-wrap: wrap; }
+  .bane-rad { display: flex; justify-content: center; gap: 1.3rem; flex-wrap: wrap; }
 
   .benk {
     margin-top: 0.7rem;
@@ -461,16 +461,16 @@ CSS = """
     color: var(--muted); text-align: center; margin-bottom: 0.5rem;
   }
 
-  .spiller { width: 5.4rem; text-align: center; position: relative; }
-  .spiller img { width: 3.1rem; height: 3.1rem; object-fit: contain; display: block; margin: 0 auto; }
+  .spiller { width: 6.8rem; text-align: center; position: relative; }
+  .spiller img { width: 3.9rem; height: 3.9rem; object-fit: contain; display: block; margin: 0 auto; }
   .spiller-navn {
-    font-size: 0.86rem; font-weight: 600;
+    font-size: 0.95rem; font-weight: 600;
     background: rgba(0, 0, 0, 0.55); border-radius: 3px 3px 0 0;
     padding: 0.1rem 0.2rem; margin-top: 0.2rem;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .spiller-poeng {
-    font-family: var(--digits); font-weight: 700; font-size: 0.92rem;
+    font-family: var(--digits); font-weight: 700; font-size: 1.02rem;
     background: var(--gronn); color: #06231a;
     border-radius: 0 0 3px 3px; padding: 0.06rem 0.2rem;
   }
@@ -482,8 +482,14 @@ CSS = """
     font-family: var(--body); font-weight: 600;
     font-size: 0.74rem; letter-spacing: -0.01em;
   }
-  /* Dobbeltrunde: begge kampene stables i boksen. */
-  .spiller-poeng.dobbel { font-size: 0.66rem; line-height: 1.25; padding: 0.1rem 0.2rem; }
+  /* Dobbeltrunde: kampene side om side med skillestrek, foerste kamp foerst. */
+  .spiller-poeng.dobbel {
+    display: flex; align-items: center; justify-content: center; gap: 0.3rem;
+    font-size: 0.62rem; padding: 0.1rem 0.15rem;
+  }
+  .spiller-poeng.dobbel > span + span {
+    border-left: 1px solid rgba(36, 16, 51, 0.45); padding-left: 0.3rem;
+  }
   .kaptein-merke {
     position: absolute; top: -0.15rem; right: 0.55rem;
     width: 1.25rem; height: 1.25rem; border-radius: 50%;
@@ -626,14 +632,15 @@ CSS = """
     /* Bredden er det vi har rikelig av paa mobil; hoeyden gaar det ogsaa an
        aa bruke litt mer av. 4 x 4.6rem + 3 x 0.5rem = 19,9rem ~ 259 px av
        de ~360 tilgjengelige, saa det er luft igjen til dobbeltrunder. */
-    .bane { padding: 0.8rem 0.3rem 0.7rem; gap: 0.7rem; }
-    .bane-rad { gap: 0.5rem; }
-    .spiller { width: 4.6rem; }
-    .spiller img { width: 2.6rem; height: 2.6rem; }
-    .spiller-navn { font-size: 0.74rem; }
-    .spiller-poeng { font-size: 0.82rem; }
-    .spiller-poeng.kamp { font-size: 0.68rem; }
-    .spiller-poeng.dobbel { font-size: 0.6rem; }
+    .bane { padding: 0.75rem 0.25rem 0.65rem; gap: 0.6rem; }
+    .bane-rad { gap: 0.35rem; }
+    .spiller { width: 5.2rem; }
+    .spiller img { width: 2.7rem; height: 2.7rem; }
+    .spiller-navn { font-size: 0.76rem; }
+    .spiller-poeng { font-size: 0.84rem; }
+    .spiller-poeng.kamp { font-size: 0.7rem; }
+    .spiller-poeng.dobbel { font-size: 0.54rem; gap: 0.2rem; }
+    .spiller-poeng.dobbel > span + span { padding-left: 0.2rem; }
     .kaptein-merke { width: 1.15rem; height: 1.15rem; font-size: 0.66rem; right: 0.5rem; }
     .benk { padding: 0.7rem 0.3rem; }
     .kaptein-merke { width: 0.95rem; height: 0.95rem; font-size: 0.58rem; right: 0.25rem; }
@@ -682,7 +689,7 @@ def _spiller(sp):
         kamper = sp["motstander"]
         if isinstance(kamper, str):          # eldre bufrede runder
             kamper = [kamper]
-        poeng = "<br>".join(escape(k) for k in kamper)
+        poeng = "".join(f"<span>{escape(k)}</span>" for k in kamper)
         ikke_spilt = " ikke-spilt kamp" + (" dobbel" if len(kamper) > 1 else "")
     else:
         poeng, ikke_spilt = "&ndash;", " ikke-spilt"

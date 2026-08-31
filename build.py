@@ -35,6 +35,11 @@ CHIP_NAVN = {
 }
 CHIP_KORT = {"3xc": "TC", "bboost": "BB", "freehit": "FH", "wildcard": "WC"}
 
+# MIDLERTIDIG: hardkodet dobbeltrunde for Calafiori i Lasses lag, saa
+# visningen kan sjekkes i produksjon. Slett disse tre linjene naar en ekte
+# dobbeltrunde dukker opp. {entry: {element: [kamper]}}
+DEMO_DOBBEL = {3654880: {8: ["AVL (A)", "MUN (H)"]}}
+
 
 def halvdel_start(gw):
     """FPL gir alle chips paa nytt fra GW20. En chip brukt foer det er derfor
@@ -158,7 +163,10 @@ def hent_lag(entry_id, gw, spillere, live, mot=None):
             # Startellever viser bidraget sitt (kaptein dobbelt), benken raa poeng.
             "poeng": raa * pick["multiplier"] if pick["multiplier"] else raa,
             "spilt": minutter > 0,
-            "motstander": None if minutter > 0 else (mot or {}).get(sp["team"]),
+            "motstander": (
+                DEMO_DOBBEL.get(entry_id, {}).get(pick["element"])
+                or (None if minutter > 0 else (mot or {}).get(sp["team"]))
+            ),
             "kaptein": bool(pick.get("is_captain")),
             "vise": bool(pick.get("is_vice_captain")),
         })
