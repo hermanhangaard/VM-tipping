@@ -201,7 +201,14 @@ CSS = """
     display: grid;
     /* Foerste kolonne er bevegelsespila, helt ute til venstre og adskilt fra
        plasseringstallet. */
-    grid-template-columns: 2.4rem 2.6rem 2.2rem 1fr auto auto 4.2rem 5.4rem 1.4rem;
+    /* Alt som skal flukte loddrett har fast bredde, ikke auto:
+         15rem   lagnavn - rommer «Hans Magnus's Team»
+         8.6rem  aktiv chip - rommer «Triple Captain», det lengste chipnavnet
+         11rem   kaptein - rommer 16 tegn, som er det lengste web_name i
+                 hele Premier League («Borges Rodrigues»)
+       Innholdet i de to siste sentreres i slissen sin. 1fr-slissen mellom
+       chipsene og hoeyre halvdel tar opp resten. */
+    grid-template-columns: 2.4rem 2.6rem 2.2rem 15rem auto 1fr 8.6rem 11rem 4.2rem 5.4rem 1.4rem;
     align-items: center;
     gap: 0.7rem;
     padding: 0.75rem 1.3rem 0.75rem 0.9rem;
@@ -262,7 +269,11 @@ CSS = """
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
-  .meta { display: flex; align-items: center; gap: 0.45rem; flex-wrap: nowrap; }
+  /* Hver sin faste slisse, innholdet sentrert i den. */
+  .meta-chip, .meta-kaptein {
+    display: flex; align-items: center; justify-content: center;
+    min-width: 0;
+  }
   .kaptein, .chip-badge {
     display: inline-flex; align-items: baseline; gap: 0.35rem;
     border-radius: 999px; padding: 0.18rem 0.7rem;
@@ -308,8 +319,15 @@ CSS = """
   }
 
   /* Oppbrukte chips: forkortelse i roed boks, tett inntil navnet.
-     Aktiv chip staar lenger ute med fullt navn i gult. */
-  .brukt-chips { display: flex; gap: 0.3rem; }
+     Fast rutenett med én kolonne per chip-type (BB, TC, WC, FH) slik at de
+     staar loddrett over hverandre paa tvers av radene - mangler noen en chip
+     blir slissen staaende tom i stedet for at de andre glir mot venstre. */
+  .brukt-chips {
+    display: grid;
+    grid-template-columns: repeat(4, 2.2rem);
+    gap: 0.25rem;
+  }
+  .brukt-chips > span { justify-self: start; }
   .brukt-chip {
     font-family: var(--digits); font-weight: 700; font-size: 0.78rem;
     color: var(--ned); background: rgba(255, 77, 77, 0.13);
@@ -420,7 +438,7 @@ CSS = """
     }
     /* Kaptein/chip-pillene tar for mye bredde paa telefon - de staar
        uansett i detaljvisningen som er hovedpoenget der. */
-    .col-head .h-meta, .meta { display: none; }
+    .col-head .h-meta, .meta-chip, .meta-kaptein { display: none; }
     .lb-fornavn { font-size: 1.15rem; }
     .lb-tot { font-size: 1.4rem; }
     .detalj { padding: 0.4rem 0.6rem 1rem; }
@@ -434,6 +452,9 @@ CSS = """
 
 # Premie gaar kun til 1., 2. og beste enkeltrunde - derfor ingen bronse.
 MEDALJE = {1: "gold", 2: "silver"}
+
+# Fast rekkefoelge paa chip-slissene, saa kolonnene flukter mellom radene.
+CHIP_REKKEFOLGE = ("BB", "TC", "WC", "FH")
 
 
 def _pil(rank, forrige):
@@ -530,16 +551,18 @@ def _rad(d):
     )
 
     # Oppbrukte chips tett paa navnet, aktiv chip ute i meta-kolonnen.
-    brukt = "".join(f'<span class="brukt-chip">{c}</span>' for c in d.get("brukte_chips") or [])
+    # Fast slisse per type saa de flukter loddrett mellom radene.
+    har = set(d.get("brukte_chips") or [])
+    brukt = "".join(
+        f'<span class="brukt-chip">{c}</span>' if c in har else "<span></span>"
+        for c in CHIP_REKKEFOLGE
+    )
 
     beste = ' beste' if d.get("har_beste_gw") else ""
     tittel = f' title="Beste enkeltrunde: {d["beste_gw"]} poeng"' if d.get("har_beste_gw") else ""
 
-    meta = []
-    if d.get("chip"):
-        meta.append(f'<span class="chip-badge">{escape(d["chip"])}</span>')
-    if d.get("kaptein"):
-        meta.append(f'<span class="kaptein"><b>C</b>{escape(d["kaptein"])}</span>')
+    aktiv_chip = f'<span class="chip-badge">{escape(d["chip"])}</span>' if d.get("chip") else ""
+    kaptein = f'<span class="kaptein"><b>C</b>{escape(d["kaptein"])}</span>' if d.get("kaptein") else ""
 
     return f"""      <details class="lb-item">
         <summary class="lb-row {kls}">
@@ -551,7 +574,9 @@ def _rad(d):
             <div class="lb-fornavn">{escape(d["fornavn"])}</div>
           </div>
           <div class="brukt-chips">{brukt}</div>
-          <div class="meta">{"".join(meta)}</div>
+          <div></div>
+          <div class="meta-chip">{aktiv_chip}</div>
+          <div class="meta-kaptein">{kaptein}</div>
           <div class="lb-gw">{d["gw_poeng"]}</div>
           <div class="lb-tot">{d["total"]}</div>
           <div class="utvid">&#9656;</div>
@@ -568,7 +593,8 @@ def _kolonne(deltakere):
     return f"""    <div class="col">
       <div class="col-head">
         <div></div><div class="h-rank">#</div><div></div><div>Deltaker</div>
-        <div></div><div class="h-meta"></div>
+        <div></div><div></div>
+        <div class="h-meta"></div><div class="h-meta"></div>
         <div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
       </div>
 {rader}
