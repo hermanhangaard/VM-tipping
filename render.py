@@ -472,8 +472,8 @@ CSS = """
     /* --- radene --- */
     .col-head { display: none; }
     .col-head, .lb-row {
-      grid-template-columns: 2.2rem 1fr 2.6rem 3.2rem;
-      gap: 0.15rem 0.5rem;
+      grid-template-columns: 2.2rem 1fr auto 2.4rem 3.2rem;
+      gap: 0.2rem 0.45rem;
       padding: 0.5rem 0.6rem;
     }
     /* Bilder og fyllkolonner ut - klubblogoene er tomme for de fleste
@@ -485,28 +485,32 @@ CSS = """
     .lb-navn { grid-column: 2; grid-row: 1; }
     .lb-lagnavn { font-size: 1.05rem; }
     .lb-fornavn { font-size: 0.8rem; }
-    .lb-gw  { grid-column: 3; grid-row: 1; font-size: 0.95rem; align-self: center; }
-    .lb-tot { grid-column: 4; grid-row: 1; font-size: 1.25rem; align-self: center; }
+    /* Kapteinen hoeyrerettet paa navnelinja, foer poengene. */
+    .meta-kaptein {
+      grid-column: 3; grid-row: 1;
+      justify-content: flex-end; align-self: center; min-width: 0;
+    }
+    .lb-gw  { grid-column: 4; grid-row: 1; font-size: 0.95rem; align-self: center; }
+    .lb-tot { grid-column: 5; grid-row: 1; font-size: 1.25rem; align-self: center; }
 
     /* Andre linje: chips og kaptein. Fast justering er en TV-luksus vi ikke
        har raad til her, saa slissene faar flyte. */
-    /* Hele andre linje i én flex-strek: oppbrukte chips, aktiv chip og
-       kaptein side om side. Ingen faste slisser her - kapteinsnavnet faar
-       den bredden det trenger. Dimensjonert etter det folk faktisk kapteiner
-       («B.Fernandes», «João Pedro»), ikke etter ligaens lengste navn;
-       skulle noen kapteine en 16-tegns spiller, bryter linja i stedet. */
+    /* Andre linje under navnet: fem faste slisser i rekkefoelgen
+       [BB] [TC] [WC] [FH] [aktiv]. display:contents paa .brukt-chips loefter
+       de fire slissene opp som celler i denne raden, saa de flukter loddrett
+       mellom radene akkurat som paa TV. Tomme slisser staar tomme. */
     .mobil-linje {
-      display: flex; align-items: center; flex-wrap: wrap;
-      gap: 0.25rem 0.35rem;
       grid-column: 2 / -1; grid-row: 2;
-      min-width: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1.8rem) auto;
+      gap: 0.22rem;
+      justify-content: start; align-items: center;
     }
     .mobil-linje .spacer { display: none; }
-    .brukt-chips { display: flex; gap: 0.25rem; align-items: center; }
-    .brukt-chips > span:empty { display: none; }
+    .brukt-chips { display: contents; }
+    .brukt-chips > span { justify-self: start; }
     .brukt-chip { font-size: 0.68rem; padding: 0.05rem 0.28rem; }
-    .meta-chip, .meta-kaptein { justify-content: flex-start; min-width: 0; }
-    .meta-chip:empty, .meta-kaptein:empty { display: none; }
+    .meta-chip { justify-content: flex-start; min-width: 0; }
     .chip-badge .lang { display: none; }
     .chip-badge .kort { display: inline; }
     .chip-badge, .kaptein { font-size: 0.72rem; padding: 0.05rem 0.4rem; }
@@ -664,8 +668,8 @@ def _rad(d):
             <div class="brukt-chips">{brukt}</div>
             <div class="spacer"></div>
             <div class="meta-chip">{aktiv_chip}</div>
-            <div class="meta-kaptein">{kaptein}</div>
           </div>
+          <div class="meta-kaptein">{kaptein}</div>
           <div class="lb-gw">{d["gw_poeng"]}</div>
           <div class="lb-tot">{d["total"]}</div>
           <div class="utvid">&#9656;</div>
@@ -683,9 +687,9 @@ def _kolonne(deltakere):
       <div class="col-head">
         <div></div><div class="h-rank">#</div><div></div><div>Deltaker</div>
         <div class="mobil-linje">
-          <div></div><div class="spacer"></div>
-          <div class="h-meta"></div><div class="h-meta"></div>
+          <div></div><div class="spacer"></div><div class="h-meta"></div>
         </div>
+        <div class="h-meta"></div>
         <div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
       </div>
 {rader}
