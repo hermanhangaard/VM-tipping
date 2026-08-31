@@ -521,9 +521,17 @@ CSS = """
 
     /* --- detaljvisning --- */
     .detalj { padding: 0.3rem 0.4rem 0.8rem; }
-    .runde-topp { grid-template-columns: 1fr; gap: 0.5rem; justify-items: center; }
-    .bytter { justify-content: center; }
-    .gw-poeng-stor { font-size: 1.5rem; }
+    /* Bytter til venstre, rundens poeng til hoeyre. Stablet over hverandre
+       ble navnene trange; side om side faar de hele bredden minus poengene.
+       Den tomme tredje cellen som midtstiller poengene paa TV er unoedvendig
+       her og skjules, ellers ville den lagt igjen en tom rad. */
+    .runde-topp {
+      grid-template-columns: 1fr auto;
+      gap: 0.4rem 0.9rem;
+      justify-items: stretch; align-items: start;
+    }
+    .runde-topp > div:last-child { display: none; }
+    .gw-poeng-stor { font-size: 1.5rem; text-align: right; }
     /* Fire spillere paa rad maa faa plass paa 390 px:
        4 x 3.5rem + 3 x 0.4rem = 15,2rem ~ 198 px. */
     .bane { padding: 0.6rem 0.3rem 0.5rem; gap: 0.45rem; }
