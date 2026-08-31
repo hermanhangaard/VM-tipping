@@ -347,6 +347,21 @@ CSS = """
     border-radius: 4px; padding: 0.12rem 0.35rem;
   }
 
+  /* Naar deltakerens beste og verste runde skjedde. Ligger i 1fr-kolonnen
+     som ellers stod tom mellom chipsene og aktiv-chip-slissen. */
+  .ring-info {
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 0.1rem; line-height: 1.2;
+    font-size: 0.78rem; color: var(--muted);
+  }
+  .ri { display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
+  .ri-ring {
+    width: 0.85rem; height: 0.85rem; border-radius: 50%;
+    flex: none; box-sizing: border-box;
+  }
+  .ri-ring.beste { border: 2px solid var(--gronn); }
+  .ri-ring.verst { border: 2px solid var(--ned); }
+
   /* --- GW-navigasjon i utfellingen --- */
   .gw-nav {
     display: flex; align-items: center; justify-content: center;
@@ -544,12 +559,16 @@ CSS = """
     .mobil-linje {
       grid-column: 2 / -1; grid-row: 2;
       display: grid;
-      grid-template-columns: repeat(4, 1.8rem) auto;
+      grid-template-columns: repeat(4, 1.8rem) auto 1fr;
       gap: 0.22rem;
-      justify-content: start; align-items: center;
+      justify-content: stretch; align-items: center;
     }
-    .mobil-linje .spacer { display: none; }
     .brukt-chips { display: contents; }
+    /* Eksplisitt plassering: chipsene i slisse 1-5, rundeinfoen ytterst til
+       hoeyre, altsaa rett under poengkolonnene. */
+    .meta-chip { grid-column: 5; }
+    .ring-info { grid-column: 6; justify-self: end; font-size: 0.68rem; }
+    .ri-ring { width: 0.72rem; height: 0.72rem; border-width: 2px; }
     .brukt-chips > span { justify-self: start; }
     .brukt-chip { font-size: 0.68rem; padding: 0.05rem 0.28rem; }
     .meta-chip { justify-content: flex-start; min-width: 0; }
@@ -745,6 +764,17 @@ def _rad(d, gw_na=None, gw_liste=None):
     tittel = f' title="{escape(" · ".join(hint))}"' if hint else ""
 
     # Fullt navn paa TV, forkortelse paa mobil. Begge rendres, CSS velger.
+    # Naar deltakerens beste og verste runde inntraff. Bruker samme ringer som
+    # tegnforklaringen, saa symbolene betyr det samme overalt.
+    ring_info = ""
+    if d.get("beste_gw_nr") and d.get("verste_gw_nr"):
+        ring_info = (
+            f'<span class="ri"><span class="ri-ring beste"></span>'
+            f'&ndash; GW{d["beste_gw_nr"]}</span>'
+            f'<span class="ri"><span class="ri-ring verst"></span>'
+            f'&ndash; GW{d["verste_gw_nr"]}</span>'
+        )
+
     aktiv_chip = (
         f'<span class="chip-badge"><span class="lang">{escape(d["chip"])}</span>'
         f'<span class="kort">{escape(d.get("chip_kort") or "")}</span></span>'
@@ -764,7 +794,7 @@ def _rad(d, gw_na=None, gw_liste=None):
           </div>
           <div class="mobil-linje">
             <div class="brukt-chips">{brukt}</div>
-            <div class="spacer"></div>
+            <div class="ring-info">{ring_info}</div>
             <div class="meta-chip">{aktiv_chip}</div>
           </div>
           <div class="meta-kaptein">{kaptein}</div>

@@ -178,6 +178,8 @@ def lagre_gw(gw_id, deltakere, ferdig):
                 "bytter": d.get("bytter") or [],
                 "har_beste_gw": d.get("har_beste_gw", False),
                 "har_verste_gw": d.get("har_verste_gw", False),
+                "beste_gw_nr": d.get("beste_gw_nr"),
+                "verste_gw_nr": d.get("verste_gw_nr"),
                 "tropp": d.get("tropp") or [],
             }
             for d in deltakere
@@ -264,9 +266,12 @@ def bygg():
         d.update(hent_historikk(eid, gw_id))
         # Beste enkeltrunde: ferdige GW-er fra history, inneværende fra
         # ligatabellen siden history henger etter.
-        runder = [*d.get("gw_poeng_historikk", {}).values(), d["gw_poeng"]]
-        d["beste_gw"] = max(runder)
-        d["verste_gw"] = min(runder)
+        runder = {**d.get("gw_poeng_historikk", {}), gw_id: d["gw_poeng"]}
+        d["beste_gw"] = max(runder.values())
+        d["verste_gw"] = min(runder.values())
+        # Ved likt resultat viser vi den seneste runden - den er mest aktuell.
+        d["beste_gw_nr"] = max(g for g, poeng in runder.items() if poeng == d["beste_gw"])
+        d["verste_gw_nr"] = max(g for g, poeng in runder.items() if poeng == d["verste_gw"])
         deltakere.append(d)
 
     # Beste og verste enkeltrunde i hele ligaen. Flere kan dele hver av dem,
