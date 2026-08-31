@@ -432,24 +432,96 @@ CSS = """
     font-variant-numeric: tabular-nums;
   }
 
+  /* Aktiv chip: fullt navn paa TV, forkortelse paa mobil. */
+  .chip-badge .kort { display: none; }
+
+  /* ------------------------------------------------------------------
+     MOBIL. Alt herfra gjelder kun under 720 px og roerer ikke TV-visningen.
+     Raden gaar fra 11 kolonner til et 2x4-rutenett:
+        rad 1:  plassering | lagnavn + fornavn | GW | Tot
+        rad 2:              | chips + aktiv chip + kaptein
+     ------------------------------------------------------------------ */
   @media (max-width: 720px) {
-    html { font-size: 15px; }
+    html { font-size: 13px; }
+    .wrap { padding: 0.9rem 0.7rem 1rem; }
     .board.to-kolonner { grid-template-columns: 1fr; }
-    .col-head, .lb-row {
-      grid-template-columns: 2rem 1.8rem 1.6rem 1fr auto 3.2rem 4rem 1.2rem;
-      gap: 0.4rem; padding: 0.6rem 0.7rem;
+
+    /* --- header --- */
+    header { margin-bottom: 0.7rem; }
+    .head-grid { flex-direction: column; align-items: stretch; gap: 0.7rem; }
+    h1 { font-size: 1.85rem; line-height: 1; }
+    .eyebrow { font-size: 0.8rem; letter-spacing: 0.2em; gap: 0.6rem; margin-bottom: 0.3rem; }
+    .tegnforklaring { gap: 0.5rem 0.9rem; font-size: 0.76rem; }
+    .tf-ring { width: 1.25rem; height: 1.25rem; font-size: 0.8rem; }
+    /* GW-kortet blir en flat stripe i stedet for et hoeyt kort. */
+    .gw-kort {
+      min-width: 0; padding: 0.5rem 0.8rem;
+      display: grid; grid-template-columns: 1fr auto; align-items: center;
+      gap: 0.2rem 0.8rem;
     }
-    /* Kaptein/chip-pillene tar for mye bredde paa telefon - de staar
-       uansett i detaljvisningen som er hovedpoenget der. */
-    .col-head .h-meta, .meta-chip, .meta-kaptein { display: none; }
-    .lb-fornavn { font-size: 1.15rem; }
-    .lb-tot { font-size: 1.4rem; }
-    .detalj { padding: 0.4rem 0.6rem 1rem; }
-    .spiller { width: 4.4rem; }
-    .spiller img { width: 2.5rem; height: 2.5rem; }
-    /* Tre kolonner blir for trangt paa telefon - stables i stedet. */
-    .runde-topp { grid-template-columns: 1fr; gap: 0.6rem; justify-items: center; }
+    .gw-label { margin-bottom: 0; font-size: 0.76rem; }
+    .gw-tall { font-size: 1.3rem; text-align: right; grid-row: 1 / 3; grid-column: 2; }
+    .gw-meta { font-size: 0.78rem; }
+    .progress { grid-column: 1 / 3; margin-top: 0.35rem; height: 3px; }
+    .gw-live { grid-column: 1 / 3; margin-top: 0.3rem; font-size: 0.8rem; }
+
+    /* --- radene --- */
+    .col-head { display: none; }
+    .col-head, .lb-row {
+      grid-template-columns: 2.2rem 1fr 2.6rem 3.2rem;
+      gap: 0.15rem 0.5rem;
+      padding: 0.5rem 0.6rem;
+    }
+    /* Bilder og fyllkolonner ut - klubblogoene er tomme for de fleste
+       uansett, og pila stjeler bredde vi ikke har. */
+    .lb-badge, .spacer, .utvid, .pil { display: none; }
+
+    .lb-rank { grid-column: 1; grid-row: 1 / 3; font-size: 1.5rem; align-self: center; }
+    .lb-rank.beste { width: 1.9rem; height: 1.9rem; border-width: 2px; }
+    .lb-navn { grid-column: 2; grid-row: 1; }
+    .lb-lagnavn { font-size: 1.05rem; }
+    .lb-fornavn { font-size: 0.8rem; }
+    .lb-gw  { grid-column: 3; grid-row: 1; font-size: 0.95rem; align-self: center; }
+    .lb-tot { grid-column: 4; grid-row: 1; font-size: 1.25rem; align-self: center; }
+
+    /* Andre linje: chips og kaptein. Fast justering er en TV-luksus vi ikke
+       har raad til her, saa slissene faar flyte. */
+    .brukt-chips {
+      grid-column: 2 / 5; grid-row: 2;
+      display: flex; gap: 0.25rem; flex-wrap: wrap; align-items: center;
+    }
+    .brukt-chips > span:empty { display: none; }
+    .brukt-chip { font-size: 0.68rem; padding: 0.05rem 0.28rem; }
+    .meta-chip {
+      grid-column: 3 / 5; grid-row: 2;
+      justify-content: flex-start; align-self: center;
+    }
+    /* Kapteinen droppes paa mobil. Den er lik for de fleste (7 av 9 hadde
+       Haaland i GW1), saa den skiller knapt radene - og den staar uansett i
+       detaljvisningen, som er lett aa naa med tommelen. En hel linje per rad
+       er for dyrt for den informasjonen. */
+    .meta-kaptein { display: none; }
+    .chip-badge .lang { display: none; }
+    .chip-badge .kort { display: inline; }
+    .chip-badge, .kaptein { font-size: 0.72rem; padding: 0.05rem 0.4rem; }
+
+    /* --- detaljvisning --- */
+    .detalj { padding: 0.3rem 0.4rem 0.8rem; }
+    .runde-topp { grid-template-columns: 1fr; gap: 0.5rem; justify-items: center; }
     .bytter { justify-content: center; }
+    .gw-poeng-stor { font-size: 1.5rem; }
+    /* Fire spillere paa rad maa faa plass paa 390 px:
+       4 x 3.5rem + 3 x 0.4rem = 15,2rem ~ 198 px. */
+    .bane { padding: 0.6rem 0.3rem 0.5rem; gap: 0.45rem; }
+    .bane-rad { gap: 0.4rem; }
+    .spiller { width: 3.5rem; }
+    .spiller img { width: 1.9rem; height: 1.9rem; }
+    .spiller-navn { font-size: 0.66rem; }
+    .spiller-poeng { font-size: 0.72rem; }
+    .kaptein-merke { width: 0.95rem; height: 0.95rem; font-size: 0.58rem; right: 0.25rem; }
+    .benk { margin-top: 0.5rem; padding: 0.5rem 0.3rem; }
+
+    footer { font-size: 0.76rem; }
   }
 """
 
@@ -564,7 +636,13 @@ def _rad(d):
     beste = ' beste' if d.get("har_beste_gw") else ""
     tittel = f' title="Beste enkeltrunde: {d["beste_gw"]} poeng"' if d.get("har_beste_gw") else ""
 
-    aktiv_chip = f'<span class="chip-badge">{escape(d["chip"])}</span>' if d.get("chip") else ""
+    # Fullt navn paa TV, forkortelse paa mobil. Begge rendres, CSS velger.
+    aktiv_chip = (
+        f'<span class="chip-badge"><span class="lang">{escape(d["chip"])}</span>'
+        f'<span class="kort">{escape(d.get("chip_kort") or "")}</span></span>'
+        if d.get("chip")
+        else ""
+    )
     kaptein = f'<span class="kaptein"><b>C</b>{escape(d["kaptein"])}</span>' if d.get("kaptein") else ""
 
     return f"""      <details class="lb-item">
@@ -577,7 +655,7 @@ def _rad(d):
             <div class="lb-fornavn">{escape(d["fornavn"])}</div>
           </div>
           <div class="brukt-chips">{brukt}</div>
-          <div></div>
+          <div class="spacer"></div>
           <div class="meta-chip">{aktiv_chip}</div>
           <div class="meta-kaptein">{kaptein}</div>
           <div class="lb-gw">{d["gw_poeng"]}</div>
@@ -596,7 +674,7 @@ def _kolonne(deltakere):
     return f"""    <div class="col">
       <div class="col-head">
         <div></div><div class="h-rank">#</div><div></div><div>Deltaker</div>
-        <div></div><div></div>
+        <div></div><div class="spacer"></div>
         <div class="h-meta"></div><div class="h-meta"></div>
         <div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
       </div>

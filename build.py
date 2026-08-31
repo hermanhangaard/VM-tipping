@@ -120,6 +120,9 @@ def hent_lag(entry_id, gw, spillere, live):
     return {
         "kaptein": kaptein,
         "chip": CHIP_NAVN.get(p.get("active_chip") or ""),
+        # Mobilvisningen har ikke plass til «Triple Captain» - den bruker
+        # forkortelsen, samme som de oppbrukte chipsene.
+        "chip_kort": CHIP_KORT.get(p.get("active_chip") or ""),
         "benk": hist.get("points_on_bench"),
         "trekk": hist.get("event_transfers_cost") or 0,
         "tropp": tropp,
