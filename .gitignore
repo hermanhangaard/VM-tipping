@@ -12,3 +12,6 @@ preview*.png
 *.jpeg
 *.png
 !design/*
+
+# Lokal simulering, aldri i produksjon
+sim/
