@@ -363,9 +363,12 @@ CSS = """
   .ri-ring.verst { border: 2px solid var(--ned); }
 
   /* --- GW-navigasjon i utfellingen --- */
+  /* Navigasjon og poeng deler midtkolonnen, saa «Bytter» og rundeinfoen
+     kan ligge i hvert sitt oevre hjoerne i stedet for aa ta egne linjer. */
+  .runde-midt { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
   .gw-nav {
     display: flex; align-items: center; justify-content: center;
-    gap: 0.9rem; padding: 0.5rem 0 0.2rem;
+    gap: 0.9rem;
   }
   .gw-pil {
     background: rgba(4, 245, 255, 0.1);
@@ -583,9 +586,17 @@ CSS = """
       gap: 0.4rem 0.9rem;
       justify-items: stretch; align-items: start;
     }
-    .runde-topp { grid-template-columns: 1fr auto auto; }
-    .gw-poeng-stor { font-size: 1.4rem; text-align: right; }
-    .ring-info { font-size: 0.8rem; gap: 0.2rem; }
+    .runde-topp { grid-template-columns: 1fr auto; }
+    .gw-poeng-stor { font-size: 1.4rem; text-align: center; }
+    /* Under poengene, ikke ved siden av - bredden holder ikke til tre spalter. */
+    /* 9rem er satt for TV; her presser den pilene fra hverandre. */
+    .gw-merke { min-width: 0; font-size: 0.78rem; letter-spacing: 0.18em; }
+    .gw-nav { gap: 0.6rem; }
+    .ring-info {
+      grid-column: 2; grid-row: 2;
+      align-items: center; font-size: 0.8rem; gap: 0.2rem;
+      margin-top: 0.35rem;
+    }
     .ri-ring { width: 0.75rem; height: 0.75rem; }
     /* Fire spillere paa rad maa faa plass paa 390 px:
        4 x 3.5rem + 3 x 0.4rem = 15,2rem ~ 198 px. */
@@ -668,7 +679,7 @@ def _bane(tropp):
     return f'<div class="bane">{"".join(rader)}</div>{benk_html}'
 
 
-def _bytter(d):
+def _bytter(d, nav=""):
     """Rundens poeng midtstilt, byttene oppe til venstre.
 
     Ut og inn staar i hver sin loddrette bolk - alle roede foerst, saa alle
@@ -707,7 +718,8 @@ def _bytter(d):
     return (
         f'<div class="runde-topp">'
         f'<div class="bytter"><span class="bytter-tittel">Bytter</span>{liste}</div>'
-        f'<div class="gw-poeng-stor"><span>Rundens poeng</span>{d["gw_poeng"]}{trekk}</div>'
+        f'<div class="runde-midt">{nav}'
+        f'<div class="gw-poeng-stor"><span>Rundens poeng</span>{d["gw_poeng"]}{trekk}</div></div>'
         f'<div class="ring-info">{ringer}</div>'
         f"</div>"
     )
@@ -742,8 +754,7 @@ def detalj(d, gw_na=None, gw_liste=None):
     historiske rundene til dist/lag/, saa markupen aldri kan komme i utakt.
     """
     return (
-        f'{_gw_nav(d, gw_na, gw_liste)}'
-        f'{_bytter(d)}'
+        f'{_bytter(d, _gw_nav(d, gw_na, gw_liste))}'
         f'{_bane(d.get("tropp") or [])}'
     )
 
