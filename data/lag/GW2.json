@@ -20,6 +20,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 1,
      "navn": "Kinsky",
      "poeng": 1,
@@ -31,6 +32,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 1,
      "navn": "O'Reilly",
      "poeng": 2,
@@ -42,6 +44,7 @@
     {
      "kaptein": false,
      "lag_kode": 56,
+     "motstander": null,
      "mult": 1,
      "navn": "Ballard",
      "poeng": 8,
@@ -53,6 +56,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Maguire",
      "poeng": 4,
@@ -64,6 +68,7 @@
     {
      "kaptein": false,
      "lag_kode": 14,
+     "motstander": null,
      "mult": 1,
      "navn": "Szoboszlai",
      "poeng": 4,
@@ -75,6 +80,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 1,
      "navn": "Ayari",
      "poeng": 0,
@@ -86,6 +92,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
      "poeng": 11,
@@ -97,6 +104,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Ødegaard",
      "poeng": 0,
@@ -108,6 +116,7 @@
     {
      "kaptein": false,
      "lag_kode": 94,
+     "motstander": null,
      "mult": 1,
      "navn": "Thiago",
      "poeng": 2,
@@ -119,6 +128,7 @@
     {
      "kaptein": false,
      "lag_kode": 14,
+     "motstander": null,
      "mult": 1,
      "navn": "Isak",
      "poeng": 8,
@@ -130,6 +140,7 @@
     {
      "kaptein": true,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 2,
      "navn": "Haaland",
      "poeng": 26,
@@ -141,6 +152,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Verbruggen",
      "poeng": 0,
@@ -152,6 +164,7 @@
     {
      "kaptein": false,
      "lag_kode": 94,
+     "motstander": null,
      "mult": 0,
      "navn": "Schade",
      "poeng": 10,
@@ -163,6 +176,7 @@
     {
      "kaptein": false,
      "lag_kode": 9,
+     "motstander": null,
      "mult": 0,
      "navn": "van Ewijk",
      "poeng": 2,
@@ -174,6 +188,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Vuskovic",
      "poeng": 0,
@@ -200,6 +215,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 1,
      "navn": "Kinsky",
      "poeng": 1,
@@ -211,6 +227,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Maguire",
      "poeng": 4,
@@ -222,6 +239,7 @@
     {
      "kaptein": false,
      "lag_kode": 2,
+     "motstander": null,
      "mult": 1,
      "navn": "Muharemović",
      "poeng": 4,
@@ -233,6 +251,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Calafiori",
      "poeng": 0,
@@ -244,6 +263,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
      "poeng": 11,
@@ -255,6 +275,7 @@
     {
      "kaptein": false,
      "lag_kode": 11,
+     "motstander": null,
      "mult": 1,
      "navn": "Ndiaye",
      "poeng": 4,
@@ -266,6 +287,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Tzolis",
      "poeng": 0,
@@ -277,6 +299,7 @@
     {
      "kaptein": true,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 2,
      "navn": "B.Fernandes",
      "poeng": 46,
@@ -288,6 +311,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "João Pedro",
      "poeng": 9,
@@ -299,6 +323,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 1,
      "navn": "Haaland",
      "poeng": 13,
@@ -310,6 +335,7 @@
     {
      "kaptein": false,
      "lag_kode": 2,
+     "motstander": null,
      "mult": 1,
      "navn": "Calvert-Lewin",
      "poeng": 8,
@@ -321,6 +347,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Verbruggen",
      "poeng": 0,
@@ -332,6 +359,7 @@
     {
      "kaptein": false,
      "lag_kode": 56,
+     "motstander": null,
      "mult": 0,
      "navn": "Hume",
      "poeng": 6,
@@ -343,6 +371,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Groß",
      "poeng": 13,
@@ -354,6 +383,7 @@
     {
      "kaptein": false,
      "lag_kode": 40,
+     "motstander": null,
      "mult": 0,
      "navn": "Diop",
      "poeng": 2,
@@ -389,6 +419,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 1,
      "navn": "Kinsky",
      "poeng": 1,
@@ -400,6 +431,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 1,
      "navn": "De Cuyper",
      "poeng": 0,
@@ -411,6 +443,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Shaw",
      "poeng": 2,
@@ -422,6 +455,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Calafiori",
      "poeng": 0,
@@ -433,6 +467,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Ødegaard",
      "poeng": 0,
@@ -444,6 +479,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Tzolis",
      "poeng": 0,
@@ -455,6 +491,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "B.Fernandes",
      "poeng": 23,
@@ -466,6 +503,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 1,
      "navn": "Semenyo",
      "poeng": 5,
@@ -477,6 +515,7 @@
     {
      "kaptein": false,
      "lag_kode": 2,
+     "motstander": null,
      "mult": 1,
      "navn": "Calvert-Lewin",
      "poeng": 8,
@@ -488,6 +527,7 @@
     {
      "kaptein": true,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 2,
      "navn": "Haaland",
      "poeng": 26,
@@ -499,6 +539,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "João Pedro",
      "poeng": 9,
@@ -510,6 +551,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 0,
      "navn": "Dubravka",
      "poeng": 0,
@@ -521,6 +563,7 @@
     {
      "kaptein": false,
      "lag_kode": 88,
+     "motstander": null,
      "mult": 0,
      "navn": "Slater",
      "poeng": 2,
@@ -532,6 +575,7 @@
     {
      "kaptein": false,
      "lag_kode": 94,
+     "motstander": null,
      "mult": 0,
      "navn": "Ajer",
      "poeng": 3,
@@ -543,6 +587,7 @@
     {
      "kaptein": false,
      "lag_kode": 40,
+     "motstander": null,
      "mult": 0,
      "navn": "O'Shea",
      "poeng": 0,
@@ -569,6 +614,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 1,
      "navn": "Kinsky",
      "poeng": 1,
@@ -580,6 +626,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Calafiori",
      "poeng": 0,
@@ -591,6 +638,7 @@
     {
      "kaptein": false,
      "lag_kode": 56,
+     "motstander": null,
      "mult": 1,
      "navn": "Hume",
      "poeng": 6,
@@ -602,6 +650,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Maguire",
      "poeng": 4,
@@ -613,6 +662,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "B.Fernandes",
      "poeng": 23,
@@ -624,6 +674,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
      "poeng": 11,
@@ -635,6 +686,7 @@
     {
      "kaptein": false,
      "lag_kode": 11,
+     "motstander": null,
      "mult": 1,
      "navn": "Ndiaye",
      "poeng": 4,
@@ -646,6 +698,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Ødegaard",
      "poeng": 0,
@@ -657,6 +710,7 @@
     {
      "kaptein": false,
      "lag_kode": 56,
+     "motstander": null,
      "mult": 1,
      "navn": "Brobbey",
      "poeng": 2,
@@ -668,6 +722,7 @@
     {
      "kaptein": true,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 2,
      "navn": "Haaland",
      "poeng": 26,
@@ -679,6 +734,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "João Pedro",
      "poeng": 9,
@@ -690,6 +746,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Verbruggen",
      "poeng": 0,
@@ -701,6 +758,7 @@
     {
      "kaptein": false,
      "lag_kode": 94,
+     "motstander": null,
      "mult": 0,
      "navn": "Ajer",
      "poeng": 3,
@@ -712,6 +770,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 0,
      "navn": "Caicedo",
      "poeng": 1,
@@ -723,6 +782,7 @@
     {
      "kaptein": false,
      "lag_kode": 11,
+     "motstander": null,
      "mult": 0,
      "navn": "Mykolenko",
      "poeng": 4,
@@ -749,6 +809,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 1,
      "navn": "Kinsky",
      "poeng": 1,
@@ -760,6 +821,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Shaw",
      "poeng": 2,
@@ -771,6 +833,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Calafiori",
      "poeng": 0,
@@ -782,6 +845,7 @@
     {
      "kaptein": false,
      "lag_kode": 17,
+     "motstander": null,
      "mult": 1,
      "navn": "N.Williams",
      "poeng": 6,
@@ -793,6 +857,7 @@
     {
      "kaptein": true,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 2,
      "navn": "B.Fernandes",
      "poeng": 46,
@@ -804,6 +869,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Tzolis",
      "poeng": 0,
@@ -815,6 +881,7 @@
     {
      "kaptein": false,
      "lag_kode": 14,
+     "motstander": null,
      "mult": 1,
      "navn": "Szoboszlai",
      "poeng": 4,
@@ -826,6 +893,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
      "poeng": 11,
@@ -837,6 +905,7 @@
     {
      "kaptein": false,
      "lag_kode": 56,
+     "motstander": null,
      "mult": 1,
      "navn": "Brobbey",
      "poeng": 2,
@@ -848,6 +917,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 1,
      "navn": "Haaland",
      "poeng": 13,
@@ -859,6 +929,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "João Pedro",
      "poeng": 9,
@@ -870,6 +941,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Verbruggen",
      "poeng": 0,
@@ -881,6 +953,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Gomez",
      "poeng": 5,
@@ -892,6 +965,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 0,
      "navn": "Konsa",
      "poeng": 0,
@@ -903,6 +977,7 @@
     {
      "kaptein": false,
      "lag_kode": 40,
+     "motstander": null,
      "mult": 0,
      "navn": "Davis",
      "poeng": 6,
@@ -934,6 +1009,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 1,
      "navn": "Verbruggen",
      "poeng": 0,
@@ -945,6 +1021,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Gabriel",
      "poeng": 0,
@@ -956,6 +1033,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Shaw",
      "poeng": 2,
@@ -967,6 +1045,7 @@
     {
      "kaptein": false,
      "lag_kode": 9,
+     "motstander": null,
      "mult": 1,
      "navn": "van Ewijk",
      "poeng": 2,
@@ -978,6 +1057,7 @@
     {
      "kaptein": false,
      "lag_kode": 14,
+     "motstander": null,
      "mult": 1,
      "navn": "Szoboszlai",
      "poeng": 4,
@@ -989,6 +1069,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 1,
      "navn": "Semenyo",
      "poeng": 5,
@@ -1000,6 +1081,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "Rogers",
      "poeng": 5,
@@ -1011,6 +1093,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
      "poeng": 11,
@@ -1022,6 +1105,7 @@
     {
      "kaptein": true,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 2,
      "navn": "João Pedro",
      "poeng": 18,
@@ -1033,6 +1117,7 @@
     {
      "kaptein": false,
      "lag_kode": 88,
+     "motstander": null,
      "mult": 1,
      "navn": "McBurnie",
      "poeng": 1,
@@ -1044,6 +1129,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 1,
      "navn": "Haaland",
      "poeng": 13,
@@ -1055,6 +1141,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 0,
      "navn": "Dubravka",
      "poeng": 0,
@@ -1066,6 +1153,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 0,
      "navn": "O'Reilly",
      "poeng": 2,
@@ -1077,6 +1165,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "De Cuyper",
      "poeng": 0,
@@ -1088,6 +1177,7 @@
     {
      "kaptein": false,
      "lag_kode": 31,
+     "motstander": null,
      "mult": 0,
      "navn": "Hughes",
      "poeng": 0,
@@ -1114,6 +1204,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 1,
      "navn": "Donnarumma",
      "poeng": 0,
@@ -1125,6 +1216,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Gabriel",
      "poeng": 0,
@@ -1136,6 +1228,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 1,
      "navn": "Van de Ven",
      "poeng": 0,
@@ -1147,6 +1240,7 @@
     {
      "kaptein": false,
      "lag_kode": 14,
+     "motstander": null,
      "mult": 1,
      "navn": "Virgil",
      "poeng": 1,
@@ -1158,6 +1252,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 1,
      "navn": "Pedro Porro",
      "poeng": 1,
@@ -1169,6 +1264,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Tzolis",
      "poeng": 0,
@@ -1180,6 +1276,7 @@
     {
      "kaptein": false,
      "lag_kode": 14,
+     "motstander": null,
      "mult": 1,
      "navn": "Szoboszlai",
      "poeng": 4,
@@ -1191,6 +1288,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "Rogers",
      "poeng": 5,
@@ -1202,6 +1300,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Havertz",
      "poeng": 0,
@@ -1213,6 +1312,7 @@
     {
      "kaptein": false,
      "lag_kode": 2,
+     "motstander": null,
      "mult": 1,
      "navn": "Calvert-Lewin",
      "poeng": 8,
@@ -1224,6 +1324,7 @@
     {
      "kaptein": true,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 2,
      "navn": "Haaland",
      "poeng": 26,
@@ -1235,6 +1336,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 0,
      "navn": "Dubravka",
      "poeng": 0,
@@ -1246,6 +1348,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 0,
      "navn": "Enzo",
      "poeng": 0,
@@ -1257,6 +1360,7 @@
     {
      "kaptein": false,
      "lag_kode": 31,
+     "motstander": null,
      "mult": 0,
      "navn": "Hughes",
      "poeng": 0,
@@ -1268,6 +1372,7 @@
     {
      "kaptein": false,
      "lag_kode": 40,
+     "motstander": null,
      "mult": 0,
      "navn": "Diop",
      "poeng": 2,
@@ -1299,6 +1404,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "Sánchez",
      "poeng": 0,
@@ -1310,6 +1416,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Gabriel",
      "poeng": 0,
@@ -1321,6 +1428,7 @@
     {
      "kaptein": false,
      "lag_kode": 7,
+     "motstander": "ARS (H)",
      "mult": 1,
      "navn": "Cash",
      "poeng": 0,
@@ -1332,6 +1440,7 @@
     {
      "kaptein": false,
      "lag_kode": 40,
+     "motstander": null,
      "mult": 1,
      "navn": "Diop",
      "poeng": 2,
@@ -1343,6 +1452,7 @@
     {
      "kaptein": false,
      "lag_kode": 2,
+     "motstander": null,
      "mult": 1,
      "navn": "Wilson",
      "poeng": 1,
@@ -1354,6 +1464,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Saka",
      "poeng": 0,
@@ -1365,6 +1476,7 @@
     {
      "kaptein": false,
      "lag_kode": 11,
+     "motstander": null,
      "mult": 1,
      "navn": "Ndiaye",
      "poeng": 4,
@@ -1376,6 +1488,7 @@
     {
      "kaptein": false,
      "lag_kode": 14,
+     "motstander": null,
      "mult": 1,
      "navn": "Wirtz",
      "poeng": 4,
@@ -1387,6 +1500,7 @@
     {
      "kaptein": false,
      "lag_kode": 6,
+     "motstander": null,
      "mult": 1,
      "navn": "Marmoush",
      "poeng": 2,
@@ -1398,6 +1512,7 @@
     {
      "kaptein": true,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 2,
      "navn": "Haaland",
      "poeng": 26,
@@ -1409,6 +1524,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "João Pedro",
      "poeng": 9,
@@ -1420,6 +1536,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Verbruggen",
      "poeng": 0,
@@ -1431,6 +1548,7 @@
     {
      "kaptein": false,
      "lag_kode": 9,
+     "motstander": null,
      "mult": 0,
      "navn": "van Ewijk",
      "poeng": 2,
@@ -1442,6 +1560,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 0,
      "navn": "Konsa",
      "poeng": 0,
@@ -1453,6 +1572,7 @@
     {
      "kaptein": false,
      "lag_kode": 31,
+     "motstander": null,
      "mult": 0,
      "navn": "Hughes",
      "poeng": 0,
@@ -1484,6 +1604,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "Raya",
      "poeng": 0,
@@ -1495,6 +1616,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Shaw",
      "poeng": 2,
@@ -1506,6 +1628,7 @@
     {
      "kaptein": false,
      "lag_kode": 3,
+     "motstander": "AVL (A)",
      "mult": 1,
      "navn": "White",
      "poeng": 0,
@@ -1517,6 +1640,7 @@
     {
      "kaptein": false,
      "lag_kode": 17,
+     "motstander": null,
      "mult": 1,
      "navn": "N.Williams",
      "poeng": 6,
@@ -1528,6 +1652,7 @@
     {
      "kaptein": false,
      "lag_kode": 11,
+     "motstander": null,
      "mult": 1,
      "navn": "Ndiaye",
      "poeng": 4,
@@ -1539,6 +1664,7 @@
     {
      "kaptein": false,
      "lag_kode": 94,
+     "motstander": null,
      "mult": 1,
      "navn": "Damsgaard",
      "poeng": 3,
@@ -1550,6 +1676,7 @@
     {
      "kaptein": true,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 2,
      "navn": "B.Fernandes",
      "poeng": 46,
@@ -1561,6 +1688,7 @@
     {
      "kaptein": false,
      "lag_kode": 1,
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
      "poeng": 11,
@@ -1572,6 +1700,7 @@
     {
      "kaptein": false,
      "lag_kode": 2,
+     "motstander": null,
      "mult": 1,
      "navn": "Calvert-Lewin",
      "poeng": 8,
@@ -1583,6 +1712,7 @@
     {
      "kaptein": false,
      "lag_kode": 8,
+     "motstander": null,
      "mult": 1,
      "navn": "João Pedro",
      "poeng": 9,
@@ -1594,6 +1724,7 @@
     {
      "kaptein": false,
      "lag_kode": 43,
+     "motstander": null,
      "mult": 1,
      "navn": "Haaland",
      "poeng": 13,
@@ -1605,6 +1736,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Verbruggen",
      "poeng": 0,
@@ -1616,6 +1748,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "Gomez",
      "poeng": 5,
@@ -1627,6 +1760,7 @@
     {
      "kaptein": false,
      "lag_kode": 36,
+     "motstander": null,
      "mult": 0,
      "navn": "De Cuyper",
      "poeng": 0,
@@ -1638,6 +1772,7 @@
     {
      "kaptein": false,
      "lag_kode": 31,
+     "motstander": null,
      "mult": 0,
      "navn": "Mitchell",
      "poeng": 0,

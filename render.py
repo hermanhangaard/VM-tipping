@@ -476,6 +476,12 @@ CSS = """
   }
   .benk .spiller-poeng { background: var(--muted); color: #241033; }
   .spiller-poeng.ikke-spilt { background: rgba(255, 255, 255, 0.22); color: var(--chalk); }
+  /* Motstander i stedet for poeng naar kampen ikke har startet. Krymper litt,
+     siden «AVL (A)» er bredere enn et tosifret tall. */
+  .spiller-poeng.kamp {
+    font-family: var(--body); font-weight: 600;
+    font-size: 0.74rem; letter-spacing: -0.01em;
+  }
   .kaptein-merke {
     position: absolute; top: -0.15rem; right: 0.55rem;
     width: 1.25rem; height: 1.25rem; border-radius: 50%;
@@ -621,6 +627,7 @@ CSS = """
     .spiller img { width: 1.9rem; height: 1.9rem; }
     .spiller-navn { font-size: 0.66rem; }
     .spiller-poeng { font-size: 0.72rem; }
+    .spiller-poeng.kamp { font-size: 0.6rem; }
     .kaptein-merke { width: 0.95rem; height: 0.95rem; font-size: 0.58rem; right: 0.25rem; }
     .benk { margin-top: 0.5rem; padding: 0.5rem 0.3rem; }
 
@@ -658,10 +665,15 @@ def _spiller(sp):
     elif sp["vise"]:
         merke = '<span class="kaptein-merke vise">V</span>'
     url = SHIRT.format(kode=sp["lag_kode"], gk="_1" if sp["type"] == 1 else "")
-    # Strek naar spilleren ikke har vaert paa banen enda. «0» er forbeholdt
-    # dem som faktisk spilte og ikke fikk poeng.
-    poeng = sp["poeng"] if sp.get("spilt") else "&ndash;"
-    ikke_spilt = "" if sp.get("spilt") else " ikke-spilt"
+    # Har spilleren vaert paa banen viser vi poengene. Har kampen hans ikke
+    # startet enda, viser vi motstanderen i stedet. Strek er forbeholdt dem
+    # hvis kamp er i gang eller ferdig uten at de kom paa.
+    if sp.get("spilt"):
+        poeng, ikke_spilt = sp["poeng"], ""
+    elif sp.get("motstander"):
+        poeng, ikke_spilt = escape(sp["motstander"]), " ikke-spilt kamp"
+    else:
+        poeng, ikke_spilt = "&ndash;", " ikke-spilt"
     return (
         f'<div class="spiller">{merke}'
         f'<img src="{url}" alt="" loading="lazy">'

@@ -111,7 +111,25 @@ def hent_bytter(entry_id, gw, spillere):
     return list(reversed(bytter))
 
 
-def hent_lag(entry_id, gw, spillere, live):
+def motstandere(kamper, lag):
+    """lag-id -> «AVL (A)» for kamper som ikke har startet enda.
+
+    Bare kamper som ikke er i gang teller. Har kampen begynt og spilleren
+    likevel null minutter, satt han paa benken - da skal det staa strek, ikke
+    en motstander som om kampen laa foran ham.
+    Dobbeltrunder: foerste kamp som ikke har startet vinner. Blanke runder:
+    laget mangler i mappingen og faller tilbake paa strek.
+    """
+    ut = {}
+    for f in sorted(kamper, key=lambda x: x["kickoff_time"] or ""):
+        if f["started"]:
+            continue
+        ut.setdefault(f["team_h"], f"{lag[f['team_a']]} (H)")
+        ut.setdefault(f["team_a"], f"{lag[f['team_h']]} (A)")
+    return ut
+
+
+def hent_lag(entry_id, gw, spillere, live, mot=None):
     """Tropp, kaptein, chip og benkepoeng for en manager.
 
     picks er tomt foer deadline - da faar vi RuntimeError og returnerer {}.
@@ -140,6 +158,7 @@ def hent_lag(entry_id, gw, spillere, live):
             # Startellever viser bidraget sitt (kaptein dobbelt), benken raa poeng.
             "poeng": raa * pick["multiplier"] if pick["multiplier"] else raa,
             "spilt": minutter > 0,
+            "motstander": None if minutter > 0 else (mot or {}).get(sp["team"]),
             "kaptein": bool(pick.get("is_captain")),
             "vise": bool(pick.get("is_vice_captain")),
         })
@@ -188,7 +207,7 @@ def lagre_gw(gw_id, deltakere, ferdig):
     return True
 
 
-def backfyll(rader, spillere, til_og_med):
+def backfyll(rader, spillere, til_og_med, kortnavn):
     """Henter og fryser gameweeks vi mangler. Kjoeres én gang per runde som
     mangler - deretter ligger de paa disk for godt."""
     for gw in range(1, til_og_med):
@@ -206,7 +225,7 @@ def backfyll(rader, spillere, til_og_med):
             poeng = next((x["points"] for x in h.get("current", []) if x["event"] == gw), 0)
             d = {"entry": eid, "lagnavn": r["entry_name"],
                  "fornavn": les_json(NAVN_FIL, {}).get(str(eid), ""), "gw_poeng": poeng}
-            d.update(hent_lag(eid, gw, spillere, live))
+            d.update(hent_lag(eid, gw, spillere, live, motstandere(fpl_api.fixtures(gw), kortnavn)))
             deltakere.append(d)
         lagre_gw(gw, deltakere, ferdig=True)
 
@@ -243,6 +262,9 @@ def bygg():
     ferdig = sum(1 for f in kamper if f["finished_provisional"])
     live = sum(1 for f in kamper if f["started"] and not f["finished_provisional"])
 
+    kortnavn = {t2["id"]: t2["short_name"] for t2 in bs["teams"]}
+    mot = motstandere(kamper, kortnavn)
+
     navn = les_json(NAVN_FIL, {})
     nye = hent_fornavn([r["entry"] for r in rader], navn)
     if nye:
@@ -262,7 +284,7 @@ def bygg():
             "total": r["total"],
             "badge": r.get("club_badge_src"),
         }
-        d.update(hent_lag(eid, gw_id, spillere, live_poeng))
+        d.update(hent_lag(eid, gw_id, spillere, live_poeng, mot))
         d.update(hent_historikk(eid, gw_id))
         # Beste enkeltrunde: ferdige GW-er fra history, inneværende fra
         # ligatabellen siden history henger etter.
@@ -283,7 +305,7 @@ def bygg():
         d["har_verste_gw"] = d["verste_gw"] == bunnen
 
     # Frys gjeldende runde, og hent inn eventuelle tidligere runder vi mangler.
-    backfyll(rader, spillere, gw_id)
+    backfyll(rader, spillere, gw_id, kortnavn)
     lagre_gw(gw_id, deltakere, ferdig=bool(gw.get("data_checked")))
     gw_liste = kjente_gw()
 
