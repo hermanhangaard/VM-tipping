@@ -145,6 +145,7 @@ CSS = """
     color: var(--gold);
   }
   .tf { display: inline-flex; align-items: center; gap: 0.42rem; }
+  .tf-ring.verst { border-color: transparent; outline: 2px solid var(--ned); outline-offset: 1px; }
   .tf-ring {
     width: 1.5rem; height: 1.5rem; border-radius: 50%;
     border: 2px solid var(--gronn);
@@ -312,13 +313,21 @@ CSS = """
   /* Beste enkeltrunde - tredje premie. Groenn ring rundt plasseringstallet,
      ikke enda en boks. Tallet beholder medaljefargen sin inni ringen, saa
      1./2. plass og beste GW kan vises samtidig uten aa slaas om plassen. */
-  .lb-rank.beste {
-    border: 2px solid var(--gronn);
+  .lb-rank.beste, .lb-rank.verst {
     border-radius: 50%;
     width: 2.5rem; height: 2.5rem;
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto;
+  }
+  .lb-rank.beste {
+    border: 2px solid var(--gronn);
     box-shadow: 0 0 12px -2px rgba(0, 255, 135, 0.55);
+  }
+  /* Verste enkeltrunde. outline i stedet for border, saa ringen legger seg
+     UTENFOR den groenne og begge synes naar samme person eier begge. */
+  .lb-rank.verst {
+    outline: 2px solid var(--ned);
+    outline-offset: 3px;
   }
 
   /* Oppbrukte chips: forkortelse i roed boks, tett inntil navnet.
@@ -513,7 +522,8 @@ CSS = """
     .lb-badge, .spacer, .utvid, .pil { display: none; }
 
     .lb-rank { grid-column: 1; grid-row: 1 / 3; font-size: 1.5rem; align-self: center; }
-    .lb-rank.beste { width: 1.9rem; height: 1.9rem; border-width: 2px; }
+    .lb-rank.beste, .lb-rank.verst { width: 1.9rem; height: 1.9rem; }
+    .lb-rank.verst { outline-offset: 2px; }
     .lb-navn { grid-column: 2; grid-row: 1; }
     .lb-lagnavn { font-size: 1.05rem; }
     .lb-fornavn { font-size: 0.8rem; }
@@ -726,8 +736,13 @@ def _rad(d, gw_na=None, gw_liste=None):
         for c in CHIP_REKKEFOLGE
     )
 
-    beste = ' beste' if d.get("har_beste_gw") else ""
-    tittel = f' title="Beste enkeltrunde: {d["beste_gw"]} poeng"' if d.get("har_beste_gw") else ""
+    ringer = (" beste" if d.get("har_beste_gw") else "") + (" verst" if d.get("har_verste_gw") else "")
+    hint = []
+    if d.get("har_beste_gw"):
+        hint.append(f'Beste enkeltrunde: {d["beste_gw"]} poeng')
+    if d.get("har_verste_gw"):
+        hint.append(f'Verste enkeltrunde: {d["verste_gw"]} poeng')
+    tittel = f' title="{escape(" · ".join(hint))}"' if hint else ""
 
     # Fullt navn paa TV, forkortelse paa mobil. Begge rendres, CSS velger.
     aktiv_chip = (
@@ -741,7 +756,7 @@ def _rad(d, gw_na=None, gw_liste=None):
     return f"""      <details class="lb-item">
         <summary class="lb-row {kls}">
           {_pil(d["rank"], d.get("forrige_rank"))}
-          <div class="lb-rank{beste}"{tittel}>{d["rank"]}</div>
+          <div class="lb-rank{ringer}"{tittel}>{d["rank"]}</div>
           {badge}
           <div class="lb-navn">
             <div class="lb-lagnavn">{escape(d["lagnavn"])}</div>
@@ -831,6 +846,7 @@ def render(data):
         <h1>{escape(data["liga"])}</h1>
         <div class="tegnforklaring">
           <span class="tf"><span class="tf-ring">6</span>Beste enkeltrunde</span>
+          <span class="tf"><span class="tf-ring verst">9</span>Verste enkeltrunde</span>
           <span class="tf"><span class="chip-badge">Bench Boost</span>Chip i spill</span>
           <span class="tf"><span class="brukt-chip">BB</span>Chip brukt opp</span>
         </div>

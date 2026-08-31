@@ -176,6 +176,8 @@ def lagre_gw(gw_id, deltakere, ferdig):
                 "kaptein": d.get("kaptein"),
                 "chip": d.get("chip"),
                 "bytter": d.get("bytter") or [],
+                "har_beste_gw": d.get("har_beste_gw", False),
+                "har_verste_gw": d.get("har_verste_gw", False),
                 "tropp": d.get("tropp") or [],
             }
             for d in deltakere
@@ -262,13 +264,18 @@ def bygg():
         d.update(hent_historikk(eid, gw_id))
         # Beste enkeltrunde: ferdige GW-er fra history, inneværende fra
         # ligatabellen siden history henger etter.
-        d["beste_gw"] = max([*d.get("gw_poeng_historikk", {}).values(), d["gw_poeng"]])
+        runder = [*d.get("gw_poeng_historikk", {}).values(), d["gw_poeng"]]
+        d["beste_gw"] = max(runder)
+        d["verste_gw"] = min(runder)
         deltakere.append(d)
 
-    # Premie gaar til beste enkeltrunde i hele ligaen. Flere kan dele den.
+    # Beste og verste enkeltrunde i hele ligaen. Flere kan dele hver av dem,
+    # og samme person kan eie begge.
     toppen = max((d["beste_gw"] for d in deltakere), default=0)
+    bunnen = min((d["verste_gw"] for d in deltakere), default=0)
     for d in deltakere:
         d["har_beste_gw"] = bool(toppen) and d["beste_gw"] == toppen
+        d["har_verste_gw"] = d["verste_gw"] == bunnen
 
     # Frys gjeldende runde, og hent inn eventuelle tidligere runder vi mangler.
     backfyll(rader, spillere, gw_id)
