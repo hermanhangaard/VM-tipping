@@ -110,7 +110,7 @@ Stort sett gjort som del av Fase 2, siden `render.py` ble skrevet mot TV-kravet 
 
 **Gjenstår:**
 - [ ] Se tavla på den faktiske TV-en før GW2. Alt er verifisert på 1920x1080 headless — Lasses skjerm kan ha annen oppløsning eller overscan
-- [ ] **Byttestripa står tom med vilje.** `entry/{id}/transfers/` svarer 200 med en liste, men den er tom for alle fordi ingen har byttet ennå i sesongen. Feltnavnene (`element_in`, `element_out`, `event`, kostnad) er fra hukommelsen og **ikke observert**. Verifiser mot ekte data ved GW2-deadline fredag 28.08 19:30, og sjekk samtidig om bytter i det hele tatt er synlige før deadline
+- [x] **Byttestripa er koblet inn.** Feltnavnene (`element_in`, `element_out`, `event`, `element_in_cost`/`element_out_cost`, `time`) er verifisert mot ekte data 31.08 og stemte med det jeg husket. Overganger er synlige via `entry/{id}/transfers/` uten innlogging. Kryssjekket mot Lasses faktiske bytter: Konsa → De Cuyper og Mbeumo → Ødegaard
 - [ ] Vurder høyoppløst erstatning for bakgrunnen hvis den skal bli permanent
 - [ ] Drop-downen er usynlig på TV-en — den kan ikke klikkes. Funksjonen er for telefon/PC
 

@@ -83,6 +83,29 @@ def hent_fornavn(entry_ider, cache):
     return nye
 
 
+def hent_bytter(entry_id, gw, spillere):
+    """Overganger gjort til gjeldende GW.
+
+    Feltnavnene (element_in/element_out/event) er verifisert mot ekte data
+    31.08. De var ikke observerbare foer det, siden ingen hadde byttet enda -
+    GW1 har per definisjon ingen overganger.
+    """
+    try:
+        alle = fpl_api._get(f"entry/{entry_id}/transfers/")
+    except RuntimeError:
+        return []
+
+    bytter = []
+    for t in alle:
+        if t["event"] != gw:
+            continue
+        inn, ut = spillere.get(t["element_in"]), spillere.get(t["element_out"])
+        if inn and ut:
+            bytter.append({"ut": ut["web_name"], "inn": inn["web_name"]})
+    # API-et gir nyeste foerst; snu saa de staar i byttet raekkefoelge.
+    return list(reversed(bytter))
+
+
 def hent_lag(entry_id, gw, spillere, live):
     """Tropp, kaptein, chip og benkepoeng for en manager.
 
@@ -126,10 +149,7 @@ def hent_lag(entry_id, gw, spillere, live):
         "benk": hist.get("points_on_bench"),
         "trekk": hist.get("event_transfers_cost") or 0,
         "tropp": tropp,
-        # Bytter hentes fra entry/{id}/transfers/. Tom hele GW1 fordi sesongen
-        # nettopp har startet - feltnavnene er derfor IKKE verifisert mot ekte
-        # data enda. Foerste sjanse: GW2-deadline 28.08.
-        "bytter": [],
+        "bytter": hent_bytter(entry_id, gw, spillere),
     }
 
 
