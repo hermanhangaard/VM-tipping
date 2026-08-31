@@ -338,6 +338,34 @@ CSS = """
     border-radius: 4px; padding: 0.12rem 0.35rem;
   }
 
+  /* --- GW-navigasjon i utfellingen --- */
+  .gw-nav {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.9rem; padding: 0.5rem 0 0.2rem;
+  }
+  .gw-pil {
+    background: rgba(4, 245, 255, 0.1);
+    border: 1px solid rgba(4, 245, 255, 0.35);
+    color: var(--cyan); cursor: pointer;
+    border-radius: 6px; padding: 0.1rem 0.6rem;
+    font-size: 0.9rem; line-height: 1.5;
+    font-family: var(--body);
+    transition: background 0.15s;
+  }
+  .gw-pil:hover { background: rgba(4, 245, 255, 0.22); }
+  .gw-pil.av {
+    background: none; border-color: var(--divider);
+    color: var(--muted); opacity: 0.3; cursor: default;
+    border-radius: 6px; padding: 0.1rem 0.6rem; font-size: 0.9rem;
+    border-width: 1px; border-style: solid;
+  }
+  .gw-merke {
+    font-family: var(--display); font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); min-width: 9rem; text-align: center;
+  }
+  .detalj.laster { opacity: 0.45; }
+
   /* --- utfelt detalj: bytter + banevisning --- */
   .detalj { padding: 0.4rem 1.3rem 1.3rem; background: rgba(0, 0, 0, 0.28); }
 
@@ -647,7 +675,42 @@ def _bytter(d):
     )
 
 
-def _rad(d):
+def _gw_nav(d, gw_na, gw_liste):
+    """Piler for aa bla mellom gameweeks. Utelates hvis vi bare har én runde."""
+    if not gw_liste or len(gw_liste) < 2:
+        return ""
+    i = gw_liste.index(gw_na) if gw_na in gw_liste else len(gw_liste) - 1
+    forrige = gw_liste[i - 1] if i > 0 else None
+    neste = gw_liste[i + 1] if i < len(gw_liste) - 1 else None
+
+    def knapp(gw, tegn, klasse):
+        if gw is None:
+            return f'<span class="gw-pil av">{tegn}</span>'
+        return f'<button class="gw-pil {klasse}" data-gw="{gw}" type="button">{tegn}</button>'
+
+    return (
+        f'<div class="gw-nav" data-entry="{d["entry"]}" data-gw="{gw_na}">'
+        f'{knapp(forrige, "&#9664;", "bak")}'
+        f'<span class="gw-merke">Gameweek {gw_na}</span>'
+        f'{knapp(neste, "&#9654;", "fram")}'
+        f"</div>"
+    )
+
+
+def detalj(d, gw_na=None, gw_liste=None):
+    """Innholdet i utfellingen: navigasjon, bytter og banevisning.
+
+    Brukes baade naar sida bygges og naar build.py forhaandsrendrer de
+    historiske rundene til dist/lag/, saa markupen aldri kan komme i utakt.
+    """
+    return (
+        f'{_gw_nav(d, gw_na, gw_liste)}'
+        f'{_bytter(d)}'
+        f'{_bane(d.get("tropp") or [])}'
+    )
+
+
+def _rad(d, gw_na=None, gw_liste=None):
     kls = MEDALJE.get(d["rank"], "")
     badge = (
         f'<img class="lb-badge" src="{escape(d["badge"])}" alt="">'
@@ -694,15 +757,12 @@ def _rad(d):
           <div class="lb-tot">{d["total"]}</div>
           <div class="utvid">&#9656;</div>
         </summary>
-        <div class="detalj">
-{_bytter(d)}
-{_bane(d.get("tropp") or [])}
-        </div>
+        <div class="detalj">{detalj(d, gw_na, gw_liste)}</div>
       </details>"""
 
 
-def _kolonne(deltakere):
-    rader = "\n".join(_rad(d) for d in deltakere)
+def _kolonne(deltakere, gw_na=None, gw_liste=None):
+    rader = "\n".join(_rad(d, gw_na, gw_liste) for d in deltakere)
     return f"""    <div class="col">
       <div class="col-head">
         <div></div><div class="h-rank">#</div><div></div><div>Deltaker</div>
@@ -720,6 +780,7 @@ def render(data):
     d = data["deltakere"]
     k = data["kamper"]
     gw = data["gw"]
+    gw_liste = data.get("gw_liste") or []
 
     dempet = 'style="color:var(--muted);background:none;border-color:var(--line)"'
     igjen = k["totalt"] - k["ferdig"]
@@ -740,10 +801,10 @@ def render(data):
     if len(d) > 12:
         midt = (len(d) + 1) // 2
         board_kls = "board to-kolonner"
-        kolonner = _kolonne(d[:midt]) + "\n" + _kolonne(d[midt:])
+        kolonner = _kolonne(d[:midt], gw["id"], gw_liste) + "\n" + _kolonne(d[midt:], gw["id"], gw_liste)
     else:
         board_kls = "board"
-        kolonner = _kolonne(d)
+        kolonner = _kolonne(d, gw["id"], gw_liste)
 
     pct = round(100 * k["ferdig"] / k["totalt"]) if k["totalt"] else 0
     pct_live = round(100 * k["live"] / k["totalt"]) if k["totalt"] else 0
@@ -793,6 +854,28 @@ def render(data):
 
   <footer>Oppdatert {oppdatert}</footer>
 </div>
+<script>
+/* Blar mellom gameweeks i en utfelling. Hver runde ligger ferdig rendret i
+   lag/GW-filene, saa vi bytter bare ut innholdet - ingen logikk duplisert
+   mellom Python og JavaScript. Sida fungerer uten dette skriptet; da staar
+   den bare paa gjeldende runde.
+   NB: dette ligger i en f-string, saa alle kroellparenteser maa dobles. */
+document.addEventListener('click', function (e) {{
+  var knapp = e.target.closest('.gw-pil');
+  if (!knapp || knapp.classList.contains('av')) return;
+  var nav = knapp.closest('.gw-nav');
+  var boks = knapp.closest('.detalj');
+  boks.classList.add('laster');
+  fetch('lag/GW' + knapp.dataset.gw + '.json')
+    .then(function (r) {{ return r.json(); }})
+    .then(function (j) {{
+      var html = j[nav.dataset.entry];
+      if (html) boks.innerHTML = html;
+      boks.classList.remove('laster');
+    }})
+    .catch(function () {{ boks.classList.remove('laster'); }});
+}});
+</script>
 </body>
 </html>
 """

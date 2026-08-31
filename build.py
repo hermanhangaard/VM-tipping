@@ -21,6 +21,11 @@ DIST = ROT / "dist"
 
 NAVN_FIL = DATA / "navn.json"
 HISTORIKK_FIL = DATA / "historikk.json"
+# Én fil per gameweek med tropp, bytter og poeng for alle deltakere.
+# En ferdigspilt runde endrer seg aldri, saa den skrives én gang og hentes
+# aldri fra API-et igjen. Uten dette ville full historikk kostet 342 API-kall
+# og 15,8 MB per bygg - og bygget gaar hvert 5. minutt.
+LAG_DIR = DATA / "lag"
 
 CHIP_NAVN = {
     "3xc": "Triple Captain",
@@ -153,6 +158,62 @@ def hent_lag(entry_id, gw, spillere, live):
     }
 
 
+def lagre_gw(gw_id, deltakere, ferdig):
+    """Fryser en gameweek til disk. Skrives paa nytt hver kjoering saa lenge
+    runden paagaar; naar den er ferdigspilt roeres fila aldri mer."""
+    fil = LAG_DIR / f"GW{gw_id}.json"
+    if fil.exists() and les_json(fil, {}).get("ferdig"):
+        return False
+    skriv_json(fil, {
+        "gw": gw_id,
+        "ferdig": ferdig,
+        "deltakere": {
+            str(d["entry"]): {
+                "lagnavn": d["lagnavn"],
+                "fornavn": d["fornavn"],
+                "gw_poeng": d["gw_poeng"],
+                "trekk": d.get("trekk") or 0,
+                "kaptein": d.get("kaptein"),
+                "chip": d.get("chip"),
+                "bytter": d.get("bytter") or [],
+                "tropp": d.get("tropp") or [],
+            }
+            for d in deltakere
+        },
+    })
+    return True
+
+
+def backfyll(rader, spillere, til_og_med):
+    """Henter og fryser gameweeks vi mangler. Kjoeres én gang per runde som
+    mangler - deretter ligger de paa disk for godt."""
+    for gw in range(1, til_og_med):
+        if (LAG_DIR / f"GW{gw}.json").exists():
+            continue
+        print(f"backfyller GW{gw} ...")
+        live = {
+            e["id"]: (e["stats"]["total_points"], e["stats"]["minutes"])
+            for e in fpl_api._get(f"event/{gw}/live/")["elements"]
+        }
+        deltakere = []
+        for r in rader:
+            eid = r["entry"]
+            h = fpl_api._get(f"entry/{eid}/history/")
+            poeng = next((x["points"] for x in h.get("current", []) if x["event"] == gw), 0)
+            d = {"entry": eid, "lagnavn": r["entry_name"],
+                 "fornavn": les_json(NAVN_FIL, {}).get(str(eid), ""), "gw_poeng": poeng}
+            d.update(hent_lag(eid, gw, spillere, live))
+            deltakere.append(d)
+        lagre_gw(gw, deltakere, ferdig=True)
+
+
+def kjente_gw():
+    """Gameweeks vi har bufret, i stigende raekkefoelge."""
+    if not LAG_DIR.exists():
+        return []
+    return sorted(int(f.stem[2:]) for f in LAG_DIR.glob("GW*.json"))
+
+
 def bygg():
     bs = fpl_api.bootstrap()
     gw = fpl_api.naavaerende_gw(bs)
@@ -209,6 +270,11 @@ def bygg():
     for d in deltakere:
         d["har_beste_gw"] = bool(toppen) and d["beste_gw"] == toppen
 
+    # Frys gjeldende runde, og hent inn eventuelle tidligere runder vi mangler.
+    backfyll(rader, spillere, gw_id)
+    lagre_gw(gw_id, deltakere, ferdig=bool(gw.get("data_checked")))
+    gw_liste = kjente_gw()
+
     # Historikk akkumuleres underveis - FPL gir oss ikke ligarangeringen tilbake i tid,
     # saa mister vi denne fila mister vi grunnlaget for grafene.
     historikk = les_json(HISTORIKK_FIL, {})
@@ -226,6 +292,7 @@ def bygg():
         "sist_oppdatert": tabell.get("last_updated_data"),
         "generert": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "deltakere": deltakere,
+        "gw_liste": gw_liste,
         "lag": {str(k): v["short_name"] for k, v in lag.items()},
     }
 
@@ -235,6 +302,18 @@ def bygg():
     # Pages serverer naa kun det artifacten inneholder. Uten CNAME i dist/
     # mister vi custom domain ved foerste deploy.
     shutil.copy(ROT / "CNAME", DIST / "CNAME")
+
+    # Forhaandsrendre hver bufret runde til dist/lag/, saa pilene kan hente
+    # dem uten aa vaere avhengige av API-et. Rendres paa nytt hvert bygg fra
+    # de bufrede dataene, saa en designendring slaar gjennom overalt.
+    lag_dist = DIST / "lag"
+    lag_dist.mkdir(parents=True, exist_ok=True)
+    for n in gw_liste:
+        rundedata = les_json(LAG_DIR / f"GW{n}.json", {})
+        skriv_json(lag_dist / f"GW{n}.json", {
+            eid: render.detalj({**v, "entry": int(eid)}, n, gw_liste)
+            for eid, v in rundedata.get("deltakere", {}).items()
+        })
 
     bakgrunn = ROT / "design" / "bakgrunn.jpg"
     if bakgrunn.exists():
