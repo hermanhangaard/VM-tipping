@@ -20,6 +20,7 @@ import render
 ROT = Path(__file__).parent
 DATA = DIST = LAG_DIR = NAVN_FIL = HISTORIKK_FIL = None
 LIGA_ID = None
+KONFIG = {}
 
 
 def sett_rot(rot):
@@ -28,7 +29,9 @@ def sett_rot(rot):
     ROT = Path(rot).resolve()
     DATA, DIST = ROT / "data", ROT / "dist"
     NAVN_FIL, HISTORIKK_FIL, LAG_DIR = DATA / "navn.json", DATA / "historikk.json", DATA / "lag"
-    LIGA_ID = json.loads((ROT / "konfig.json").read_text(encoding="utf-8"))["liga_id"]
+    global KONFIG
+    KONFIG = json.loads((ROT / "konfig.json").read_text(encoding="utf-8"))
+    LIGA_ID = KONFIG["liga_id"]
 
 # data/lag/GW{n}.json: én fil per gameweek med tropp, bytter og poeng.
 # En ferdigspilt runde endrer seg aldri, saa den skrives én gang og hentes
@@ -335,6 +338,7 @@ def bygg():
         "generert": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "deltakere": deltakere,
         "gw_liste": gw_liste,
+        "en_kolonne": KONFIG.get("en_kolonne", False),
         "lag": {str(k): v["short_name"] for k, v in lag.items()},
     }
 

@@ -923,8 +923,10 @@ def render(data):
     else:
         status = f'<span class="status" {dempet}>venter på avspark</span>'
 
-    # To kolonner naar gjengen vokser forbi det en TV-hoeyde taaler i en kolonne.
-    if len(d) > 12:
+    # To kolonner naar gjengen vokser forbi det en TV-hoeyde taaler i én kolonne.
+    # Tavler som ikke staar paa en TV setter en_kolonne og scroller i stedet -
+    # da beholder de klubblogo, aktiv chip og kaptein i raden.
+    if len(d) > 12 and not data.get("en_kolonne"):
         midt = (len(d) + 1) // 2
         board_kls = "board to-kolonner"
         kolonner = _kolonne(d[:midt], gw["id"], gw_liste) + "\n" + _kolonne(d[midt:], gw["id"], gw_liste)
