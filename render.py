@@ -607,9 +607,10 @@ CSS = """
     .brukt-chips { display: contents; }
     .brukt-chips > span { justify-self: start; }
     .brukt-chip { font-size: 0.68rem; padding: 0.05rem 0.28rem; }
+    /* Chipsene ligger paa egen linje under navnet, og kaptein og poeng staar
+       paa linja over - saa det er rikelig plass mot hoeyre. Aktiv chip beholder
+       derfor fullt navn. Bare de oppbrukte forkortes, de staar i faste slisser. */
     .meta-chip { justify-content: flex-start; min-width: 0; }
-    .chip-badge .lang { display: none; }
-    .chip-badge .kort { display: inline; }
     .chip-badge, .kaptein { font-size: 0.72rem; padding: 0.05rem 0.4rem; }
 
     /* --- detaljvisning --- */
