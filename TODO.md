@@ -9,7 +9,7 @@ Ledertavle for FPL-mini-ligaen, vises på TV hos Lasse. Etterfølger til VM-tipp
 | Liga | Norconsult Sarpsborg 26/27 |
 | Liga-ID | `562901` (classic, privat, `start_event: 1`) |
 | Admin | entry 2795526 (Are) — ikke Herman |
-| Deltakere | 9 per 21.08.2026, `closed: false` |
+| Deltakere | 9, `closed: false` — flere kan fortsatt bli med og får poeng fra GW1 |
 | Sesong | GW1 deadline 21.08.2026 19:30 norsk → GW38 30.05.2027 |
 | API | `https://fantasy.premierleague.com/api/` — gratis, ingen nøkkel, ingen kvote observert |
 | Domene | hangaard.no (Domeneshop DNS → GitHub Pages, A-records 185.199.108-111.153) |
@@ -50,9 +50,9 @@ Workflow = YAML-fil i `.github/workflows/`. Kjører på en fersk Ubuntu-VM (runn
 - [x] Lokal mappe `personal/vm-prosjekt` → `personal/fpl`. Remote oppdatert til `git@github.com:hermanhangaard/fpl.git`
 - [x] Pages `build_type: legacy` → `workflow` via `gh api -X PUT repos/hermanhangaard/fpl/pages -f build_type=workflow`
 - [x] Hello-world-workflow kjørt (`.github/workflows/test.yml`, run 32516030033, 11s, success) — leste ut alle 9 deltakerne fra API-et
-- [ ] Slett `test.yml` når `board.yml` er på plass. Beholdt inntil videre som manuell røyktest
-- [ ] `CNAME` med innholdet `hangaard.no` må inn i `dist/` — Pages serverer nå kun det artifacten inneholder, ikke repo-rota
-- [ ] Slett `index.html` fra rota (VM-tavla, 3,2 MB). Ligger i historikken hvis den trengs
+- [x] `test.yml` slettet da `board.yml` var oppe
+- [x] `CNAME` kopieres inn i `dist/` av `build.py` — Pages serverer kun artifactens innhold
+- [x] VM-tavlas `index.html` slettet fra rota. Ligger i git-historikken
 
 ## Fase 2 — pipeline (lokalt)
 
@@ -109,30 +109,48 @@ Stort sett gjort som del av Fase 2, siden `render.py` ble skrevet mot TV-kravet 
 - [x] Utfellbar lagvisning per deltaker via `<details>`/`<summary>` — null JavaScript. Viser byttestripe, GW-poeng, bane med startellever gruppert K/F/M/A, benk, drakter fra PL sin CDN (`shirt_{team_code}[_1]-110.png`), kaptein/vise-merke og live-poeng per spiller. Validert mot Aasmund: 35 fra startellever + 17 fra benk (Bench Boost) = 52, nøyaktig GW-scoren
 
 **Gjenstår:**
-- [ ] Se tavla på den faktiske TV-en før GW2. Alt er verifisert på 1920x1080 headless — Lasses skjerm kan ha annen oppløsning eller overscan
+- [ ] Se tavla på den faktiske TV-en. Alt er verifisert på 1920x1080 headless — Lasses skjerm kan ha annen oppløsning eller overscan
 - [x] **Byttestripa er koblet inn.** Feltnavnene (`element_in`, `element_out`, `event`, `element_in_cost`/`element_out_cost`, `time`) er verifisert mot ekte data 31.08 og stemte med det jeg husket. Overganger er synlige via `entry/{id}/transfers/` uten innlogging. Kryssjekket mot Lasses faktiske bytter: Konsa → De Cuyper og Mbeumo → Ødegaard
-- [ ] Vurder høyoppløst erstatning for bakgrunnen hvis den skal bli permanent
+- [x] Høyoppløst bakgrunn på plass: Old Trafford, 4256x2756 fra piqsels (fri lisens), nedskalert til 2560x1658 og komprimert til 451 KB. Nedskalering i stedet for oppskalering, altså skarp for første gang
 - [ ] Drop-downen er usynlig på TV-en — den kan ikke klikkes. Funksjonen er for telefon/PC
 
 ## Fase 5 — drift
 
-- [ ] Verifiser oppdatering under GW1 (kamper fre 21.08 21:00, lør, søn, man 24.08 21:00)
+- [x] Oppdatering verifisert gjennom GW1 og GW2
+- [x] Gammel lokal cronjob (`../vm-prosjekt-dev/fase2/cron_run2.sh`) er ute av crontab — verifisert tom
+- [ ] **Måle oppdateringstakten gjennom GW3 (4.-7. september).** Se «Actions fyrer for sjelden» under
 - [ ] **Sjekk at scheduled workflows fortsatt kjører etter landslagspausen i oktober** — GitHub deaktiverer dem etter 60 dager uten repo-aktivitet. `historikk.json`-commitene bør holde den i live, men usikkert om bot-commits teller
-- [ ] Slett den gamle lokale cronjobben (`../vm-prosjekt-dev/fase2/cron_run2.sh`, `*/5 * * * *`) når dette er live
-
 ---
+
+## Fase 6 — bygget etter lansering
+
+- [x] **Premiemarkering.** Grønn ring rundt plasseringen til beste enkeltrunde, rød ring rundt verste. `outline` med offset på den røde, så begge synes når samme person eier begge. Bronse fjernet — premie går kun til 1., 2. og beste enkeltrunde
+- [x] **Chips.** Oppbrukte som rød forkortelse (BB/TC/WC/FH) i faste slisser ved navnet, aktiv chip med fullt navn i grønn boks. Nullstilles fra GW20, siden FPL deler ut alle chips på nytt der
+- [x] **Byttestripe** i detaljpanelet, ut og inn i hver sin loddrette bolk. Slås av ved Free Hit og Wildcard, der antallet er ubegrenset
+- [x] **Motstander i stedet for strek** for spillere hvis kamp ikke har startet — «AVL (A)». Dobbeltrunder viser begge kampene side om side med skillestrek. Strek beholdes for dem hvis kamp er i gang eller ferdig uten at de kom på banen
+- [x] **GW-navigasjon.** Piler i detaljpanelet lar deg bla mellom runder. Hver runde bufres til `data/lag/GW{n}.json` og forhåndsrendres til `dist/lag/` ved hvert bygg. Første JavaScript på sida; degraderer rent
+- [x] **Egen mobilvisning** under 720 px. Raden går fra 11 kolonner til et kompakt rutenett, klubblogoer og bevegelsespil droppes, aktiv chip bruker forkortelse. Alt ligger i `@media`, TV-visningen er pikselverifisert uendret
 
 ## Observert, ikke fikset
 
-Ting som dukket opp under designrundene 22.08. Ingen av dem er ødelagt — de er valg som bør tas.
+- [ ] **Actions fyrer for sjelden — det største åpne problemet.** Målt 22.-31.08: `*/5` ga 21-44 kjøringer per døgn de første dagene, så kollapset til 2-7. På kampdagen 30.08 lå kjøringene 3-5 timer fra hverandre. Alle 193 kjøringer har `success`, så det er ikke FPL eller koden — GitHub starter bare ikke jobben. `*/10` ga til sammenligning 16-34 min intervaller, så vi er tilbake på den. **Hjelper ikke det gjennom GW3, er ekstern trigger via `repository_dispatch` den pålitelige veien** (gratis cron-tjeneste + PAT som repo-secret)
+- [ ] **`backdrop-filter` på `.col` kan ikke verifiseres lokalt.** Firefox headless rendrer den ikke, så alle skjermbilder viser tavla *uten* glasseffekten. Brave på TV-en er Chromium og støtter den. Sjekk på ekte skjerm før du justerer `--surface` videre
+- [ ] **HUSK: klubblogo-kolonnen er 6 av 9 tom.** Enten får folk sette favorittklubb i FPL-profilen sin, eller så dropper vi kolonnen
+- [ ] **Kapteinsmerket er nesten alltid «Haaland»** — kolonnen skiller knapt deltakerne. Vurder noe mer differensierende, f.eks. benkepoeng
+- [ ] **Det travleste partiet av bakgrunnen ligger bak midten av tavla.** Fungerer nå, men er en begrensning hvis tavla skal bli bredere eller mer gjennomsiktig
+- [ ] **Sidevekt:** ~72 KB HTML + 451 KB bakgrunn + ~135 draktbilder fra PL sin CDN (lazy-loadet) + én `lag/GW{n}.json` på ~38 KB per pilklikk. Uproblematisk på TV-en som cacher, verdt å huske på mobildata
 
-- [ ] **`backdrop-filter` på `.col` kan ikke verifiseres lokalt.** Firefox headless rendrer den ikke, så alle skjermbilder viser tavla *uten* glasseffekten. Brave på TV-en er Chromium og støtter den, så der blir bakgrunnen sannsynligvis dempet bak radene og lesbarheten bedre enn skjermbildene antyder. Sjekk på ekte skjerm før du justerer `--surface` videre
-- [ ] **Klubblogo-kolonnen er fortsatt 6 av 9 tom** (samme som HUSK-punktet over). Med gjennomsiktig tavle er de tomme sirklene mer synlige enn før
-- [ ] **Pilkolonnen står tom gjennom hele GW1** og spiser 2,4rem bredde til ingen nytte. Løser seg selv 28.08, men hvis den ser rar ut i mellomtiden kan den skjules når ingen har `last_rank`
-- [ ] **Kapteinsmerket er nesten alltid «Haaland»** — 7 av 9 i GW1. Kolonnen skiller dermed knapt deltakerne fra hverandre. Vurder å bytte den ut med noe mer differensierende, f.eks. benkepoeng eller beste spiller
-- [ ] **GW- og Tot-kolonnen er identiske i GW1.** Løser seg selv fra GW2, ingen handling
-- [ ] **Det travleste partiet av bakgrunnen (pokalen) ligger rett bak midten av tavla.** Fungerer nå, men er verdt å vite hvis tavla skal bli bredere eller mer gjennomsiktig
-- [ ] **Sidevekt:** 56 KB HTML + 451 KB bakgrunn + 135 draktbilder fra PL sin CDN (lazy-loadet). Uproblematisk på TV-en som cacher, verdt å huske på mobil
+Løst av seg selv siden forrige gjennomgang: pilkolonnen står ikke lenger tom (fungerer fra GW2), og GW- og Tot-kolonnen spriker nå.
+
+## Personvern og offentlig repo
+
+Repoet er **public**. Gjennomgang 01.09:
+
+- [x] `data/navn.json` inneholder kun fornavn. `data/lag/*.json` likeså — ingen etternavn i bufrede runder
+- [x] Ingen etternavn i commit-meldinger eller filnavn
+- [x] Lagnavn som «Verpe FC» og «Måloverskott» er valgt av deltakerne selv og er offentlige i FPL
+- [ ] **`Are Stifjell` ligger i git-historikken.** Etternavnet ble fjernet fra `TODO.md` i `fdc428f`, men står fortsatt i `a41a36b` som er pushet til GitHub. Fjerning krever historikk-omskriving og force-push. Formildende: FPL-API-et eksponerer `player_name` med fullt navn for alle ni til hvem som helst som har liga-ID-en. Forskjellen er at GitHub indekseres av søkemotorer, det gjør ikke API-et
+- [ ] Git-forfatteren er `Herman Hangaard <hermanhangaard@gmail.com>` på hver commit. Ditt eget valg, men GitHub tilbyr en `noreply`-adresse hvis du vil ha e-posten ut av offentlig historikk
 
 ## Utenfor dette prosjektet
 
@@ -140,7 +158,7 @@ Ting som dukket opp under designrundene 22.08. Ingen av dem er ødelagt — de e
 
 ## Notater
 
-- Actions `schedule:` er upresis — 5–20 min forsinkelse er vanlig under last, og jobber kan droppes. Ikke design for presisjon. Pages-CDN cacher ~10 min uansett
+- Actions `schedule:` er langt mer upresis enn dokumentasjonen antyder — se «Actions fyrer for sjelden». Pages-CDN cacher ~10 min i tillegg. Ikke design for presisjon
 - Public repo = gratis og ubegrensede Actions-minutter
 - Bonuspoeng er ikke endelige før kampen er ferdig: `bps` er live, `bonus` blir provisorisk og så bekreftet
 - Auto-subs (`automatic_subs`) fylles først når GW er ferdig
