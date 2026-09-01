@@ -190,6 +190,29 @@ CSS = """
   .board { display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: start; }
   .board.to-kolonner { grid-template-columns: 1fr 1fr; }
 
+  /* Med to kolonner har hver rad bare halve bredden. De faste kolonnene
+     summerer til ~60rem og sprenger da tavla - GW og Tot ble kuttet bort.
+     Klubblogo, aktiv chip og kaptein vikes; alle tre staar i utfellingen.
+     Navnekolonnen krympes, men chip-slissene beholdes fordi de er det eneste
+     som skiller radene visuelt. */
+  .to-kolonner .col-head,
+  .to-kolonner .lb-row {
+    /* Navnet er minmax(0,1fr) og ikke fast: da suger det opp slakken og
+       kuttes med ellipse i stedet for at raden flyter over og spiser
+       Tot-kolonnen. Slissene er pil, plassering, navn, chips, GW, Tot, pil.
+       Fyllkolonnen mellom chips og GW settes til 0 her. */
+    grid-template-columns: 2.2rem 2.4rem minmax(0, 1fr) auto 0 4rem 5rem 1.3rem;
+    gap: 0.45rem;
+    padding: 0.7rem 0.8rem;
+  }
+  .to-kolonner .brukt-chips { grid-template-columns: repeat(4, 1.9rem); }
+  .to-kolonner .lb-badge,
+  .to-kolonner .meta-chip,
+  .to-kolonner .meta-kaptein { display: none; }
+  .to-kolonner .lb-lagnavn { font-size: 1.25rem; }
+  .to-kolonner .lb-rank { font-size: 1.7rem; }
+  .to-kolonner .lb-tot { font-size: 1.6rem; }
+
   .col {
     background: var(--surface);
     /* Glassplate: slipper bakgrunnen gjennom, men demper detaljene bak
@@ -865,12 +888,15 @@ def _kolonne(deltakere, gw_na=None, gw_liste=None):
     rader = "\n".join(_rad(d, gw_na, gw_liste) for d in deltakere)
     return f"""    <div class="col">
       <div class="col-head">
-        <div></div><div class="h-rank">#</div><div></div><div>Deltaker</div>
+        <div class="pil"></div><div class="h-rank">#</div>
+        <div class="lb-badge"></div><div>Deltaker</div>
         <div class="mobil-linje">
-          <div></div><div class="spacer"></div><div class="h-meta"></div>
+          <div class="brukt-chips"></div><div class="spacer"></div>
+          <div class="meta-chip"></div>
         </div>
-        <div class="h-meta"></div>
-        <div class="h-gw">GW</div><div class="h-tot">Tot</div><div></div>
+        <div class="meta-kaptein"></div>
+        <div class="h-gw">GW</div><div class="h-tot">Tot</div>
+        <div class="utvid"></div>
       </div>
 {rader}
     </div>"""
