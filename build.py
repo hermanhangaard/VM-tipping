@@ -15,17 +15,25 @@ from pathlib import Path
 import fpl_api
 import render
 
+# Rota settes av --rot, saa den samme koden kan bygge flere ligaer fra hvert
+# sitt datarepo. Uten flagget bygger den prosjektet den selv ligger i.
 ROT = Path(__file__).parent
-DATA = ROT / "data"
-DIST = ROT / "dist"
+DATA = DIST = LAG_DIR = NAVN_FIL = HISTORIKK_FIL = None
+LIGA_ID = None
 
-NAVN_FIL = DATA / "navn.json"
-HISTORIKK_FIL = DATA / "historikk.json"
-# Én fil per gameweek med tropp, bytter og poeng for alle deltakere.
+
+def sett_rot(rot):
+    """Peker alle stier og liga-ID mot ett prosjekt."""
+    global ROT, DATA, DIST, LAG_DIR, NAVN_FIL, HISTORIKK_FIL, LIGA_ID
+    ROT = Path(rot).resolve()
+    DATA, DIST = ROT / "data", ROT / "dist"
+    NAVN_FIL, HISTORIKK_FIL, LAG_DIR = DATA / "navn.json", DATA / "historikk.json", DATA / "lag"
+    LIGA_ID = json.loads((ROT / "konfig.json").read_text(encoding="utf-8"))["liga_id"]
+
+# data/lag/GW{n}.json: én fil per gameweek med tropp, bytter og poeng.
 # En ferdigspilt runde endrer seg aldri, saa den skrives én gang og hentes
 # aldri fra API-et igjen. Uten dette ville full historikk kostet 342 API-kall
-# og 15,8 MB per bygg - og bygget gaar hvert 5. minutt.
-LAG_DIR = DATA / "lag"
+# og 15,8 MB per bygg.
 
 CHIP_NAVN = {
     "3xc": "Triple Captain",
@@ -245,7 +253,7 @@ def bygg():
     spillere = {e["id"]: e for e in bs["elements"]}
     lag = {t["id"]: t for t in bs["teams"]}
 
-    tabell = fpl_api.standings()
+    tabell = fpl_api.standings(LIGA_ID)
     rader = tabell["standings"]["results"]
     kamper = fpl_api.fixtures(gw_id)
 
@@ -401,7 +409,10 @@ def sett_output(bygget):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--force", action="store_true", help="bygg uansett (hopper over live-sjekk)")
+    ap.add_argument("--rot", default=Path(__file__).parent,
+                    help="prosjektmappe med konfig.json, data/ og design/")
     args = ap.parse_args()
+    sett_rot(args.rot)
 
     if not args.force:
         bygg_na, grunn = bor_bygge()

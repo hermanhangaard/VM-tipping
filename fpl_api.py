@@ -10,8 +10,6 @@ import urllib.error
 import urllib.request
 
 BASE = "https://fantasy.premierleague.com/api"
-LIGA_ID = 562901  # Norconsult Sarpsborg 26/27
-
 _UA = "Mozilla/5.0 (hangaard.no FPL-tavle)"
 
 
@@ -47,8 +45,8 @@ def bootstrap():
     return _get("bootstrap-static/")
 
 
-def standings(liga_id=LIGA_ID):
-    """Ligatabellen. 50 per side; vi er 9, saa en side holder lenge."""
+def standings(liga_id):
+    """Ligatabellen. 50 per side, saa én side holder for begge ligaene."""
     return _get(f"leagues-classic/{liga_id}/standings/")
 
 
