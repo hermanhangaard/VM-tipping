@@ -691,7 +691,7 @@
    ],
    "chip": "Triple Captain",
    "fornavn": "Aasmund",
-   "gw_poeng": 0,
+   "gw_poeng": 4,
    "har_beste_gw": false,
    "har_verste_gw": false,
    "kaptein": "Haaland",
@@ -743,14 +743,12 @@
     {
      "kaptein": false,
      "lag_kode": 4,
-     "motstander": [
-      "BOU (H)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Hall",
-     "poeng": 0,
+     "poeng": 4,
      "posisjon": 4,
-     "spilt": false,
+     "spilt": true,
      "type": 2,
      "vise": false
     },
@@ -1191,7 +1189,7 @@
    ],
    "chip": "Wildcard",
    "fornavn": "Jarle Andre",
-   "gw_poeng": 0,
+   "gw_poeng": 6,
    "har_beste_gw": false,
    "har_verste_gw": false,
    "kaptein": "Haaland",
@@ -1215,14 +1213,12 @@
     {
      "kaptein": false,
      "lag_kode": 4,
-     "motstander": [
-      "BOU (H)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Hall",
-     "poeng": 0,
+     "poeng": 4,
      "posisjon": 2,
-     "spilt": false,
+     "spilt": true,
      "type": 2,
      "vise": false
     },
@@ -1271,14 +1267,12 @@
     {
      "kaptein": false,
      "lag_kode": 4,
-     "motstander": [
-      "BOU (H)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Elanga",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 6,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": false
     },
@@ -1327,14 +1321,12 @@
     {
      "kaptein": false,
      "lag_kode": 4,
-     "motstander": [
-      "BOU (H)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Wissa",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 10,
-     "spilt": false,
+     "spilt": true,
      "type": 4,
      "vise": true
     },
