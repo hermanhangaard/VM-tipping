@@ -851,6 +851,19 @@ def detalj(d, gw_na=None, gw_liste=None):
     )
 
 
+def _kroner(verdi):
+    """Norsk beloepsformat: tusenskille med tynt mellomrom, komma for oere.
+
+    Runde beloep faar «,-» slik man skriver dem paa norsk; beloep med oere
+    faar to desimaler. 1462.5 -> «kr 1 462,50», 3500 -> «kr 3 500,-».
+    """
+    if float(verdi) == int(verdi):
+        tall = f"{int(verdi):,}".replace(",", "&thinsp;") + ",&ndash;"
+    else:
+        tall = f"{verdi:,.2f}".replace(",", "&thinsp;").replace(".", ",")
+    return f"kr&nbsp;{tall}"
+
+
 def _rad(d, gw_na=None, gw_liste=None):
     kls = d.get("medalje") or ""
     badge = (
@@ -885,7 +898,7 @@ def _rad(d, gw_na=None, gw_liste=None):
     kaptein = f'<span class="kaptein"><b>C</b>{escape(d["kaptein"])}</span>' if d.get("kaptein") else ""
 
     premie = "".join(
-        f'<span class="premie {pr["type"]}">kr&nbsp;{pr["kr"]:,}'.replace(",", "&thinsp;") + ",&ndash;</span>"
+        f'<span class="premie {pr["type"]}">{_kroner(pr["kr"])}</span>'
         for pr in d.get("premier") or []
     )
 
