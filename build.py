@@ -322,6 +322,18 @@ def bygg():
         d["har_beste_gw"] = toppen is not None and d["beste_gw"] == toppen
         d["har_verste_gw"] = bunnen is not None and d["verste_gw"] == bunnen
 
+    # Premier er valgfrie og settes per liga i konfig.json. Én deltaker kan
+    # vinne flere - 2. plass og beste enkeltrunde utelukker ikke hverandre.
+    premier = KONFIG.get("premier") or {}
+    for d in deltakere:
+        vunnet = []
+        kr = (premier.get("plass") or {}).get(str(d["rank"]))
+        if kr:
+            vunnet.append({"kr": kr, "type": "gold" if d["rank"] == 1 else "silver"})
+        if d["har_beste_gw"] and premier.get("beste_gw"):
+            vunnet.append({"kr": premier["beste_gw"], "type": "beste"})
+        d["premier"] = vunnet
+
     # Frys gjeldende runde, og hent inn eventuelle tidligere runder vi mangler.
     backfyll(rader, spillere, gw_id, kortnavn)
     lagre_gw(gw_id, deltakere, ferdig=bool(gw.get("data_checked")))

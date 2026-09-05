@@ -221,7 +221,8 @@ CSS = """
     backdrop-filter: blur(14px) saturate(1.15);
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 12px;
-    overflow: hidden;
+    /* Ikke overflow:hidden - premiene skal kunne stikke ut i margen.
+       Radene runder derfor av hjoernene sine selv. */
     box-shadow: 0 24px 50px -26px rgba(0, 0, 0, 0.95);
   }
   .col-head, .lb-row {
@@ -253,8 +254,28 @@ CSS = """
   /* Rad + utfellbar detalj. <details>/<summary> gir klikk-for-aa-utvide uten
      en linje JavaScript. TV-en kan ikke klikkes uansett - dette er for telefon. */
   .lb-item { border-bottom: 1px solid var(--divider); }
-  .lb-item:last-child { border-bottom: none; }
-  .lb-row { cursor: pointer; list-style: none; transition: background 0.15s; }
+  .lb-item:last-child { border-bottom: none; overflow: hidden; border-radius: 0 0 12px 12px; }
+  .lb-row { position: relative; cursor: pointer; list-style: none; transition: background 0.15s; }
+
+  /* Premier ligger i margen til venstre for kortet, utenfor medaljestripa.
+     Pengene er ikke tabelldata - de er en belaanning, og faar sitt eget felt.
+     Fargen matcher markoeren premien hoerer til: gull- og soelvstripe for
+     plassering, groenn ring for beste enkeltrunde. Da ser man med én gang
+     hvorfor noen faar penger. Stables naar samme person vinner flere. */
+  .premier {
+    position: absolute; right: 100%; top: 50%;
+    transform: translateY(-50%);
+    margin-right: 1.1rem;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem;
+  }
+  .premie {
+    font-family: var(--digits); font-weight: 700; font-size: 0.95rem;
+    white-space: nowrap; border-radius: 999px;
+    padding: 0.2rem 0.75rem; border: 1px solid;
+  }
+  .premie.gold   { color: var(--gold);   border-color: rgba(246, 196, 83, 0.5);  background: rgba(246, 196, 83, 0.13); }
+  .premie.silver { color: var(--silver); border-color: rgba(220, 214, 226, 0.45); background: rgba(220, 214, 226, 0.12); }
+  .premie.beste  { color: var(--gronn);  border-color: rgba(0, 255, 135, 0.45);  background: rgba(0, 255, 135, 0.12); }
   .lb-row::-webkit-details-marker { display: none; }
   .lb-row:hover { background: var(--surface-hover); }
   .lb-item[open] > .lb-row { background: var(--surface-hover); }
@@ -574,7 +595,8 @@ CSS = """
     }
     /* Bilder og fyllkolonner ut - klubblogoene er tomme for de fleste
        uansett, og pila stjeler bredde vi ikke har. */
-    .lb-badge, .spacer, .utvid, .pil { display: none; }
+    /* Premiene er en TV-greie - det finnes ingen marg aa henge dem i her. */
+    .lb-badge, .spacer, .utvid, .pil, .premier { display: none; }
 
     .lb-rank { grid-column: 1; grid-row: 1 / 3; font-size: 1.5rem; align-self: center; }
     .lb-rank.beste, .lb-rank.verst { width: 1.9rem; height: 1.9rem; }
@@ -862,8 +884,14 @@ def _rad(d, gw_na=None, gw_liste=None):
     )
     kaptein = f'<span class="kaptein"><b>C</b>{escape(d["kaptein"])}</span>' if d.get("kaptein") else ""
 
+    premie = "".join(
+        f'<span class="premie {pr["type"]}">kr&nbsp;{pr["kr"]:,}'.replace(",", "&thinsp;") + ",&ndash;</span>"
+        for pr in d.get("premier") or []
+    )
+
     return f"""      <details class="lb-item">
         <summary class="lb-row {kls}">
+          <div class="premier">{premie}</div>
           {_pil(d["rank"], d.get("forrige_rank"))}
           <div class="lb-rank{ringer}"{tittel}>{d["rank"]}</div>
           {badge}
