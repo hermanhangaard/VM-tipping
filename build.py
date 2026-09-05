@@ -248,19 +248,29 @@ def kjente_gw():
     return sorted(int(f.stem[2:]) for f in LAG_DIR.glob("GW*.json"))
 
 
+MEDALJE = {1: "gold", 2: "silver", 3: "bronze"}
+
+
 def del_ut_premier(deltakere, premier):
-    """Knytter premie til bragd, ikke til person.
+    """Knytter premie og medaljestripe til bragd, ikke til person.
 
     Utslagsgivende er kun plassering og hvem som eier beste enkeltrunde -
     begge utledes fra API-et ved hvert bygg. Ingen entry-ID er involvert, saa
     pengene foelger tabellen naar den endrer seg. Én deltaker kan vinne flere:
     2. plass og beste enkeltrunde utelukker ikke hverandre.
+
+    Medaljestripa markerer hvem som er i pengene, saa den foelger
+    premiestrukturen: en liga med premie til topp tre faar ogsaa bronse.
+    Uten premier faller vi tilbake paa topp to. Fargene daekker topp tre.
     """
+    plass = premier.get("plass") or {}
+    med_stripe = {int(k) for k in plass} or {1, 2}
     for d in deltakere:
+        d["medalje"] = MEDALJE.get(d["rank"]) if d["rank"] in med_stripe else None
         vunnet = []
-        kr = (premier.get("plass") or {}).get(str(d["rank"]))
+        kr = plass.get(str(d["rank"]))
         if kr:
-            vunnet.append({"kr": kr, "type": "gold" if d["rank"] == 1 else "silver"})
+            vunnet.append({"kr": kr, "type": MEDALJE.get(d["rank"], "gold")})
         if d.get("har_beste_gw") and premier.get("beste_gw"):
             vunnet.append({"kr": premier["beste_gw"], "type": "beste"})
         d["premier"] = vunnet

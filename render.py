@@ -275,6 +275,7 @@ CSS = """
   }
   .premie.gold   { color: var(--gold);   border-color: rgba(246, 196, 83, 0.5);  background: rgba(246, 196, 83, 0.13); }
   .premie.silver { color: var(--silver); border-color: rgba(220, 214, 226, 0.45); background: rgba(220, 214, 226, 0.12); }
+  .premie.bronze { color: var(--bronze); border-color: rgba(224, 160, 112, 0.5); background: rgba(224, 160, 112, 0.13); }
   .premie.beste  { color: var(--gronn);  border-color: rgba(0, 255, 135, 0.45);  background: rgba(0, 255, 135, 0.12); }
   .lb-row::-webkit-details-marker { display: none; }
   .lb-row:hover { background: var(--surface-hover); }
@@ -351,8 +352,10 @@ CSS = """
 
   .lb-row.gold   { box-shadow: inset 4px 0 0 var(--gold); }
   .lb-row.silver { box-shadow: inset 4px 0 0 var(--silver); }
+  .lb-row.bronze { box-shadow: inset 4px 0 0 var(--bronze); }
   .lb-row.gold   .lb-rank { color: var(--gold); }
   .lb-row.silver .lb-rank { color: var(--silver); }
+  .lb-row.bronze .lb-rank { color: var(--bronze); }
 
   /* Beste enkeltrunde - tredje premie. Groenn ring rundt plasseringstallet,
      ikke enda en boks. Tallet beholder medaljefargen sin inni ringen, saa
@@ -696,9 +699,6 @@ CSS = """
   }
 """
 
-# Premie gaar kun til 1., 2. og beste enkeltrunde - derfor ingen bronse.
-MEDALJE = {1: "gold", 2: "silver"}
-
 # Fast rekkefoelge paa chip-slissene, saa kolonnene flukter mellom radene.
 CHIP_REKKEFOLGE = ("BB", "TC", "WC", "FH")
 
@@ -852,7 +852,7 @@ def detalj(d, gw_na=None, gw_liste=None):
 
 
 def _rad(d, gw_na=None, gw_liste=None):
-    kls = MEDALJE.get(d["rank"], "")
+    kls = d.get("medalje") or ""
     badge = (
         f'<img class="lb-badge" src="{escape(d["badge"])}" alt="">'
         if d.get("badge")
