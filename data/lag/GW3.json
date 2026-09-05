@@ -12,7 +12,7 @@
    "fornavn": "Hans Magnus",
    "gw_poeng": 16,
    "har_beste_gw": false,
-   "har_verste_gw": false,
+   "har_verste_gw": true,
    "kaptein": "Haaland",
    "lagnavn": "Hans Magnus's Team",
    "trekk": 0,
@@ -224,7 +224,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   },
   "2795526": {
    "beste_gw_nr": 2,
@@ -233,7 +233,7 @@
    "fornavn": "Are",
    "gw_poeng": 0,
    "har_beste_gw": false,
-   "har_verste_gw": true,
+   "har_verste_gw": false,
    "kaptein": "Haaland",
    "lagnavn": "Kelleherleiligheten",
    "trekk": 0,
@@ -447,7 +447,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   },
   "3654880": {
    "beste_gw_nr": 2,
@@ -461,7 +461,7 @@
    "fornavn": "Lasse",
    "gw_poeng": 0,
    "har_beste_gw": false,
-   "har_verste_gw": true,
+   "har_verste_gw": false,
    "kaptein": "Haaland",
    "lagnavn": "Kællane",
    "trekk": 0,
@@ -675,7 +675,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   },
   "3804484": {
    "beste_gw_nr": 2,
@@ -693,7 +693,7 @@
    "fornavn": "Aasmund",
    "gw_poeng": 0,
    "har_beste_gw": false,
-   "har_verste_gw": true,
+   "har_verste_gw": false,
    "kaptein": "Haaland",
    "lagnavn": "Verpe FC",
    "trekk": 0,
@@ -909,7 +909,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   },
   "4068784": {
    "beste_gw_nr": 2,
@@ -1135,7 +1135,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   },
   "5100037": {
    "beste_gw_nr": 2,
@@ -1193,7 +1193,7 @@
    "fornavn": "Jarle Andre",
    "gw_poeng": 0,
    "har_beste_gw": false,
-   "har_verste_gw": true,
+   "har_verste_gw": false,
    "kaptein": "Haaland",
    "lagnavn": "Shaw me the goal!",
    "trekk": 0,
@@ -1409,7 +1409,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   },
   "6312929": {
    "beste_gw_nr": 2,
@@ -1628,7 +1628,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   },
   "7150571": {
    "beste_gw_nr": 2,
@@ -1854,7 +1854,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   },
   "828719": {
    "beste_gw_nr": 2,
@@ -1863,7 +1863,7 @@
    "fornavn": "Henrik",
    "gw_poeng": 0,
    "har_beste_gw": true,
-   "har_verste_gw": true,
+   "har_verste_gw": false,
    "kaptein": "Haaland",
    "lagnavn": "Nossolinis",
    "trekk": 0,
@@ -2079,7 +2079,7 @@
      "vise": false
     }
    ],
-   "verste_gw_nr": 3
+   "verste_gw_nr": 1
   }
  },
  "ferdig": false,
