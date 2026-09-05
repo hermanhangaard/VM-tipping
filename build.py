@@ -272,6 +272,7 @@ def bygg():
     # det tavla skal vise.
     ferdig = sum(1 for f in kamper if f["finished_provisional"])
     live = sum(1 for f in kamper if f["started"] and not f["finished_provisional"])
+    gw_ferdigspilt = bool(kamper) and ferdig == len(kamper)
 
     kortnavn = {t2["id"]: t2["short_name"] for t2 in bs["teams"]}
     mot = motstandere(kamper, kortnavn)
@@ -299,21 +300,27 @@ def bygg():
         d.update(hent_historikk(eid, gw_id))
         # Beste enkeltrunde: ferdige GW-er fra history, inneværende fra
         # ligatabellen siden history henger etter.
-        runder = {**d.get("gw_poeng_historikk", {}), gw_id: d["gw_poeng"]}
-        d["beste_gw"] = max(runder.values())
-        d["verste_gw"] = min(runder.values())
+        # Inneværende runde teller foerst naar den er ferdigspilt. Ellers ville
+        # alle som staar paa 0 tidlig i runden delt «verste enkeltrunde» -
+        # premien gjelder en fullfoert runde, ikke en paabegynt.
+        runder = dict(d.get("gw_poeng_historikk", {}))
+        if gw_ferdigspilt:
+            runder[gw_id] = d["gw_poeng"]
+        d["beste_gw"] = max(runder.values()) if runder else None
+        d["verste_gw"] = min(runder.values()) if runder else None
         # Ved likt resultat viser vi den seneste runden - den er mest aktuell.
-        d["beste_gw_nr"] = max(g for g, poeng in runder.items() if poeng == d["beste_gw"])
-        d["verste_gw_nr"] = max(g for g, poeng in runder.items() if poeng == d["verste_gw"])
+        d["beste_gw_nr"] = max((g for g, p in runder.items() if p == d["beste_gw"]), default=None)
+        d["verste_gw_nr"] = max((g for g, p in runder.items() if p == d["verste_gw"]), default=None)
         deltakere.append(d)
 
     # Beste og verste enkeltrunde i hele ligaen. Flere kan dele hver av dem,
-    # og samme person kan eie begge.
-    toppen = max((d["beste_gw"] for d in deltakere), default=0)
-    bunnen = min((d["verste_gw"] for d in deltakere), default=0)
+    # og samme person kan eie begge. Foer foerste runde er ferdigspilt finnes
+    # ingen av delene, og da vises ingen ringer.
+    toppen = max((d["beste_gw"] for d in deltakere if d["beste_gw"] is not None), default=None)
+    bunnen = min((d["verste_gw"] for d in deltakere if d["verste_gw"] is not None), default=None)
     for d in deltakere:
-        d["har_beste_gw"] = bool(toppen) and d["beste_gw"] == toppen
-        d["har_verste_gw"] = d["verste_gw"] == bunnen
+        d["har_beste_gw"] = toppen is not None and d["beste_gw"] == toppen
+        d["har_verste_gw"] = bunnen is not None and d["verste_gw"] == bunnen
 
     # Frys gjeldende runde, og hent inn eventuelle tidligere runder vi mangler.
     backfyll(rader, spillere, gw_id, kortnavn)
