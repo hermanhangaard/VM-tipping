@@ -234,7 +234,7 @@ def backfyll(rader, spillere, til_og_med, kortnavn):
             eid = r["entry"]
             h = fpl_api._get(f"entry/{eid}/history/")
             poeng = next((x["points"] for x in h.get("current", []) if x["event"] == gw), 0)
-            d = {"entry": eid, "lagnavn": r["entry_name"],
+            d = {"entry": eid, "lagnavn": rydd_lagnavn(r["entry_name"]),
                  "fornavn": les_json(NAVN_FIL, {}).get(str(eid), ""), "gw_poeng": poeng}
             d.update(hent_lag(eid, gw, spillere, live, motstandere(fpl_api.fixtures(gw), kortnavn)))
             deltakere.append(d)
@@ -249,6 +249,19 @@ def kjente_gw():
 
 
 MEDALJE = {1: "gold", 2: "silver", 3: "bronze"}
+
+
+def rydd_lagnavn(navn):
+    """Fjerner U+FFFD - tegnet nettleseren viser som «�».
+
+    Det ligger i FPL sine egne data naar en emoji er blitt mangled hos dem, og
+    betyr per definisjon «tegn som ikke lot seg tolke». Ekte emoji som ❤ og ⚽
+    roeres ikke. Generelt, ikke bundet til ett bestemt lagnavn.
+    """
+    ryddet = navn.replace("\ufffd", "").strip()
+    # Et navn som kun bestod av oedelagte tegn ville blitt tomt - da er det
+    # bedre aa vise det uleselige enn en navnloes rad.
+    return ryddet or navn
 
 
 def del_ut_premier(deltakere, premier):
@@ -317,7 +330,7 @@ def bygg():
         d = {
             "entry": eid,
             "fornavn": navn.get(str(eid), r["player_name"].split()[0]),
-            "lagnavn": r["entry_name"],
+            "lagnavn": rydd_lagnavn(r["entry_name"]),
             "rank": r["rank"],
             "forrige_rank": r["last_rank"] or None,
             "gw_poeng": r["event_total"],
