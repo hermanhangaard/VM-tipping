@@ -10,7 +10,7 @@
    ],
    "chip": "Triple Captain",
    "fornavn": "Hans Magnus",
-   "gw_poeng": 62,
+   "gw_poeng": 64,
    "har_beste_gw": false,
    "har_verste_gw": true,
    "kaptein": "Haaland",
@@ -58,14 +58,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Maguire",
-     "poeng": 0,
+     "poeng": 3,
      "posisjon": 4,
-     "spilt": false,
+     "spilt": true,
      "type": 2,
      "vise": false
     },
@@ -84,14 +82,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 6,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": false
     },
@@ -213,7 +209,7 @@
    "bytter": [],
    "chip": "Triple Captain",
    "fornavn": "Are",
-   "gw_poeng": 36,
+   "gw_poeng": 39,
    "har_beste_gw": false,
    "har_verste_gw": false,
    "kaptein": "Haaland",
@@ -235,14 +231,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Maguire",
-     "poeng": 0,
+     "poeng": 3,
      "posisjon": 2,
-     "spilt": false,
+     "spilt": true,
      "type": 2,
      "vise": false
     },
@@ -275,14 +269,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 5,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": false
     },
@@ -315,14 +307,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "B.Fernandes",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 8,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": false
     },
@@ -425,7 +415,7 @@
    ],
    "chip": "Triple Captain",
    "fornavn": "Lasse",
-   "gw_poeng": 46,
+   "gw_poeng": 47,
    "har_beste_gw": false,
    "har_verste_gw": false,
    "kaptein": "Haaland",
@@ -511,14 +501,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "B.Fernandes",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 7,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": true
     },
@@ -587,14 +575,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 0,
      "navn": "Shaw",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 13,
-     "spilt": false,
+     "spilt": true,
      "type": 2,
      "vise": false
     },
@@ -639,7 +625,7 @@
    ],
    "chip": "Triple Captain",
    "fornavn": "Aasmund",
-   "gw_poeng": 41,
+   "gw_poeng": 43,
    "har_beste_gw": false,
    "har_verste_gw": false,
    "kaptein": "Haaland",
@@ -699,28 +685,24 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "B.Fernandes",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 5,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": true
     },
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 6,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": false
     },
@@ -853,7 +835,7 @@
    ],
    "chip": "Triple Captain",
    "fornavn": "Didrik",
-   "gw_poeng": 45,
+   "gw_poeng": 47,
    "har_beste_gw": false,
    "har_verste_gw": false,
    "kaptein": "Haaland",
@@ -875,14 +857,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Shaw",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 2,
-     "spilt": false,
+     "spilt": true,
      "type": 2,
      "vise": false
     },
@@ -915,14 +895,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "B.Fernandes",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 5,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": true
     },
@@ -1109,7 +1087,7 @@
    ],
    "chip": "Wildcard",
    "fornavn": "Jarle Andre",
-   "gw_poeng": 35,
+   "gw_poeng": 36,
    "har_beste_gw": false,
    "har_verste_gw": false,
    "kaptein": "Haaland",
@@ -1193,14 +1171,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "B.Fernandes",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 7,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": false
     },
@@ -1725,7 +1701,7 @@
    "bytter": [],
    "chip": "Triple Captain",
    "fornavn": "Henrik",
-   "gw_poeng": 42,
+   "gw_poeng": 45,
    "har_beste_gw": true,
    "har_verste_gw": false,
    "kaptein": "Haaland",
@@ -1749,14 +1725,12 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Shaw",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 2,
-     "spilt": false,
+     "spilt": true,
      "type": 2,
      "vise": false
     },
@@ -1813,28 +1787,24 @@
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "B.Fernandes",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 7,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": true
     },
     {
      "kaptein": false,
      "lag_kode": 1,
-     "motstander": [
-      "EVE (A)"
-     ],
+     "motstander": null,
      "mult": 1,
      "navn": "Mbeumo",
-     "poeng": 0,
+     "poeng": 1,
      "posisjon": 8,
-     "spilt": false,
+     "spilt": true,
      "type": 3,
      "vise": false
     },
